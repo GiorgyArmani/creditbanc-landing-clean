@@ -35,25 +35,52 @@ export default function Counter({
   className,
 }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.4 });
+  const inView = useInView(ref, { once: true, amount: 0.1 });
 
-  const sequence =
-    stops && stops.length > 0 ? stops : to !== undefined ? [to] : [0];
+  const propsRef = useRef({
+    from,
+    to,
+    stops,
+    duration,
+    delay,
+    times,
+    prefix,
+    suffix,
+    decimals,
+  });
+  propsRef.current = {
+    from,
+    to,
+    stops,
+    duration,
+    delay,
+    times,
+    prefix,
+    suffix,
+    decimals,
+  };
 
   useEffect(() => {
     if (!inView || !ref.current) return;
     const node = ref.current;
-    const controls = animate(from, sequence, {
-      duration,
-      delay,
-      times,
+    const p = propsRef.current;
+    const sequence =
+      p.stops && p.stops.length > 0
+        ? p.stops
+        : p.to !== undefined
+          ? [p.to]
+          : [0];
+    const controls = animate(p.from, sequence, {
+      duration: p.duration,
+      delay: p.delay,
+      times: p.times,
       ease: [0.22, 1, 0.36, 1],
       onUpdate(value) {
-        node.textContent = `${prefix}${formatNumber(value, decimals)}${suffix}`;
+        node.textContent = `${p.prefix}${formatNumber(value, p.decimals)}${p.suffix}`;
       },
     });
     return () => controls.stop();
-  }, [inView, from, sequence, duration, delay, times, prefix, suffix, decimals]);
+  }, [inView]);
 
   return (
     <span ref={ref} className={className}>

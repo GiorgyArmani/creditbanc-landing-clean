@@ -5,40 +5,16 @@ import Counter from '../ui/Counter';
 
 interface Stat {
   to: number;
-  from?: number;
   prefix?: string;
   suffix?: string;
   label: string;
-  sublabel?: string;
 }
 
 const STATS: Stat[] = [
-  {
-    to: 500,
-    prefix: '$',
-    suffix: 'K',
-    label: 'Max Funding Available',
-    sublabel: 'In as little as 24 hours',
-  },
-  {
-    to: 24,
-    suffix: 'H',
-    label: 'Time to Funding',
-    sublabel: 'For qualifying businesses',
-  },
-  {
-    to: 10,
-    suffix: 'YR',
-    label: 'Term Length',
-    sublabel: 'Long-term, monthly payments',
-  },
-  {
-    to: 0,
-    from: 100,
-    suffix: '%',
-    label: 'Collateral Required',
-    sublabel: 'For qualifying businesses',
-  },
+  { to: 2, prefix: '$', suffix: 'B+', label: 'Capital Deployed' },
+  { to: 15, suffix: 'k+', label: 'Businesses Funded' },
+  { to: 24, suffix: 'h', label: 'Average Funding Time' },
+  { to: 94, suffix: '%', label: 'Approval Rate' },
 ];
 
 export default function TrustMetrics() {
@@ -57,7 +33,7 @@ export default function TrustMetrics() {
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <div className="max-w-7xl mx-auto relative">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
           {STATS.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -69,25 +45,18 @@ export default function TrustMetrics() {
                 delay: i * 0.1,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="relative"
             >
               <Counter
                 to={stat.to}
-                from={stat.from}
                 prefix={stat.prefix}
                 suffix={stat.suffix}
-                duration={2}
-                delay={0.2 + i * 0.1}
+                duration={2.4}
+                delay={0.3 + i * 0.18}
                 className="block text-5xl md:text-6xl font-black text-primary-container tabular-nums tracking-tight mb-3"
               />
-              <p className="font-headline text-base md:text-lg font-bold tracking-tight text-white mb-1">
+              <p className="font-label text-xs uppercase tracking-widest text-slate-400">
                 {stat.label}
               </p>
-              {stat.sublabel && (
-                <p className="font-label text-[11px] uppercase tracking-widest text-slate-400">
-                  {stat.sublabel}
-                </p>
-              )}
             </motion.div>
           ))}
         </div>

@@ -48,18 +48,11 @@ export default function Hero() {
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="text-xl text-on-surface-variant max-w-xl mb-6 leading-relaxed"
+            className="text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed"
           >
-            Get the capital you need with a structure that makes sense for your
-            cash flow.
-          </motion.p>
-          <motion.p
-            variants={itemVariants}
-            className="text-base text-on-surface-variant max-w-xl mb-10 leading-relaxed"
-          >
-            Credit Banc helps business owners compare financing options across
-            working capital, SBA, and real estate, with Advisors who guide the
-            process from start to finish.
+            Access working capital for growth, payroll, inventory, equipment,
+            or cash-flow gaps, with monthly payment options and guidance from
+            advisors who help you find the right fit.
           </motion.p>
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
             <motion.a
@@ -72,7 +65,7 @@ export default function Hero() {
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 380, damping: 22 }}
             >
-              Get Started Today!
+              Get Funded
             </motion.a>
           </motion.div>
         </motion.div>
@@ -85,7 +78,7 @@ export default function Hero() {
           >
             <Image
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx-1ZcsggNhD2ZhUYAZZUBg1AdIoYkmas-JjvqGCcQmbqBsF-UNSuORDgkTz176LBlfuHnxkFWAgUbXlIRbtCmGtvHw6jkpn1JFdH10rOvtZZBZr5c6ZCLJ72bNiXitYu1Vrutqya5AdD25s8ouQV4NnU5T98c1jtaTavquDk9a8z9ngplnrjwkoHu9ZIbR5PpwDU1AcznnHMGt5QrTY1g702q1cyDKLYtf1BeH7QRjEWmKzKx6Qk8mbuXs1tD2UdMQsh5EMxfyLY"
-              alt="Modern high-end office interior"
+              alt="Business owner reviewing financing options with a Credit Banc advisor"
               fill
               className="object-cover"
               priority

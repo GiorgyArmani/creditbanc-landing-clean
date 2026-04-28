@@ -38,22 +38,20 @@ export default function Products() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-            Solutions
+            Financial Solutions
           </p>
           <h2 className="font-headline text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
-            Financing Solutions Built Around Your Business
+            Funding Options Built Around Real Business Needs
           </h2>
           <p className="text-on-surface-variant text-lg leading-relaxed">
-            Not every business needs the same kind of capital, and not every
-            lender gives you real options. Credit Banc helps you sort through
-            working capital, equipment financing, real estate lending, and SBA
-            options to find a structure that makes sense for your business and
-            your cash flow.
+            From growth plans to short-term capital needs, Credit Banc helps
+            you explore financing options that fit your business, your cash
+            flow, and your next move.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           <motion.div
-            id="small-business"
+            id="sba"
             custom={0}
             variants={cardReveal}
             initial="hidden"
@@ -65,18 +63,25 @@ export default function Products() {
             <div className="flex flex-col md:flex-row gap-12 items-center">
               <div className="flex-1">
                 <Icon
-                  name="storefront"
+                  name="account_balance"
                   className="text-4xl text-primary mb-6"
                 />
                 <h3 className="text-3xl font-bold mb-4 text-on-surface">
-                  Small Business Funding
+                  SBA Financing
                 </h3>
                 <p className="text-on-surface-variant mb-8 leading-relaxed">
-                  Working capital, equipment financing, term loans, lines of
-                  credit, factoring, and more.
+                  Government-backed financing for working capital,
+                  acquisitions, real estate, refinancing, startup costs, and
+                  larger growth plans.
                 </p>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center gap-3 text-sm font-medium text-on-surface">
+                    <Icon name="check_circle" className="text-primary text-lg" />
+                    Terms up to 25 years
+                  </li>
+                </ul>
                 <motion.a
-                  href={ROUTES.smallBusiness}
+                  href={ROUTES.sba}
                   className="text-primary font-bold border-b-2 border-primary pb-1 inline-flex items-center gap-2"
                   whileHover={{ gap: '1rem' }}
                 >
@@ -85,8 +90,8 @@ export default function Products() {
               </div>
               <div className="w-full md:w-1/2 aspect-video rounded-lg overflow-hidden grayscale group-hover:grayscale-0 transition-all relative">
                 <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s"
-                  alt="Small business owner reviewing options"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtfPh2GVbAf1ZSwDsqv9GNZ96yUEklqMoJXkM6vhKzFiTSp2OurfAFaTIxvrzsFulKa3m4IGET6GeoFVZVbZblfwFz974x1Y8VFNex4QbN8zRgm1L7jzqlU6myl_Bb-d5gdJFaW5O4BNIkDCFCf8hVCcje408P8OVf4ZOtWcMsh-HHdAjblw6782plIxF1Xwp4kOuqevmMbCfy3S2s-gyURWIgIVf9UaZr8M55lnqinujSqQ4zwQX0ZtbQtJl759Jw264NOYNo7aU"
+                  alt="Stack of coins representing SBA government-backed financing"
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 33vw"
@@ -110,10 +115,11 @@ export default function Products() {
                 name="domain"
                 className="text-4xl text-primary-container mb-6"
               />
-              <h3 className="text-3xl font-bold mb-4">Real Estate Loans</h3>
+              <h3 className="text-3xl font-bold mb-4">Real Estate Financing</h3>
               <p className="text-slate-400 leading-relaxed mb-6">
-                Financing for rental properties, fix-and-flips, commercial
-                mortgages, construction, and business real estate.
+                Property financing options for investors and business owners,
+                including rentals, flips, construction, commercial mortgages,
+                and owner-occupied real estate.
               </p>
             </div>
             <motion.a
@@ -123,12 +129,12 @@ export default function Products() {
               whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 380, damping: 22 }}
             >
-              Learn More
+              View Options
             </motion.a>
           </motion.div>
 
           <motion.div
-            id="sba"
+            id="small-business"
             custom={2}
             variants={cardReveal}
             initial="hidden"
@@ -140,8 +146,8 @@ export default function Products() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="order-2 md:order-1 relative aspect-video">
                 <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtfPh2GVbAf1ZSwDsqv9GNZ96yUEklqMoJXkM6vhKzFiTSp2OurfAFaTIxvrzsFulKa3m4IGET6GeoFVZVbZblfwFz974x1Y8VFNex4QbN8zRgm1L7jzqlU6myl_Bb-d5gdJFaW5O4BNIkDCFCf8hVCcje408P8OVf4ZOtWcMsh-HHdAjblw6782plIxF1Xwp4kOuqevmMbCfy3S2s-gyURWIgIVf9UaZr8M55lnqinujSqQ4zwQX0ZtbQtJl759Jw264NOYNo7aU"
-                  alt="Reviewing SBA financing options"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s"
+                  alt="Small business owner reviewing capital and equipment financing options"
                   fill
                   className="rounded-xl shadow-lg object-cover"
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -149,18 +155,39 @@ export default function Products() {
               </div>
               <div className="order-1 md:order-2">
                 <Icon
-                  name="account_balance"
+                  name="storefront"
                   className="text-4xl text-primary mb-6"
                 />
                 <h3 className="text-3xl font-bold mb-4 text-on-surface">
-                  SBA Financing
+                  Small Business Funding
                 </h3>
-                <p className="text-on-surface-variant mb-8 leading-relaxed">
-                  Flexible options for acquisitions, commercial real estate,
-                  startup costs, refinancing, and working capital.
+                <p className="text-on-surface-variant mb-6 leading-relaxed">
+                  Working capital, equipment financing, lines of credit, term
+                  loans, and other funding options for everyday business needs
+                  and growth.
                 </p>
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <motion.div
+                    className="p-4 bg-surface-container rounded-lg"
+                    whileHover={{ y: -3 }}
+                  >
+                    <p className="text-2xl font-bold text-on-surface">$250k</p>
+                    <p className="text-xs text-on-surface-variant uppercase font-bold tracking-tighter">
+                      Max Funding
+                    </p>
+                  </motion.div>
+                  <motion.div
+                    className="p-4 bg-surface-container rounded-lg"
+                    whileHover={{ y: -3 }}
+                  >
+                    <p className="text-2xl font-bold text-on-surface">Instant</p>
+                    <p className="text-xs text-on-surface-variant uppercase font-bold tracking-tighter">
+                      Decision
+                    </p>
+                  </motion.div>
+                </div>
                 <motion.a
-                  href={ROUTES.sba}
+                  href={ROUTES.smallBusiness}
                   className="bg-primary text-white px-8 py-4 rounded-lg font-bold inline-block"
                   whileHover={{
                     scale: 1.04,
@@ -169,7 +196,7 @@ export default function Products() {
                   whileTap={{ scale: 0.96 }}
                   transition={{ type: 'spring', stiffness: 380, damping: 22 }}
                 >
-                  Learn More
+                  Check Eligibility
                 </motion.a>
               </div>
             </div>

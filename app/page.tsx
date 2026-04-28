@@ -4,6 +4,7 @@ import TrustMetrics from '@/components/sections/TrustMetrics';
 import Products from '@/components/sections/Products';
 import ValueProp from '@/components/sections/ValueProp';
 import Process from '@/components/sections/Process';
+import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
 import Footer from '@/components/sections/Footer';
 import { FloatingSupport } from '@/components/floating-support';
@@ -18,6 +19,7 @@ export default function Home() {
         <Products />
         <ValueProp />
         <Process />
+        <FAQ />
         <CTA />
       </main>
       <Footer />

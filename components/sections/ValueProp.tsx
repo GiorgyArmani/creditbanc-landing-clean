@@ -7,13 +7,18 @@ import { ROUTES } from '@/lib/site';
 const VALUES = [
   {
     icon: 'person_check',
-    title: 'An advisor, not an algorithm',
-    body: 'Work one-on-one with a Credit Banc Advisor who helps you understand your options, prepare what is needed, and keep the process moving.',
+    title: 'One-on-One Support',
+    body: 'Work directly with an Advisor who helps you through the process from first conversation to next steps.',
   },
   {
     icon: 'compare_arrows',
-    title: 'Multiple lenders, real options',
-    body: 'With access to multiple lenders and financing structures, we help business owners find a solution that fits the business, not just the pitch.',
+    title: 'Practical Funding Solutions',
+    body: 'Compare options based on how your business actually works, not just what a lender wants to sell.',
+  },
+  {
+    icon: 'edit_document',
+    title: 'Clear Explanations',
+    body: 'Understand the terms, tradeoffs, documents, and lender requirements before moving forward.',
   },
 ];
 
@@ -30,10 +35,10 @@ export default function ValueProp() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-              Why Credit Banc
+              The Human Edge
             </p>
             <h2 className="font-headline text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
-              Real Guidance. Practical Options.
+              Advisor-Led Financing, Start to Finish
             </h2>
             <p className="text-on-surface-variant text-lg leading-relaxed mb-10">
               Business financing should not feel like a second full-time job. At
