@@ -1,5 +1,7 @@
 export const SITE = {
   baseUrl: 'https://creditbanc.io',
+  vaultUrl: 'https://vault.creditbanc.io',
+  loginUrl: 'https://vault.creditbanc.io/auth/login',
   email: 'support@creditbanc.io',
   phone: '321-334-5099',
   phoneTel: 'tel:+13213345099',

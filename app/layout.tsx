@@ -1,8 +1,23 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Manrope, Inter } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
 import { ROUTES, SITE, SOCIAL } from '@/lib/site';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '700', '800'],
+  variable: '--font-manrope',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 const TITLE = 'Credit Banc | SBA Loans, Real Estate Financing & Small Business Funding';
 const DESCRIPTION =
@@ -193,22 +208,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${manrope.variable} ${inter.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-          rel="stylesheet"
-        />
         <Script
           id="ld-organization"
           type="application/ld+json"

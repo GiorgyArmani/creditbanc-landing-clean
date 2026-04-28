@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useState } from 'react';
-import { ROUTES } from '@/lib/site';
+import { ROUTES, SITE } from '@/lib/site';
 
 const NAV_LINKS = [
   { label: 'SBA Financing', href: ROUTES.sba },
@@ -87,12 +87,12 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-6">
           <motion.a
-            href={ROUTES.team}
+            href={SITE.loginUrl}
             className="hidden sm:block text-sm font-bold uppercase tracking-wider text-deep-navy hover:text-primary transition-colors"
             whileHover={{ y: -1 }}
             whileTap={{ y: 0 }}
           >
-            Meet the Team
+            Login
           </motion.a>
           <motion.a
             href={ROUTES.apply}

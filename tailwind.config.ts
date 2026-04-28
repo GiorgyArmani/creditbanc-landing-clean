@@ -64,9 +64,9 @@ const config: Config = {
         full: '9999px',
       },
       fontFamily: {
-        headline: ['Manrope', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
-        label: ['Inter', 'sans-serif'],
+        headline: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        label: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
     },
   },
