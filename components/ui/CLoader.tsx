@@ -124,9 +124,16 @@ export default function CLoader({
           strokeLinecap="butt"
           fill="none"
           strokeDasharray={fullArcLen}
-          initial={{ strokeDashoffset: fullArcLen }}
-          animate={{ strokeDashoffset: 0 }}
-          transition={{ duration: intervalMs / 1000, ease: 'linear' }}
+          initial={{ strokeDashoffset: fullArcLen, opacity: 0 }}
+          animate={{ strokeDashoffset: 0, opacity: [0, 1, 1, 0] }}
+          transition={{
+            strokeDashoffset: { duration: intervalMs / 1000, ease: 'linear' },
+            opacity: {
+              duration: intervalMs / 1000,
+              times: [0, 0.05, 0.92, 1],
+              ease: 'linear',
+            },
+          }}
           style={{ filter: 'drop-shadow(0 0 12px rgba(85, 207, 158, 0.55))' }}
         />
       </svg>

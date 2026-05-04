@@ -121,7 +121,7 @@ export default function Hero() {
             className="relative"
             style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
           >
-            <CLoader assets={HERO_ASSETS} intervalMs={6000} size={460} />
+            <CLoader assets={HERO_ASSETS} intervalMs={9000} size={460} />
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function Hero() {
       >
         <CLoader
           assets={HERO_ASSETS}
-          intervalMs={6000}
+          intervalMs={9000}
           size={920}
         />
         <motion.div
