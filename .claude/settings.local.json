@@ -4,7 +4,8 @@
       "Bash(npm view *)",
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "WebFetch(domain:creditbanc.io)"
+      "WebFetch(domain:creditbanc.io)",
+      "Bash(npx tsc *)"
     ]
   }
 }

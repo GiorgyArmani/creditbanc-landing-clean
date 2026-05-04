@@ -7,19 +7,22 @@ import Icon from '../ui/Icon';
 import { ROUTES, SITE, SOCIAL } from '@/lib/site';
 
 const PROGRAMS = [
-  { label: 'SBA Loans', href: ROUTES.sba },
-  { label: 'Real Estate Loans', href: ROUTES.realEstate },
-  { label: 'Small Business Funding', href: ROUTES.smallBusiness },
+  { label: 'SBA Loans', href: '#sba' },
+  { label: 'Real Estate Loans', href: '#real-estate' },
+  { label: 'Small Business Funding', href: '#small-business' },
+  { label: 'Our Process', href: '#process' },
 ];
 
 const COMPANY = [
-  { label: 'Our Team', href: ROUTES.team },
+  // TODO: Re-enable once Team page is revamped
+  // { label: 'Our Team', href: ROUTES.team },
   { label: `Call Us — ${SITE.phone}`, href: SITE.phoneTel },
   { label: 'Press Releases', href: `${SITE.baseUrl}/press` },
 ];
 
 const RESOURCES = [
-  { label: 'Blog', href: ROUTES.blog },
+  // TODO: Re-enable once Blog page is revamped
+  // { label: 'Blog', href: ROUTES.blog },
   { label: 'Apply for Funding', href: ROUTES.apply },
   { label: 'Privacy Policy', href: ROUTES.privacy },
 ];

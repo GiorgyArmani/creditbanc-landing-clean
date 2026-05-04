@@ -6,19 +6,19 @@ import { ROUTES } from '@/lib/site';
 
 const VALUES = [
   {
-    icon: 'person_check',
-    title: 'One-on-One Support',
-    body: 'Work directly with an Advisor who helps you through the process from first conversation to next steps.',
+    icon: 'psychology',
+    title: 'We start with the problem.',
+    body: 'Not the product. Not the shiny offer. The actual reason you need capital in the first place.',
   },
   {
     icon: 'compare_arrows',
-    title: 'Practical Funding Solutions',
-    body: 'Compare options based on how your business actually works, not just what a lender wants to sell.',
+    title: 'We look at the structure.',
+    body: 'We focus on repayment, timing, cash flow, and whether the financing actually makes sense.',
   },
   {
-    icon: 'edit_document',
-    title: 'Clear Explanations',
-    body: 'Understand the terms, tradeoffs, documents, and lender requirements before moving forward.',
+    icon: 'forum',
+    title: 'We stay in the room.',
+    body: 'Questions, documents, lender requests, next steps. We walk you through the process from first review to final decision, without leaving you to chase answers on your own.',
   },
 ];
 
@@ -38,7 +38,8 @@ export default function ValueProp() {
               The Human Edge
             </p>
             <h2 className="font-headline text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
-              Advisor-Led Financing, Start to Finish
+              Funding Is Better With a{' '}
+              <span className="text-primary">Human Involved</span>
             </h2>
             <p className="text-on-surface-variant text-lg leading-relaxed mb-10">
               Business financing should not feel like a second full-time job. At
@@ -75,6 +76,16 @@ export default function ValueProp() {
                 </motion.div>
               ))}
             </div>
+            <motion.p
+              className="font-headline text-2xl font-bold tracking-tight text-on-secondary-fixed mb-10 leading-snug"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+              To sum it up: Less guessing. Fewer surprises. Better funding
+              decisions. <em className="text-primary">Revolutionary stuff.</em>
+            </motion.p>
             <motion.a
               href={ROUTES.apply}
               className="signature-gradient text-white px-10 py-5 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg inline-block"

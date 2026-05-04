@@ -6,10 +6,13 @@ import { useState } from 'react';
 import { ROUTES, SITE } from '@/lib/site';
 
 const NAV_LINKS = [
-  { label: 'SBA Financing', href: ROUTES.sba },
-  { label: 'Real Estate Financing', href: ROUTES.realEstate },
-  { label: 'Small Business Funding', href: ROUTES.smallBusiness },
-  { label: 'Blog', href: ROUTES.blog },
+  { label: 'SBA Financing', href: '#sba' },
+  { label: 'Real Estate Financing', href: '#real-estate' },
+  { label: 'Small Business Funding', href: '#small-business' },
+  { label: 'Our Process', href: '#process' },
+  // TODO: Re-enable once these pages are revamped
+  // { label: 'Our Team', href: ROUTES.team },
+  // { label: 'Blog', href: ROUTES.blog },
 ];
 
 export default function Navbar() {
