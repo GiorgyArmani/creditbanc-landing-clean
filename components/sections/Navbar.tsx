@@ -119,7 +119,7 @@ export default function Navbar() {
           </motion.a>
           <motion.a
             href={ROUTES.apply}
-            className="signature-gradient text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm uppercase tracking-widest shadow-lg"
+            className="hidden md:inline-block signature-gradient text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm uppercase tracking-widest shadow-lg"
             whileHover={{
               scale: 1.04,
               boxShadow: '0 18px 35px -10px rgba(0, 108, 76, 0.45)',
@@ -231,6 +231,24 @@ export default function Navbar() {
                     className="block px-8 py-3 font-headline tracking-tight text-base uppercase font-bold text-slate-700 hover:text-primary hover:bg-primary-container/15 transition-colors"
                   >
                     Login
+                  </a>
+                </motion.li>
+                <motion.li
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.05 + (NAV_LINKS.length + 1) * 0.05,
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="px-6 pt-3 pb-2"
+                >
+                  <a
+                    href={ROUTES.apply}
+                    onClick={() => setMenuOpen(false)}
+                    className="signature-gradient block text-center text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg"
+                  >
+                    Apply Now
                   </a>
                 </motion.li>
               </ul>
