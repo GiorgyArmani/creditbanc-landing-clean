@@ -45,13 +45,20 @@ export default function CLoader({
   const fullArcLen = round(2 * Math.PI * pathRadius);
   const fullArcPath = `M ${round(ringCenter + pathRadius)} ${ringCenter} A ${pathRadius} ${pathRadius} 0 1 1 ${round(ringCenter - pathRadius)} ${ringCenter} A ${pathRadius} ${pathRadius} 0 1 1 ${round(ringCenter + pathRadius)} ${ringCenter}`;
 
+  const imgInsetPct = (imgInset / size) * 100;
+  const ringInsetPct = (ringInset / size) * 100;
+  const ringDiameterPct = (ringDiameter / size) * 100;
+
   return (
     <div
       className={className}
       style={{
         position: 'relative',
-        width: `${size}px`,
-        height: `${size}px`,
+        width: '100%',
+        height: '100%',
+        maxWidth: `${size}px`,
+        maxHeight: `${size}px`,
+        aspectRatio: '1 / 1',
         ...style,
       }}
     >
@@ -59,10 +66,10 @@ export default function CLoader({
         className="rounded-full overflow-hidden bg-on-secondary-fixed shadow-2xl"
         style={{
           position: 'absolute',
-          top: `${imgInset}px`,
-          left: `${imgInset}px`,
-          right: `${imgInset}px`,
-          bottom: `${imgInset}px`,
+          top: `${imgInsetPct}%`,
+          left: `${imgInsetPct}%`,
+          right: `${imgInsetPct}%`,
+          bottom: `${imgInsetPct}%`,
         }}
       >
         <AnimatePresence mode="wait">
@@ -79,7 +86,7 @@ export default function CLoader({
               alt={assets[index].alt}
               fill
               className="object-cover"
-              sizes={`${size}px`}
+              sizes={`(max-width: 1024px) 90vw, ${size}px`}
               priority={index === 0}
               unoptimized={assets[index].src.endsWith('.gif')}
             />
@@ -89,15 +96,13 @@ export default function CLoader({
       </div>
 
       <svg
-        width={ringDiameter}
-        height={ringDiameter}
         viewBox={`0 0 ${ringDiameter} ${ringDiameter}`}
         style={{
           position: 'absolute',
-          top: `${ringInset}px`,
-          left: `${ringInset}px`,
-          width: `${ringDiameter}px`,
-          height: `${ringDiameter}px`,
+          top: `${ringInsetPct}%`,
+          left: `${ringInsetPct}%`,
+          width: `${ringDiameterPct}%`,
+          height: `${ringDiameterPct}%`,
           display: 'block',
           pointerEvents: 'none',
         }}

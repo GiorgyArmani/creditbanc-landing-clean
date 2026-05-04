@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { ROUTES, SITE } from '@/lib/site';
 
 const NAV_LINKS = [
@@ -18,10 +18,30 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [active] = useState<string>('SBA Financing');
+  const [menuOpen, setMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const paddingY = useTransform(scrollY, [0, 80], [20, 12]);
   const shadowOpacity = useTransform(scrollY, [0, 80], [0.04, 0.12]);
   const bgOpacity = useTransform(scrollY, [0, 80], [0.7, 0.95]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   return (
     <motion.nav
@@ -41,7 +61,7 @@ export default function Navbar() {
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
       <motion.div
-        className="flex justify-between items-center max-w-screen-2xl mx-auto px-8"
+        className="flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8"
         style={{ paddingTop: paddingY, paddingBottom: paddingY }}
       >
         <motion.a
@@ -58,7 +78,7 @@ export default function Navbar() {
             width={940}
             height={280}
             priority
-            className="h-12"
+            className="h-10 sm:h-12"
             style={{ width: 'auto' }}
           />
         </motion.a>
@@ -88,7 +108,7 @@ export default function Navbar() {
             );
           })}
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           <motion.a
             href={SITE.loginUrl}
             className="hidden sm:block text-sm font-bold uppercase tracking-wider text-deep-navy hover:text-primary transition-colors"
@@ -99,7 +119,7 @@ export default function Navbar() {
           </motion.a>
           <motion.a
             href={ROUTES.apply}
-            className="signature-gradient text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg"
+            className="signature-gradient text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm uppercase tracking-widest shadow-lg"
             whileHover={{
               scale: 1.04,
               boxShadow: '0 18px 35px -10px rgba(0, 108, 76, 0.45)',
@@ -109,8 +129,115 @@ export default function Navbar() {
           >
             Apply Now
           </motion.a>
+          <button
+            type="button"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-md text-deep-navy hover:bg-primary-container/20 transition-colors"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span className="relative w-6 h-5 flex items-center justify-center">
+              <motion.span
+                aria-hidden
+                className="absolute h-0.5 w-6 bg-current rounded"
+                animate={
+                  menuOpen
+                    ? { rotate: 45, y: 0 }
+                    : { rotate: 0, y: -7 }
+                }
+                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+              />
+              <motion.span
+                aria-hidden
+                className="absolute h-0.5 w-6 bg-current rounded"
+                animate={
+                  menuOpen ? { opacity: 0 } : { opacity: 1 }
+                }
+                transition={{ duration: 0.15 }}
+              />
+              <motion.span
+                aria-hidden
+                className="absolute h-0.5 w-6 bg-current rounded"
+                animate={
+                  menuOpen
+                    ? { rotate: -45, y: 0 }
+                    : { rotate: 0, y: 7 }
+                }
+                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+              />
+            </span>
+          </button>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 top-[var(--nav-h,72px)] bg-on-secondary-fixed/40 backdrop-blur-sm md:hidden z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            />
+            <motion.div
+              id="mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              className="md:hidden absolute top-full left-0 right-0 bg-white shadow-[0_24px_60px_-15px_rgba(0,3,33,0.18)] border-t border-outline-variant/10 z-50"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ul className="flex flex-col py-4">
+                {NAV_LINKS.map((link, i) => (
+                  <motion.li
+                    key={link.label}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 0.05 + i * 0.05,
+                      duration: 0.3,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    <a
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-8 py-3 font-headline tracking-tight text-base uppercase font-bold text-slate-700 hover:text-primary hover:bg-primary-container/15 transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </motion.li>
+                ))}
+                <motion.li
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.05 + NAV_LINKS.length * 0.05,
+                    duration: 0.3,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="border-t border-outline-variant/10 mt-2 pt-2 sm:hidden"
+                >
+                  <a
+                    href={SITE.loginUrl}
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-8 py-3 font-headline tracking-tight text-base uppercase font-bold text-slate-700 hover:text-primary hover:bg-primary-container/15 transition-colors"
+                  >
+                    Login
+                  </a>
+                </motion.li>
+              </ul>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

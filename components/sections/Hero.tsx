@@ -116,13 +116,13 @@ export default function Hero() {
             </motion.a>
           </motion.div>
         </motion.div>
-        <div className="lg:hidden flex justify-center">
-          <CLoader
-            assets={HERO_ASSETS}
-            intervalMs={6000}
-            size={500}
-            style={{ maxWidth: '85vw', maxHeight: '85vw' }}
-          />
+        <div className="lg:hidden flex justify-center w-full">
+          <div
+            className="relative"
+            style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
+          >
+            <CLoader assets={HERO_ASSETS} intervalMs={6000} size={460} />
+          </div>
         </div>
       </div>
 
