@@ -80,17 +80,12 @@ export function FloatingSupport() {
         )}
       </AnimatePresence>
 
-      <motion.button
+      <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? 'Close support menu' : 'Open support menu'}
         aria-expanded={open}
-        className="signature-gradient relative flex h-14 w-14 items-center justify-center rounded-full text-white shadow-2xl"
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
-        transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-        initial={{ y: 60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        className="signature-gradient relative flex h-14 w-14 items-center justify-center rounded-full text-white shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
@@ -118,7 +113,7 @@ export function FloatingSupport() {
           )}
         </AnimatePresence>
         <span className="sr-only">Support</span>
-      </motion.button>
+      </button>
     </div>
   );
 }

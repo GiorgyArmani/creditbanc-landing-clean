@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Icon from '../ui/Icon';
 import DomeGallery, { type DomeImageItem } from '../ui/DomeGallery';
 import CircularGallery from '../ui/CircularGallery';
+import { useMediaQuery } from '@/lib/useMediaQuery';
 
 interface Program {
   id: string;
@@ -154,6 +155,7 @@ const PROGRAMS: Program[] = [
 
 export default function Products() {
   const [openId, setOpenId] = useState<string | null>(null);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -269,40 +271,44 @@ export default function Products() {
         </motion.div>
       </div>
 
-      <div className="relative w-screen h-[460px] md:hidden bg-on-secondary-fixed">
-        <CircularGallery
-          items={PROGRAMS.filter(
-            (p) => !/\.(mp4|webm|mov|m4v)(\?|$)/i.test(p.image)
-          ).map((p) => ({
-            image: p.image,
-            text: p.title.toUpperCase(),
-            id: p.id,
-          }))}
-          bend={1}
-          textColor="#ffffff"
-          borderRadius={0.06}
-          font="900 32px Manrope, system-ui, sans-serif"
-          scrollSpeed={2}
-          scrollEase={0.05}
-          onItemClick={(id) => setOpenId(id)}
-        />
-      </div>
+      {!isDesktop && (
+        <div className="relative w-screen h-[460px] bg-on-secondary-fixed">
+          <CircularGallery
+            items={PROGRAMS.filter(
+              (p) => !/\.(mp4|webm|mov|m4v)(\?|$)/i.test(p.image)
+            ).map((p) => ({
+              image: p.image,
+              text: p.title.toUpperCase(),
+              id: p.id,
+            }))}
+            bend={1}
+            textColor="#ffffff"
+            borderRadius={0.06}
+            font="900 32px Manrope, system-ui, sans-serif"
+            scrollSpeed={2}
+            scrollEase={0.05}
+            onItemClick={(id) => setOpenId(id)}
+          />
+        </div>
+      )}
 
-      <div className="relative w-screen h-[760px] lg:h-[900px] xl:h-[1100px] hidden md:block">
-        <DomeGallery
-          images={galleryItems}
-          grayscale={true}
-          overlayBlurColor="#f4f3f1"
-          imageBorderRadius="12px"
-          openedImageBorderRadius="20px"
-          fit={1}
-          minRadius={1080}
-          maxVerticalRotationDeg={7}
-          segments={14}
-          dragDampening={2}
-          onItemClick={(id) => setOpenId(id)}
-        />
-      </div>
+      {isDesktop && (
+        <div className="relative w-screen h-[760px] lg:h-[900px] xl:h-[1100px]">
+          <DomeGallery
+            images={galleryItems}
+            grayscale={true}
+            overlayBlurColor="#f4f3f1"
+            imageBorderRadius="12px"
+            openedImageBorderRadius="20px"
+            fit={1}
+            minRadius={1080}
+            maxVerticalRotationDeg={7}
+            segments={14}
+            dragDampening={2}
+            onItemClick={(id) => setOpenId(id)}
+          />
+        </div>
+      )}
 
       <AnimatePresence>
         {openProgram && (

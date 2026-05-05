@@ -17,7 +17,7 @@ const COMPANY = [
   // TODO: Re-enable once Team page is revamped
   // { label: 'Our Team', href: ROUTES.team },
   { label: `Call Us — ${SITE.phone}`, href: SITE.phoneTel },
-  { label: 'Press Releases', href: `${SITE.baseUrl}/press` },
+  // { label: 'Press Releases', href: `${SITE.baseUrl}/press` },
 ];
 
 const RESOURCES = [

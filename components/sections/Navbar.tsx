@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { ROUTES, SITE } from '@/lib/site';
 
@@ -19,10 +19,14 @@ export default function Navbar() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [active] = useState<string>('SBA Financing');
   const [menuOpen, setMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
-  const paddingY = useTransform(scrollY, [0, 80], [20, 12]);
-  const shadowOpacity = useTransform(scrollY, [0, 80], [0.04, 0.12]);
-  const bgOpacity = useTransform(scrollY, [0, 80], [0.7, 0.95]);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -45,24 +49,19 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      className="fixed top-0 w-full z-50 backdrop-blur-2xl"
-      style={{
-        backgroundColor: useTransform(
-          bgOpacity,
-          (v) => `rgba(255, 255, 255, ${v})`
-        ),
-        boxShadow: useTransform(
-          shadowOpacity,
-          (v) => `0 20px 50px -10px rgba(0, 3, 33, ${v})`
-        ),
-      }}
+      className={`fixed top-0 w-full z-50 backdrop-blur-2xl transition-shadow duration-300 ${
+        scrolled
+          ? 'bg-white/95 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.12)]'
+          : 'bg-white/70 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.04)]'
+      }`}
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div
-        className="flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8"
-        style={{ paddingTop: paddingY, paddingBottom: paddingY }}
+      <div
+        className={`flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8 transition-[padding] duration-300 ${
+          scrolled ? 'py-3' : 'py-5'
+        }`}
       >
         <a
           href="/"
@@ -161,7 +160,7 @@ export default function Navbar() {
             </span>
           </button>
         </div>
-      </motion.div>
+      </div>
 
       <AnimatePresence>
         {menuOpen && (

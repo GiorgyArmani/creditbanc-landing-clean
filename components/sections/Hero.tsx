@@ -7,6 +7,7 @@ import Counter from '../ui/Counter';
 import TextType from '../ui/TextType';
 import CLoader from '../ui/CLoader';
 import { ROUTES } from '@/lib/site';
+import { useMediaQuery } from '@/lib/useMediaQuery';
 
 const containerVariants = {
   hidden: {},
@@ -233,6 +234,8 @@ function renderHeroCard(index: number) {
 
 export default function Hero() {
   const [heroIndex, setHeroIndex] = useState(0);
+  // xl: 1280px+
+  const isDesktop = useMediaQuery('(min-width: 1280px)');
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -314,55 +317,59 @@ export default function Hero() {
             </motion.a>
           </motion.div>
         </motion.div>
-        <div className="xl:hidden flex justify-center w-full">
-          <div
-            className="relative"
-            style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
-          >
-            <CLoader
-              assets={HERO_ASSETS}
-              intervalMs={HERO_INTERVAL_MS}
-              size={460}
-              index={heroIndex}
-            />
+        {!isDesktop && (
+          <div className="flex justify-center w-full">
+            <div
+              className="relative"
+              style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
+            >
+              <CLoader
+                assets={HERO_ASSETS}
+                intervalMs={HERO_INTERVAL_MS}
+                size={460}
+                index={heroIndex}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      <div
-        className="hidden xl:block absolute z-0"
-        style={{
-          top: '50%',
-          right: 0,
-          width: 920,
-          height: 920,
-          transform: 'translate(15%, -50%)',
-        }}
-      >
-        <CLoader
-          assets={HERO_ASSETS}
-          intervalMs={HERO_INTERVAL_MS}
-          size={920}
-          index={heroIndex}
-        />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={heroIndex}
-            style={{
-              top: CARD_POSITIONS[heroIndex].top,
-              left: CARD_POSITIONS[heroIndex].left,
-            }}
-            initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
-            animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
-            exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ rotate: 0, y: -4 }}
-            className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
-          >
-            {renderHeroCard(heroIndex)}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      {isDesktop && (
+        <div
+          className="absolute z-0"
+          style={{
+            top: '50%',
+            right: 0,
+            width: 920,
+            height: 920,
+            transform: 'translate(15%, -50%)',
+          }}
+        >
+          <CLoader
+            assets={HERO_ASSETS}
+            intervalMs={HERO_INTERVAL_MS}
+            size={920}
+            index={heroIndex}
+          />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={heroIndex}
+              style={{
+                top: CARD_POSITIONS[heroIndex].top,
+                left: CARD_POSITIONS[heroIndex].left,
+              }}
+              initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
+              exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ rotate: 0, y: -4 }}
+              className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
+            >
+              {renderHeroCard(heroIndex)}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      )}
       <div
         aria-hidden
         className="absolute -left-32 top-1/4 w-96 h-96 rounded-full bg-primary-container/20 blur-3xl -z-10"
