@@ -20,6 +20,7 @@ interface CLoaderProps {
 }
 
 const round = (n: number) => Math.round(n * 1000) / 1000;
+const isVideo = (src: string) => /\.(mp4|webm|mov|m4v)(\?|$)/i.test(src);
 
 export default function CLoader({
   assets,
@@ -93,15 +94,27 @@ export default function CLoader({
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             style={{ willChange: 'opacity' }}
           >
-            <Image
-              src={asset.src}
-              alt={asset.alt}
-              fill
-              className="object-cover"
-              sizes={`(max-width: 1024px) 90vw, ${size}px`}
-              priority
-              unoptimized={asset.src.endsWith('.gif')}
-            />
+            {isVideo(asset.src) ? (
+              <video
+                src={asset.src}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src={asset.src}
+                alt={asset.alt}
+                fill
+                className="object-cover"
+                sizes={`(max-width: 1024px) 90vw, ${size}px`}
+                priority={i === 0}
+                unoptimized={asset.src.endsWith('.gif')}
+              />
+            )}
             <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
           </motion.div>
         ))}

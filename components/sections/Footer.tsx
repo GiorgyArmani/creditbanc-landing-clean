@@ -61,10 +61,11 @@ export default function Footer() {
           viewport={{ once: true, amount: 0.3 }}
         >
           <Image
-            src="/CBLOGOWHITE.png"
+            src="/cb%20logo%20white.svg"
             alt="Credit Banc"
-            width={200}
-            height={40}
+            width={400}
+            height={80}
+            unoptimized
             className="h-8 mb-6"
             style={{ width: 'auto' }}
           />

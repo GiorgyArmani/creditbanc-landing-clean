@@ -105,7 +105,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Owners with seasonal swings, lumpy payables, or who want capital ready before they need it.',
     },
-    image: '/moneythrow.gif',
+    image: '/moneythrow.mp4',
     imageAlt: 'Business Lines of Credit',
   },
   {
@@ -187,7 +187,13 @@ export default function Products() {
     }
   }, [openId]);
 
-  const galleryItems: DomeImageItem[] = PROGRAMS.map((p) => ({
+  // Filter video and animated-GIF sources out of the dome — each tile spawns
+  // its own <video> request or runs its own decode pass for a GIF, which
+  // multiplies network and CPU cost. Animated assets still play in the
+  // program modal when the user opens that program's card.
+  const galleryItems: DomeImageItem[] = PROGRAMS.filter(
+    (p) => !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
+  ).map((p) => ({
     src: p.image,
     alt: p.title,
     id: p.id,
@@ -275,7 +281,7 @@ export default function Products() {
         <div className="relative w-screen h-[460px] bg-on-secondary-fixed">
           <CircularGallery
             items={PROGRAMS.filter(
-              (p) => !/\.(mp4|webm|mov|m4v)(\?|$)/i.test(p.image)
+              (p) => !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
             ).map((p) => ({
               image: p.image,
               text: p.title.toUpperCase(),

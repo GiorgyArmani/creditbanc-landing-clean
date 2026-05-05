@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import Stepper, { Step } from '../ui/Stepper';
 import { ROUTES } from '@/lib/site';
 
@@ -21,6 +22,49 @@ const VALUES = [
     body: 'Questions, documents, lender requests, next steps. We walk you through the process from first review to final decision, without leaving you to chase answers on your own.',
   },
 ];
+
+function LazyValueVideo() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const node = wrapperRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setShouldLoad(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: '300px 0px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="block w-full h-full object-cover aspect-[4/5] bg-on-secondary-fixed"
+    >
+      {shouldLoad && (
+        <video
+          src="/happy%20owner.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="block w-full h-full object-cover aspect-[4/5]"
+        />
+      )}
+    </div>
+  );
+}
 
 export default function ValueProp() {
   return (
@@ -76,15 +120,7 @@ export default function ValueProp() {
               whileHover={{ y: -4 }}
               transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             >
-              <video
-                src="/happy%20owner.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                className="block w-full h-full object-cover aspect-[4/5]"
-              />
+              <LazyValueVideo />
               <div
                 aria-hidden
                 className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-on-secondary-fixed/90 via-on-secondary-fixed/50 to-transparent pointer-events-none"

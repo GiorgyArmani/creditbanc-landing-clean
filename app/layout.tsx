@@ -62,9 +62,9 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: [
       {
-        url: '/header-logo.png',
-        width: 1000,
-        height: 200,
+        url: '/dark%20logo.svg',
+        width: 400,
+        height: 100,
         alt: 'Credit Banc — Credit & capital to grow',
       },
     ],
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: ['/header-logo.png'],
+    images: ['/dark%20logo.svg'],
   },
   robots: {
     index: true,
@@ -102,11 +102,11 @@ const ORGANIZATION_LD = {
   url: SITE.baseUrl,
   logo: {
     '@type': 'ImageObject',
-    url: `${SITE.baseUrl}/header-logo.png`,
-    width: 1000,
-    height: 200,
+    url: `${SITE.baseUrl}/dark%20logo.svg`,
+    width: 400,
+    height: 100,
   },
-  image: `${SITE.baseUrl}/header-logo.png`,
+  image: `${SITE.baseUrl}/dark%20logo.svg`,
   description: DESCRIPTION,
   slogan: 'Credit & capital to grow',
   email: SITE.email,

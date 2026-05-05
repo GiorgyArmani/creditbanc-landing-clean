@@ -25,7 +25,7 @@ const itemVariants = {
   },
 };
 
-const HERO_ASSETS = [
+const HERO_ASSETS_BASE = [
   {
     src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBx-1ZcsggNhD2ZhUYAZZUBg1AdIoYkmas-JjvqGCcQmbqBsF-UNSuORDgkTz176LBlfuHnxkFWAgUbXlIRbtCmGtvHw6jkpn1JFdH10rOvtZZBZr5c6ZCLJ72bNiXitYu1Vrutqya5AdD25s8ouQV4NnU5T98c1jtaTavquDk9a8z9ngplnrjwkoHu9ZIbR5PpwDU1AcznnHMGt5QrTY1g702q1cyDKLYtf1BeH7QRjEWmKzKx6Qk8mbuXs1tD2UdMQsh5EMxfyLY',
     alt: 'Business owner reviewing financing options',
@@ -38,8 +38,12 @@ const HERO_ASSETS = [
     src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s',
     alt: 'Small business owner reviewing capital options',
   },
+];
+
+const HERO_ASSETS_DESKTOP = [
+  ...HERO_ASSETS_BASE,
   {
-    src: '/moneythrow.gif',
+    src: '/moneythrow.mp4',
     alt: 'Capital deployed for business growth',
   },
 ];
@@ -236,13 +240,16 @@ export default function Hero() {
   const [heroIndex, setHeroIndex] = useState(0);
   // xl: 1280px+
   const isDesktop = useMediaQuery('(min-width: 1280px)');
+  // Skip the heavy 2.4 MB GIF on mobile — only cycle the 3 lighter images.
+  const heroAssets = isDesktop ? HERO_ASSETS_DESKTOP : HERO_ASSETS_BASE;
 
   useEffect(() => {
+    setHeroIndex(0);
     const id = setInterval(() => {
-      setHeroIndex((i) => (i + 1) % HERO_ASSETS.length);
+      setHeroIndex((i) => (i + 1) % heroAssets.length);
     }, HERO_INTERVAL_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [heroAssets.length]);
 
   return (
     <section className="relative min-h-[640px] sm:min-h-[760px] xl:h-[calc(100vh-6rem)] xl:max-h-[860px] flex items-center px-6 sm:px-8 pt-8 pb-16 overflow-clip bg-surface">
@@ -324,7 +331,7 @@ export default function Hero() {
               style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
             >
               <CLoader
-                assets={HERO_ASSETS}
+                assets={heroAssets}
                 intervalMs={HERO_INTERVAL_MS}
                 size={460}
                 index={heroIndex}
@@ -346,7 +353,7 @@ export default function Hero() {
           }}
         >
           <CLoader
-            assets={HERO_ASSETS}
+            assets={HERO_ASSETS_DESKTOP}
             intervalMs={HERO_INTERVAL_MS}
             size={920}
             index={heroIndex}

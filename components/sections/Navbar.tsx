@@ -69,11 +69,12 @@ export default function Navbar() {
           aria-label="Credit Banc home"
         >
           <Image
-            src="/dark logo.png"
+            src="/dark%20logo.svg"
             alt="Credit Banc — Credit & capital to grow"
-            width={940}
-            height={280}
+            width={400}
+            height={100}
             priority
+            unoptimized
             className="h-10 sm:h-12"
             style={{ width: 'auto' }}
           />
