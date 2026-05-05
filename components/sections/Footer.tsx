@@ -50,8 +50,8 @@ const colReveal = {
 
 export default function Footer() {
   return (
-    <footer className="bg-deep-navy text-slate-400 py-20 px-12">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+    <footer className="bg-deep-navy text-slate-400 py-16 sm:py-20 px-6 sm:px-8 md:px-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 max-w-7xl mx-auto">
         <motion.div
           className="md:col-span-1"
           custom={0}
@@ -106,7 +106,7 @@ export default function Footer() {
           </li>
         </FooterColumn>
       </div>
-      <div className="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="max-w-7xl mx-auto mt-12 md:mt-20 pt-8 md:pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
         <p className="text-xs tracking-wide text-center md:text-left">
           Need to contact us? Please email the team at{' '}
           <a

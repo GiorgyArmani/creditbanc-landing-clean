@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Icon from '../ui/Icon';
 import DomeGallery, { type DomeImageItem } from '../ui/DomeGallery';
+import CircularGallery from '../ui/CircularGallery';
 
 interface Program {
   id: string;
@@ -40,8 +41,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Owners ready to acquire a business, buy real estate, or restructure debt with longer-term, lower-payment financing.',
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtfPh2GVbAf1ZSwDsqv9GNZ96yUEklqMoJXkM6vhKzFiTSp2OurfAFaTIxvrzsFulKa3m4IGET6GeoFVZVbZblfwFz974x1Y8VFNex4QbN8zRgm1L7jzqlU6myl_Bb-d5gdJFaW5O4BNIkDCFCf8hVCcje408P8OVf4ZOtWcMsh-HHdAjblw6782plIxF1Xwp4kOuqevmMbCfy3S2s-gyURWIgIVf9UaZr8M55lnqinujSqQ4zwQX0ZtbQtJl759Jw264NOYNo7aU',
+    image: '/advisory.webp',
     imageAlt: 'SBA Financing',
   },
   {
@@ -62,8 +62,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Investors and operators with a property in play — acquiring, holding, building, or repositioning.',
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBx-1ZcsggNhD2ZhUYAZZUBg1AdIoYkmas-JjvqGCcQmbqBsF-UNSuORDgkTz176LBlfuHnxkFWAgUbXlIRbtCmGtvHw6jkpn1JFdH10rOvtZZBZr5c6ZCLJ72bNiXitYu1Vrutqya5AdD25s8ouQV4NnU5T98c1jtaTavquDk9a8z9ngplnrjwkoHu9ZIbR5PpwDU1AcznnHMGt5QrTY1g702q1cyDKLYtf1BeH7QRjEWmKzKx6Qk8mbuXs1tD2UdMQsh5EMxfyLY',
+    image: '/real%20estate.png',
     imageAlt: 'Real Estate Financing',
   },
   {
@@ -84,8 +83,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Operators handling payroll, inventory, equipment, growth pushes, or short-term cash-flow gaps.',
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s',
+    image: '/smallbusinessfunding.png',
     imageAlt: 'Small Business Funding',
   },
   {
@@ -127,8 +125,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Operators expanding capacity, replacing aging gear, or buying revenue-generating assets.',
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtfPh2GVbAf1ZSwDsqv9GNZ96yUEklqMoJXkM6vhKzFiTSp2OurfAFaTIxvrzsFulKa3m4IGET6GeoFVZVbZblfwFz974x1Y8VFNex4QbN8zRgm1L7jzqlU6myl_Bb-d5gdJFaW5O4BNIkDCFCf8hVCcje408P8OVf4ZOtWcMsh-HHdAjblw6782plIxF1Xwp4kOuqevmMbCfy3S2s-gyURWIgIVf9UaZr8M55lnqinujSqQ4zwQX0ZtbQtJl759Jw264NOYNo7aU',
+    image: '/happy%20owner%202.mp4',
     imageAlt: 'Equipment Financing',
   },
   {
@@ -178,10 +175,21 @@ export default function Products() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    if (openId) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [openId]);
+
   const galleryItems: DomeImageItem[] = PROGRAMS.map((p) => ({
     src: p.image,
     alt: p.title,
     id: p.id,
+    label: p.title,
   }));
 
   const openProgram = openId
@@ -202,7 +210,7 @@ export default function Products() {
         />
       ))}
 
-      <div className="max-w-7xl mx-auto px-8 pt-32 pb-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 pt-20 sm:pt-28 md:pt-32 pb-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -212,7 +220,7 @@ export default function Products() {
           <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
             Financial Solutions
           </p>
-          <h2 className="font-headline text-5xl md:text-6xl font-extrabold tracking-tight text-on-secondary-fixed mb-6 max-w-5xl">
+          <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-on-secondary-fixed mb-6 max-w-5xl">
             Different Needs Require Different Funding.{' '}
             <motion.span
               className="text-primary inline-block origin-bottom-left"
@@ -246,7 +254,8 @@ export default function Products() {
           <p className="text-on-surface-variant text-sm md:text-base leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="inline-flex items-center gap-2">
               <Icon name="open_with" className="text-primary text-base" />
-              Drag the dome to explore.
+              <span className="md:hidden">Swipe to explore.</span>
+              <span className="hidden md:inline">Drag the dome to explore.</span>
             </span>
             <span className="hidden md:inline text-on-surface-variant/30">
               |
@@ -260,18 +269,37 @@ export default function Products() {
         </motion.div>
       </div>
 
-      <div className="relative w-screen h-[680px] md:h-[900px] lg:h-[1100px] xl:h-[1350px]">
+      <div className="relative w-screen h-[460px] md:hidden bg-on-secondary-fixed">
+        <CircularGallery
+          items={PROGRAMS.filter(
+            (p) => !/\.(mp4|webm|mov|m4v)(\?|$)/i.test(p.image)
+          ).map((p) => ({
+            image: p.image,
+            text: p.title.toUpperCase(),
+            id: p.id,
+          }))}
+          bend={1}
+          textColor="#ffffff"
+          borderRadius={0.06}
+          font="900 32px Manrope, system-ui, sans-serif"
+          scrollSpeed={2}
+          scrollEase={0.05}
+          onItemClick={(id) => setOpenId(id)}
+        />
+      </div>
+
+      <div className="relative w-screen h-[760px] lg:h-[900px] xl:h-[1100px] hidden md:block">
         <DomeGallery
           images={galleryItems}
           grayscale={true}
           overlayBlurColor="#f4f3f1"
-          imageBorderRadius="22px"
-          openedImageBorderRadius="28px"
-          fit={0.85}
-          minRadius={520}
-          maxVerticalRotationDeg={5}
-          segments={20}
-          dragDampening={1}
+          imageBorderRadius="12px"
+          openedImageBorderRadius="20px"
+          fit={1}
+          minRadius={1080}
+          maxVerticalRotationDeg={7}
+          segments={14}
+          dragDampening={2}
           onItemClick={(id) => setOpenId(id)}
         />
       </div>
@@ -293,30 +321,44 @@ export default function Products() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="program-title"
-              className="relative z-10 w-full max-w-3xl bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden"
+              className="relative z-10 w-full max-w-4xl max-h-[85vh] bg-surface-container-lowest rounded-[28px] shadow-2xl overflow-hidden flex flex-col"
               initial={{ opacity: 0, y: 30, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.97 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              <button
-                type="button"
-                onClick={() => setOpenId(null)}
-                aria-label="Close"
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-on-secondary-fixed/10 hover:bg-on-secondary-fixed/20 text-on-secondary-fixed flex items-center justify-center transition-colors"
-              >
-                <Icon name="close" />
-              </button>
-              <div className="grid md:grid-cols-2">
-                <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[480px] bg-on-secondary-fixed">
-                  <Image
-                    src={openProgram.image}
-                    alt={openProgram.imageAlt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 480px"
-                    className="object-cover"
-                    unoptimized={openProgram.image.endsWith('.gif')}
-                  />
+              <div className="relative flex-1 overflow-y-auto overscroll-contain">
+                <div className="sticky top-0 z-20 h-0 pointer-events-none">
+                  <button
+                    type="button"
+                    onClick={() => setOpenId(null)}
+                    aria-label="Close"
+                    className="pointer-events-auto absolute top-4 right-4 w-10 h-10 rounded-full bg-on-secondary-fixed/60 hover:bg-on-secondary-fixed/80 text-white backdrop-blur-sm flex items-center justify-center transition-colors shadow-md"
+                  >
+                    <Icon name="close" />
+                  </button>
+                </div>
+                <div className="grid md:grid-cols-2">
+                  <div className="relative aspect-square md:aspect-auto md:min-h-[420px] bg-on-secondary-fixed">
+                  {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(openProgram.image) ? (
+                    <video
+                      src={openProgram.image}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src={openProgram.image}
+                      alt={openProgram.imageAlt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 480px"
+                      className="object-cover"
+                      unoptimized={openProgram.image.endsWith('.gif')}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
                   <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 text-white">
                     <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
@@ -330,7 +372,7 @@ export default function Products() {
                     </div>
                   </div>
                 </div>
-                <div className="p-8 md:p-10 max-h-[80vh] overflow-y-auto">
+                <div className="p-8 md:p-10">
                   <h3
                     id="program-title"
                     className="font-headline text-3xl font-extrabold text-on-surface mb-2"
@@ -375,6 +417,7 @@ export default function Products() {
                     Check Eligibility
                     <Icon name="arrow_forward" />
                   </a>
+                </div>
                 </div>
               </div>
             </motion.div>

@@ -30,11 +30,11 @@ export default function Process() {
   return (
     <section
       id="process"
-      className="py-32 px-8 bg-on-secondary-fixed text-white overflow-hidden relative"
+      className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-on-secondary-fixed text-white overflow-hidden relative"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
-          className="text-center mb-24 max-w-3xl mx-auto"
+          className="text-center mb-16 sm:mb-24 max-w-3xl mx-auto"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -43,7 +43,7 @@ export default function Process() {
           <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary-container mb-4">
             How It Works
           </p>
-          <h2 className="font-headline text-5xl font-extrabold tracking-tight mb-6">
+          <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight mb-6">
             Getting Started is Simple
           </h2>
           <p className="text-slate-300 text-lg leading-relaxed">
@@ -100,7 +100,7 @@ export default function Process() {
         >
           <motion.a
             href={ROUTES.apply}
-            className="bg-primary-container text-on-secondary-fixed px-12 py-5 rounded-lg font-bold text-lg inline-block"
+            className="bg-primary-container text-on-secondary-fixed px-8 sm:px-12 py-4 sm:py-5 rounded-lg font-bold text-base sm:text-lg inline-block"
             whileHover={{
               scale: 1.04,
               boxShadow: '0 22px 40px -12px rgba(85, 207, 158, 0.5)',

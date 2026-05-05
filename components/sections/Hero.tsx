@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import Icon from '../ui/Icon';
 import Counter from '../ui/Counter';
 import TextType from '../ui/TextType';
@@ -42,12 +43,209 @@ const HERO_ASSETS = [
   },
 ];
 
-export default function Hero() {
+const HERO_INTERVAL_MS = 9000;
+
+const CARD_POSITIONS = [
+  { top: '58%', left: '-14%' },
+  { top: '36%', left: '-18%' },
+  { top: '14%', left: '-10%' },
+  { top: '44%', left: '-4%' },
+];
+
+function CardEyebrow({
+  icon,
+  title,
+  note,
+  iconBg = 'bg-primary-container',
+  iconColor = 'text-on-primary-container',
+}: {
+  icon: string;
+  title: string;
+  note: string;
+  iconBg?: string;
+  iconColor?: string;
+}) {
   return (
-    <section className="relative min-h-[760px] lg:h-[calc(100vh-6rem)] lg:max-h-[860px] flex items-center px-8 pt-8 pb-16 overflow-clip bg-surface">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+    <div className="flex items-center gap-3 mb-5">
+      <div
+        className={`w-11 h-11 rounded-full ${iconBg} flex items-center justify-center shrink-0`}
+      >
+        <Icon name={icon} className={iconColor} />
+      </div>
+      <div>
+        <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">
+          {title}
+        </p>
+        <p className="text-xs text-on-surface-variant font-semibold">{note}</p>
+      </div>
+    </div>
+  );
+}
+
+function renderHeroCard(index: number) {
+  switch (index) {
+    case 0:
+      return (
+        <>
+          <CardEyebrow
+            icon="bolt"
+            title="Funded in 24 hours"
+            note="No collateral · qualifying businesses"
+          />
+          <div className="flex items-baseline justify-between mb-3">
+            <Counter
+              stops={[10, 50, 150, 500]}
+              prefix="$"
+              suffix="K"
+              duration={5}
+              delay={0.4}
+              times={[0, 0.25, 0.55, 0.8, 1]}
+              className="text-4xl font-black text-on-surface tracking-tight tabular-nums"
+            />
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Up to
+            </span>
+          </div>
+          <div className="relative h-2.5 w-full bg-surface-container rounded-full overflow-hidden">
+            <motion.div
+              className="absolute inset-y-0 left-0 signature-gradient rounded-full"
+              initial={{ width: '0%' }}
+              animate={{ width: ['0%', '2%', '10%', '30%', '100%'] }}
+              transition={{
+                duration: 5,
+                delay: 0.4,
+                times: [0, 0.25, 0.55, 0.8, 1],
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            />
+            {[2, 10, 30].map((pct) => (
+              <span
+                key={pct}
+                aria-hidden
+                className="absolute top-1/2 -translate-y-1/2 h-2.5 w-px bg-on-surface/15"
+                style={{ left: `${pct}%` }}
+              />
+            ))}
+          </div>
+          <div className="flex justify-between mt-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+            <span>$10K</span>
+            <span>$500K</span>
+          </div>
+        </>
+      );
+    case 1:
+      return (
+        <>
+          <CardEyebrow
+            icon="verified"
+            title="SBA Programs"
+            note="Government-backed financing"
+          />
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-4xl font-black text-on-surface tracking-tight tabular-nums">
+              $5M
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Up to
+            </span>
+          </div>
+          <p className="text-xs leading-relaxed text-on-surface-variant mb-3">
+            Terms up to 25 years. Lower down payments than conventional
+            commercial loans.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {['7(a)', '504', 'Express'].map((chip) => (
+              <span
+                key={chip}
+                className="px-2.5 py-1 rounded-full bg-primary-container/40 text-[10px] font-bold uppercase tracking-widest text-on-primary-container"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        </>
+      );
+    case 2:
+      return (
+        <>
+          <CardEyebrow
+            icon="groups"
+            title="Advisor + Whole Team"
+            note="Not just one person on your side"
+          />
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-3xl font-black text-on-surface tracking-tight">
+              No solo.
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Promise
+            </span>
+          </div>
+          <p className="text-xs leading-relaxed text-on-surface-variant mb-4">
+            A real Advisor leads — and a full team of underwriters, lender
+            contacts, and process pros has your back. <em>(Yes, all yours.)</em>
+          </p>
+          <div className="flex items-center gap-2 text-[11px] font-semibold text-on-surface">
+            <Icon name="check_circle" className="text-primary text-base" />
+            Team backed. Advisor led.
+          </div>
+        </>
+      );
+    case 3:
+    default:
+      return (
+        <>
+          <CardEyebrow
+            icon="rocket_launch"
+            title="Capital Deployed"
+            note="Trusted by operators"
+          />
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-4xl font-black text-on-surface tracking-tight tabular-nums">
+              $2B+
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              To Date
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <p className="text-lg font-black text-on-surface tabular-nums">
+                15k+
+              </p>
+              <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">
+                Businesses Funded
+              </p>
+            </div>
+            <div>
+              <p className="text-lg font-black text-on-surface tabular-nums">
+                94%
+              </p>
+              <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">
+                Lives Changed
+              </p>
+            </div>
+          </div>
+        </>
+      );
+  }
+}
+
+export default function Hero() {
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setHeroIndex((i) => (i + 1) % HERO_ASSETS.length);
+    }, HERO_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section className="relative min-h-[640px] sm:min-h-[760px] xl:h-[calc(100vh-6rem)] xl:max-h-[860px] flex items-center px-6 sm:px-8 pt-8 pb-16 overflow-clip bg-surface">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 xl:grid-cols-12 gap-10 xl:gap-12 items-center">
         <motion.div
-          className="lg:col-span-6 z-10"
+          className="xl:col-span-6 z-10"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -116,18 +314,23 @@ export default function Hero() {
             </motion.a>
           </motion.div>
         </motion.div>
-        <div className="lg:hidden flex justify-center w-full">
+        <div className="xl:hidden flex justify-center w-full">
           <div
             className="relative"
             style={{ width: 'min(90vw, 460px)', aspectRatio: '1 / 1' }}
           >
-            <CLoader assets={HERO_ASSETS} intervalMs={9000} size={460} />
+            <CLoader
+              assets={HERO_ASSETS}
+              intervalMs={HERO_INTERVAL_MS}
+              size={460}
+              index={heroIndex}
+            />
           </div>
         </div>
       </div>
 
       <div
-        className="hidden lg:block absolute z-0"
+        className="hidden xl:block absolute z-0"
         style={{
           top: '50%',
           right: 0,
@@ -138,83 +341,27 @@ export default function Hero() {
       >
         <CLoader
           assets={HERO_ASSETS}
-          intervalMs={9000}
+          intervalMs={HERO_INTERVAL_MS}
           size={920}
+          index={heroIndex}
         />
-        <motion.div
-          className="absolute z-20 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15 w-72"
-          style={{ bottom: '6%', left: '-12%' }}
-          initial={{ opacity: 0, y: 40, rotate: -6 }}
-          animate={{ opacity: 1, y: 0, rotate: -3 }}
-          transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ rotate: 0, y: -4 }}
-        >
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-11 h-11 rounded-full bg-primary-container flex items-center justify-center shrink-0">
-            <Icon name="bolt" className="text-on-primary-container" />
-          </div>
-          <div>
-            <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">
-              Funded in 24 hours
-            </p>
-            <p className="text-xs text-on-surface-variant font-semibold">
-              No collateral · qualifying businesses
-            </p>
-          </div>
-        </div>
-        <div className="flex items-baseline justify-between mb-3">
-          <Counter
-            stops={[10, 50, 150, 500]}
-            prefix="$"
-            suffix="K"
-            duration={5}
-            delay={1.2}
-            times={[0, 0.25, 0.55, 0.8, 1]}
-            className="text-4xl font-black text-on-surface tracking-tight tabular-nums"
-          />
-          <span className="text-xs font-bold uppercase tracking-widest text-primary">
-            Up to
-          </span>
-        </div>
-        <div className="relative h-2.5 w-full bg-surface-container rounded-full overflow-hidden">
+        <AnimatePresence mode="wait">
           <motion.div
-            className="absolute inset-y-0 left-0 signature-gradient rounded-full"
-            initial={{ width: '0%' }}
-            animate={{ width: ['0%', '2%', '10%', '30%', '100%'] }}
-            transition={{
-              duration: 5,
-              delay: 1.2,
-              times: [0, 0.25, 0.55, 0.8, 1],
-              ease: [0.22, 1, 0.36, 1],
+            key={heroIndex}
+            style={{
+              top: CARD_POSITIONS[heroIndex].top,
+              left: CARD_POSITIONS[heroIndex].left,
             }}
-          />
-          {[2, 10, 30].map((pct) => (
-            <span
-              key={pct}
-              aria-hidden
-              className="absolute top-1/2 -translate-y-1/2 h-2.5 w-px bg-on-surface/15"
-              style={{ left: `${pct}%` }}
-            />
-          ))}
-          <motion.div
-            aria-hidden
-            className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-            initial={{ x: '-100%' }}
-            animate={{ x: '300%' }}
-            transition={{
-              duration: 1.6,
-              delay: 6.5,
-              ease: 'easeInOut',
-              repeat: Infinity,
-              repeatDelay: 2.5,
-            }}
-          />
-        </div>
-        <div className="flex justify-between mt-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-          <span>$10K</span>
-          <span>$500K</span>
-        </div>
-        </motion.div>
+            initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
+            exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ rotate: 0, y: -4 }}
+            className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
+          >
+            {renderHeroCard(heroIndex)}
+          </motion.div>
+        </AnimatePresence>
       </div>
       <div
         aria-hidden

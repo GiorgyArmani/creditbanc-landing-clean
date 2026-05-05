@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useEffect, useId, useState } from 'react';
 
 interface Asset {
   src: string;
@@ -15,6 +15,8 @@ interface CLoaderProps {
   size: number;
   className?: string;
   style?: React.CSSProperties;
+  index?: number;
+  onIndexChange?: (i: number) => void;
 }
 
 const round = (n: number) => Math.round(n * 1000) / 1000;
@@ -25,15 +27,26 @@ export default function CLoader({
   size,
   className = '',
   style,
+  index: controlledIndex,
+  onIndexChange,
 }: CLoaderProps) {
-  const [index, setIndex] = useState(0);
+  const isControlled = controlledIndex !== undefined;
+  const [internalIndex, setInternalIndex] = useState(0);
+  const index = isControlled ? controlledIndex : internalIndex;
+  const reactId = useId();
+  const animName = `cloader-arc-${reactId.replace(/:/g, '')}`;
 
   useEffect(() => {
+    if (isControlled) return;
     const id = setInterval(() => {
-      setIndex((i) => (i + 1) % assets.length);
+      setInternalIndex((i) => {
+        const next = (i + 1) % assets.length;
+        onIndexChange?.(next);
+        return next;
+      });
     }, intervalMs);
     return () => clearInterval(id);
-  }, [assets.length, intervalMs]);
+  }, [assets.length, intervalMs, isControlled, onIndexChange]);
 
   const stroke = Math.round(size * 0.028);
   const imgInset = Math.round(size * 0.06);
@@ -43,7 +56,6 @@ export default function CLoader({
   const pathRadius = ringCenter - stroke / 2;
 
   const fullArcLen = round(2 * Math.PI * pathRadius);
-  const fullArcPath = `M ${round(ringCenter + pathRadius)} ${ringCenter} A ${pathRadius} ${pathRadius} 0 1 1 ${round(ringCenter - pathRadius)} ${ringCenter} A ${pathRadius} ${pathRadius} 0 1 1 ${round(ringCenter + pathRadius)} ${ringCenter}`;
 
   const imgInsetPct = (imgInset / size) * 100;
   const ringInsetPct = (ringInset / size) * 100;
@@ -72,29 +84,35 @@ export default function CLoader({
           bottom: `${imgInsetPct}%`,
         }}
       >
-        <AnimatePresence mode="wait">
+        {assets.map((asset, i) => (
           <motion.div
-            key={index}
+            key={asset.src}
             className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            initial={false}
+            animate={{ opacity: i === index ? 1 : 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            style={{ willChange: 'opacity' }}
           >
             <Image
-              src={assets[index].src}
-              alt={assets[index].alt}
+              src={asset.src}
+              alt={asset.alt}
               fill
               className="object-cover"
               sizes={`(max-width: 1024px) 90vw, ${size}px`}
-              priority={index === 0}
-              unoptimized={assets[index].src.endsWith('.gif')}
+              priority
+              unoptimized={asset.src.endsWith('.gif')}
             />
             <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
           </motion.div>
-        </AnimatePresence>
+        ))}
       </div>
 
+      <style>{`
+        @keyframes ${animName} {
+          from { stroke-dashoffset: ${fullArcLen}; }
+          to { stroke-dashoffset: 0; }
+        }
+      `}</style>
       <svg
         viewBox={`0 0 ${ringDiameter} ${ringDiameter}`}
         style={{
@@ -105,6 +123,7 @@ export default function CLoader({
           height: `${ringDiameterPct}%`,
           display: 'block',
           pointerEvents: 'none',
+          filter: 'drop-shadow(0 0 12px rgba(85, 207, 158, 0.45))',
         }}
         aria-hidden
       >
@@ -116,19 +135,20 @@ export default function CLoader({
           strokeWidth={stroke}
           fill="none"
         />
-        <motion.path
+        <circle
           key={`arc-${index}`}
-          d={fullArcPath}
+          cx={ringCenter}
+          cy={ringCenter}
+          r={pathRadius}
           stroke="#55cf9e"
-
           strokeWidth={stroke}
           strokeLinecap="butt"
           fill="none"
           strokeDasharray={fullArcLen}
-          initial={{ strokeDashoffset: fullArcLen }}
-          animate={{ strokeDashoffset: 0 }}
-          transition={{ duration: intervalMs / 1000, ease: 'linear' }}
-          style={{ filter: 'drop-shadow(0 0 12px rgba(85, 207, 158, 0.55))' }}
+          transform={`rotate(-90 ${ringCenter} ${ringCenter})`}
+          style={{
+            animation: `${animName} ${intervalMs / 1000}s linear forwards`,
+          }}
         />
       </svg>
     </div>

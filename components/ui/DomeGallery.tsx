@@ -5,7 +5,7 @@ import { useGesture } from '@use-gesture/react';
 
 export type DomeImageItem =
   | string
-  | { src: string; alt?: string; id?: string };
+  | { src: string; alt?: string; id?: string; label?: string };
 
 type DomeGalleryProps = {
   images?: DomeImageItem[];
@@ -32,6 +32,7 @@ type ItemDef = {
   src: string;
   alt: string;
   id: string;
+  label: string;
   x: number;
   y: number;
   sizeX: number;
@@ -44,6 +45,8 @@ const DEFAULTS = {
   enlargeTransitionMs: 300,
   segments: 20,
 };
+
+const isVideoSrc = (src: string) => /\.(mp4|webm|mov|m4v)(\?|$)/i.test(src);
 
 const clamp = (v: number, min: number, max: number) =>
   Math.min(Math.max(v, min), max);
@@ -70,17 +73,18 @@ function buildItems(pool: DomeImageItem[], seg: number): ItemDef[] {
 
   const totalSlots = coords.length;
   if (pool.length === 0) {
-    return coords.map((c) => ({ ...c, src: '', alt: '', id: '' }));
+    return coords.map((c) => ({ ...c, src: '', alt: '', id: '', label: '' }));
   }
 
   const normalizedImages = pool.map((image, i) => {
     if (typeof image === 'string') {
-      return { src: image, alt: '', id: `${i}` };
+      return { src: image, alt: '', id: `${i}`, label: '' };
     }
     return {
       src: image.src || '',
       alt: image.alt || '',
       id: image.id ?? `${i}`,
+      label: image.label ?? image.alt ?? '',
     };
   });
 
@@ -107,6 +111,7 @@ function buildItems(pool: DomeImageItem[], seg: number): ItemDef[] {
     src: usedImages[i].src,
     alt: usedImages[i].alt,
     id: usedImages[i].id,
+    label: usedImages[i].label,
   }));
 }
 
@@ -125,11 +130,11 @@ function computeItemBaseRotation(
 
 export default function DomeGallery({
   images = [],
-  fit = 0.5,
+  fit = 1,
   fitBasis = 'auto',
   minRadius = 600,
-  maxRadius = Infinity,
-  padFactor = 0.25,
+  maxRadius = 1333,
+  padFactor = 1,
   overlayBlurColor = '#FAFAF8',
   maxVerticalRotationDeg = DEFAULTS.maxVerticalRotationDeg,
   dragSensitivity = DEFAULTS.dragSensitivity,
@@ -328,8 +333,6 @@ export default function DomeGallery({
         const evt = event as PointerEvent;
         pointerTypeRef.current =
           (evt.pointerType as 'mouse' | 'pen' | 'touch') || 'mouse';
-        if (pointerTypeRef.current === 'touch') evt.preventDefault();
-        if (pointerTypeRef.current === 'touch') lockScroll();
         draggingRef.current = true;
         cancelTapRef.current = false;
         movedRef.current = false;
@@ -351,7 +354,6 @@ export default function DomeGallery({
           return;
 
         const evt = event as PointerEvent;
-        if (pointerTypeRef.current === 'touch') evt.preventDefault();
 
         const dxTotal = evt.clientX - startPosRef.current.x;
         const dyTotal = evt.clientY - startPosRef.current.y;
@@ -417,13 +419,12 @@ export default function DomeGallery({
 
           if (cancelTapRef.current)
             setTimeout(() => (cancelTapRef.current = false), 120);
-          if (pointerTypeRef.current === 'touch') unlockScroll();
           if (movedRef.current) lastDragEndAt.current = performance.now();
           movedRef.current = false;
         }
       },
     },
-    { target: mainRef, eventOptions: { passive: false } }
+    { target: mainRef, eventOptions: { passive: true } }
   );
 
   useEffect(() => {
@@ -741,6 +742,29 @@ export default function DomeGallery({
       inset: 10px;
       pointer-events: none;
     }
+    .item__label {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 8px;
+      padding: 0 2px;
+      color: #ffffff;
+      font-family: var(--font-headline, system-ui, sans-serif);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-align: center;
+      line-height: 1.1;
+      pointer-events: none;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-transform: uppercase;
+      text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.7);
+    }
   `;
 
   return (
@@ -764,7 +788,7 @@ export default function DomeGallery({
           ref={mainRef}
           className="absolute inset-0 grid place-items-center overflow-hidden select-none bg-transparent"
           style={{
-            touchAction: 'none',
+            touchAction: 'pan-y',
             WebkitUserSelect: 'none',
           }}
         >
@@ -822,16 +846,35 @@ export default function DomeGallery({
                     }}
                   >
                     {it.src ? (
-                      <img
-                        src={it.src}
-                        draggable={false}
-                        alt={it.alt}
-                        className="w-full h-full object-cover pointer-events-none"
-                        style={{
-                          backfaceVisibility: 'hidden',
-                          filter: `var(--image-filter, ${grayscale ? 'grayscale(1)' : 'none'})`,
-                        }}
-                      />
+                      isVideoSrc(it.src) ? (
+                        <video
+                          src={it.src}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="w-full h-full object-cover pointer-events-none"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            filter: `var(--image-filter, ${grayscale ? 'grayscale(1)' : 'none'})`,
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={it.src}
+                          draggable={false}
+                          alt={it.alt}
+                          className="w-full h-full object-cover pointer-events-none"
+                          style={{
+                            backfaceVisibility: 'hidden',
+                            filter: `var(--image-filter, ${grayscale ? 'grayscale(1)' : 'none'})`,
+                          }}
+                        />
+                      )
+                    ) : null}
+                    {it.label ? (
+                      <span className="item__label">{it.label}</span>
                     ) : null}
                   </div>
                 </div>

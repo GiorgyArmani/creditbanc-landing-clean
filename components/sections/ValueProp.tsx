@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Icon from '../ui/Icon';
+import Stepper, { Step } from '../ui/Stepper';
 import { ROUTES } from '@/lib/site';
 
 const VALUES = [
@@ -24,9 +24,9 @@ const VALUES = [
 
 export default function ValueProp() {
   return (
-    <section className="py-32 px-8 bg-surface">
+    <section className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row gap-20 items-center">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-center">
           <motion.div
             className="flex-1"
             initial={{ opacity: 0, x: -40 }}
@@ -37,7 +37,7 @@ export default function ValueProp() {
             <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
               The Human Edge
             </p>
-            <h2 className="font-headline text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
+            <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
               Funding Is Better With a{' '}
               <span className="text-primary">Human Involved</span>
             </h2>
@@ -47,57 +47,22 @@ export default function ValueProp() {
               understand your options, prepare what is needed, and keep the
               process moving.
             </p>
-            <div className="space-y-8 mb-10">
-              {VALUES.map((value, i) => (
-                <motion.div
-                  key={value.title}
-                  className="flex gap-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.2 + i * 0.12,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <div className="shrink-0 w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
-                    <Icon
-                      name={value.icon}
-                      className="text-on-secondary-container"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-on-surface mb-2">
-                      {value.title}
-                    </h4>
-                    <p className="text-on-surface-variant">{value.body}</p>
-                  </div>
-                </motion.div>
+            <Stepper
+              backButtonText="Back"
+              nextButtonText="Next Step"
+              completeButtonText="Got It"
+            >
+              {VALUES.map((value) => (
+                <Step key={value.title}>
+                  <h4 className="font-headline text-xl md:text-2xl font-extrabold tracking-tight text-on-secondary-fixed mb-2 leading-snug">
+                    {value.title}
+                  </h4>
+                  <p className="text-on-surface-variant leading-relaxed">
+                    {value.body}
+                  </p>
+                </Step>
               ))}
-            </div>
-            <motion.p
-              className="font-headline text-2xl font-bold tracking-tight text-on-secondary-fixed mb-10 leading-snug"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              To sum it up: Less guessing. Fewer surprises. Better funding
-              decisions. <em className="text-primary">Revolutionary stuff.</em>
-            </motion.p>
-            <motion.a
-              href={ROUTES.apply}
-              className="signature-gradient text-white px-10 py-5 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg inline-block"
-              whileHover={{
-                scale: 1.04,
-                boxShadow: '0 18px 35px -10px rgba(0, 108, 76, 0.45)',
-              }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-            >
-              Start Today!
-            </motion.a>
+            </Stepper>
           </motion.div>
           <motion.div
             className="flex-1 bg-surface-container-high p-4 rounded-2xl relative"
@@ -107,34 +72,47 @@ export default function ValueProp() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.div
-              className="bg-white p-10 rounded-xl shadow-xl"
+              className="relative rounded-xl shadow-xl overflow-hidden bg-on-secondary-fixed"
               whileHover={{ y: -4 }}
               transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             >
-              <div className="w-14 h-14 rounded-full bg-primary-container/20 flex items-center justify-center mb-6">
-                <Icon name="lock_open" className="text-primary text-3xl" />
-              </div>
-              <p className="font-headline text-2xl font-bold tracking-tight text-on-secondary-fixed mb-4">
-                No obligation. No credit impact.
-              </p>
-              <p className="text-on-surface-variant leading-relaxed mb-6">
-                Tell us what you&rsquo;re looking for. There&rsquo;s no
-                obligation and no impact on your credit to get started.
-              </p>
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-3 text-sm font-medium text-on-surface">
-                  <Icon name="check_circle" className="text-primary text-lg" />
-                  Compare working capital, SBA, and real estate
-                </div>
-                <div className="flex items-center gap-3 text-sm font-medium text-on-surface">
-                  <Icon name="check_circle" className="text-primary text-lg" />
-                  Direct access to a real Advisor
-                </div>
-                <div className="flex items-center gap-3 text-sm font-medium text-on-surface">
-                  <Icon name="check_circle" className="text-primary text-lg" />
-                  Up to $500K in 24 hours
-                </div>
-              </div>
+              <video
+                src="/happy%20owner.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="block w-full h-full object-cover aspect-[4/5]"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-on-secondary-fixed/90 via-on-secondary-fixed/50 to-transparent pointer-events-none"
+              />
+              <motion.div
+                className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 bg-surface-container-lowest/95 backdrop-blur-sm rounded-xl shadow-2xl p-5 sm:p-6"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <p className="font-headline text-lg sm:text-xl font-bold tracking-tight text-on-secondary-fixed mb-4 leading-snug">
+                  Less guessing. Fewer surprises. Better funding decisions.{' '}
+                  <em className="text-primary">Revolutionary stuff.</em>
+                </p>
+                <motion.a
+                  href={ROUTES.apply}
+                  className="signature-gradient text-white px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-widest shadow-lg inline-block"
+                  whileHover={{
+                    scale: 1.04,
+                    boxShadow: '0 18px 35px -10px rgba(0, 108, 76, 0.45)',
+                  }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+                >
+                  Start Today!
+                </motion.a>
+              </motion.div>
             </motion.div>
             <motion.div
               className="absolute -top-6 -right-6 w-24 h-24 signature-gradient rounded-full opacity-20 blur-2xl"

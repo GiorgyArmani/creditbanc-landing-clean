@@ -55,13 +55,14 @@ const FAQ_LD = {
 };
 
 export default function FAQ() {
+  const [sectionOpen, setSectionOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="py-32 px-8 bg-surface"
+      className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface"
     >
       <Script
         id="ld-faq"
@@ -71,7 +72,7 @@ export default function FAQ() {
       />
       <div className="max-w-4xl mx-auto">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -82,66 +83,104 @@ export default function FAQ() {
           </p>
           <h2
             id="faq-heading"
-            className="font-headline text-5xl font-extrabold tracking-tight text-on-secondary-fixed"
+            className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-4"
           >
             What business owners ask Credit Banc
           </h2>
+          <p className="text-on-surface-variant leading-relaxed">
+            Answers to the questions we hear most often.
+          </p>
         </motion.div>
-        <div className="space-y-3">
-          {FAQ_ITEMS.map((item, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <motion.div
-                key={item.q}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.05,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-panel-${i}`}
-                  className="w-full flex items-center justify-between gap-6 px-6 py-5 text-left transition-colors hover:bg-surface-container-low"
-                >
-                  <span className="font-headline text-lg font-bold tracking-tight text-on-secondary-fixed">
-                    {item.q}
-                  </span>
-                  <motion.span
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
-                    className="shrink-0 text-primary"
-                  >
-                    <ChevronDown className="h-5 w-5" />
-                  </motion.span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-panel-${i}`}
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                      className="overflow-hidden"
+
+        <motion.div
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <button
+            type="button"
+            onClick={() => setSectionOpen((v) => !v)}
+            aria-expanded={sectionOpen}
+            aria-controls="faq-list"
+            className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-surface-container-lowest border border-outline-variant/30 shadow-sm font-bold text-sm uppercase tracking-widest text-on-secondary-fixed transition-all hover:border-primary/60 hover:shadow-md"
+          >
+            {sectionOpen ? 'Hide Questions' : 'Show All Questions'}
+            <motion.span
+              animate={{ rotate: sectionOpen ? 180 : 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="text-primary"
+            >
+              <ChevronDown className="h-5 w-5" />
+            </motion.span>
+          </button>
+        </motion.div>
+
+        <AnimatePresence initial={false}>
+          {sectionOpen && (
+            <motion.div
+              id="faq-list"
+              key="faq-list"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 pt-2">
+                {FAQ_ITEMS.map((item, i) => {
+                  const isOpen = openIndex === i;
+                  return (
+                    <div
+                      key={item.q}
+                      className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest overflow-hidden"
                     >
-                      <div className="px-6 pb-5 text-on-surface-variant leading-relaxed">
-                        {item.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
-        </div>
+                      <button
+                        type="button"
+                        onClick={() => setOpenIndex(isOpen ? null : i)}
+                        aria-expanded={isOpen}
+                        aria-controls={`faq-panel-${i}`}
+                        className="w-full flex items-center justify-between gap-6 px-6 py-5 text-left transition-colors hover:bg-surface-container-low"
+                      >
+                        <span className="font-headline text-lg font-bold tracking-tight text-on-secondary-fixed">
+                          {item.q}
+                        </span>
+                        <motion.span
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.25, ease: 'easeOut' }}
+                          className="shrink-0 text-primary"
+                        >
+                          <ChevronDown className="h-5 w-5" />
+                        </motion.span>
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            id={`faq-panel-${i}`}
+                            key="content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-6 pb-5 text-on-surface-variant leading-relaxed">
+                              {item.a}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

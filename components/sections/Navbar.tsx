@@ -64,13 +64,10 @@ export default function Navbar() {
         className="flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8"
         style={{ paddingTop: paddingY, paddingBottom: paddingY }}
       >
-        <motion.a
+        <a
           href="/"
           className="flex items-center"
           aria-label="Credit Banc home"
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 24 }}
         >
           <Image
             src="/dark logo.png"
@@ -81,7 +78,7 @@ export default function Navbar() {
             className="h-10 sm:h-12"
             style={{ width: 'auto' }}
           />
-        </motion.a>
+        </a>
         <div
           className="hidden md:flex items-center gap-2"
           onMouseLeave={() => setHovered(null)}
@@ -138,33 +135,28 @@ export default function Navbar() {
             onClick={() => setMenuOpen((v) => !v)}
           >
             <span className="relative w-6 h-5 flex items-center justify-center">
-              <motion.span
+              <span
                 aria-hidden
-                className="absolute h-0.5 w-6 bg-current rounded"
-                animate={
-                  menuOpen
-                    ? { rotate: 45, y: 0 }
-                    : { rotate: 0, y: -7 }
-                }
-                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                className="absolute h-0.5 w-6 bg-current rounded transition-transform duration-200"
+                style={{
+                  transform: menuOpen
+                    ? 'rotate(45deg) translateY(0)'
+                    : 'rotate(0) translateY(-7px)',
+                }}
               />
-              <motion.span
+              <span
                 aria-hidden
-                className="absolute h-0.5 w-6 bg-current rounded"
-                animate={
-                  menuOpen ? { opacity: 0 } : { opacity: 1 }
-                }
-                transition={{ duration: 0.15 }}
+                className="absolute h-0.5 w-6 bg-current rounded transition-opacity duration-150"
+                style={{ opacity: menuOpen ? 0 : 1 }}
               />
-              <motion.span
+              <span
                 aria-hidden
-                className="absolute h-0.5 w-6 bg-current rounded"
-                animate={
-                  menuOpen
-                    ? { rotate: -45, y: 0 }
-                    : { rotate: 0, y: 7 }
-                }
-                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                className="absolute h-0.5 w-6 bg-current rounded transition-transform duration-200"
+                style={{
+                  transform: menuOpen
+                    ? 'rotate(-45deg) translateY(0)'
+                    : 'rotate(0) translateY(7px)',
+                }}
               />
             </span>
           </button>
