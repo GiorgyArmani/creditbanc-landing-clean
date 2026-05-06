@@ -271,12 +271,11 @@ export default function Hero() {
   // Skip the heavy 2.4 MB GIF on mobile — only cycle the 3 lighter images.
   const heroAssets = isDesktop ? HERO_ASSETS_DESKTOP : HERO_ASSETS_BASE;
 
+  // Reset to the first asset whenever the asset set changes (e.g. mobile
+  // ↔ desktop swap). The loader itself drives index advancement via its
+  // animation onComplete, so no setInterval is needed here.
   useEffect(() => {
     setHeroIndex(0);
-    const id = setInterval(() => {
-      setHeroIndex((i) => (i + 1) % heroAssets.length);
-    }, HERO_INTERVAL_MS);
-    return () => clearInterval(id);
   }, [heroAssets.length]);
 
   return (
@@ -363,6 +362,7 @@ export default function Hero() {
                 intervalMs={HERO_INTERVAL_MS}
                 size={460}
                 index={heroIndex}
+                onIndexChange={setHeroIndex}
               />
               <AnimatePresence mode="wait">
                 <motion.div
@@ -403,6 +403,7 @@ export default function Hero() {
             intervalMs={HERO_INTERVAL_MS}
             size={920}
             index={heroIndex}
+            onIndexChange={setHeroIndex}
           />
           {isWideDesktop && (
             <AnimatePresence mode="wait">

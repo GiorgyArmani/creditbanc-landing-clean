@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Asset {
   src: string;
@@ -34,20 +34,10 @@ export default function CLoader({
   const isControlled = controlledIndex !== undefined;
   const [internalIndex, setInternalIndex] = useState(0);
   const index = isControlled ? controlledIndex : internalIndex;
-  const reactId = useId();
-  const animName = `cloader-arc-${reactId.replace(/:/g, '')}`;
 
-  useEffect(() => {
-    if (isControlled) return;
-    const id = setInterval(() => {
-      setInternalIndex((i) => {
-        const next = (i + 1) % assets.length;
-        onIndexChange?.(next);
-        return next;
-      });
-    }, intervalMs);
-    return () => clearInterval(id);
-  }, [assets.length, intervalMs, isControlled, onIndexChange]);
+  // Index advancement is driven by the arc animation's onComplete (below) —
+  // no setInterval. This keeps the loader sweep, image cross-fade, and any
+  // sibling animations (e.g. floating cards) on a single, drift-free clock.
 
   const stroke = Math.round(size * 0.028);
   const imgInset = Math.round(size * 0.06);
@@ -57,6 +47,11 @@ export default function CLoader({
   const pathRadius = ringCenter - stroke / 2;
 
   const fullArcLen = round(2 * Math.PI * pathRadius);
+  // Full 360° loader — the green ring closes the circle. Rotating by +30°
+  // anchors the animation's starting point to 4 o'clock so the fill
+  // visibly sweeps clockwise from the lower-right.
+  const arcLen = fullArcLen;
+  const arcRotation = 30;
 
   const imgInsetPct = (imgInset / size) * 100;
   const ringInsetPct = (ringInset / size) * 100;
@@ -120,12 +115,6 @@ export default function CLoader({
         ))}
       </div>
 
-      <style>{`
-        @keyframes ${animName} {
-          from { stroke-dashoffset: ${fullArcLen}; }
-          to { stroke-dashoffset: 0; }
-        }
-      `}</style>
       <svg
         viewBox={`0 0 ${ringDiameter} ${ringDiameter}`}
         style={{
@@ -146,9 +135,11 @@ export default function CLoader({
           r={pathRadius}
           stroke="rgba(85, 207, 158, 0.22)"
           strokeWidth={stroke}
+          strokeLinecap="butt"
           fill="none"
+          transform={`rotate(${arcRotation} ${ringCenter} ${ringCenter})`}
         />
-        <circle
+        <motion.circle
           key={`arc-${index}`}
           cx={ringCenter}
           cy={ringCenter}
@@ -157,11 +148,22 @@ export default function CLoader({
           strokeWidth={stroke}
           strokeLinecap="butt"
           fill="none"
-          strokeDasharray={fullArcLen}
-          transform={`rotate(-90 ${ringCenter} ${ringCenter})`}
-          style={{
-            animation: `${animName} ${intervalMs / 1000}s linear forwards`,
+          strokeDasharray={arcLen}
+          transform={`rotate(${arcRotation} ${ringCenter} ${ringCenter})`}
+          initial={{ strokeDashoffset: arcLen }}
+          animate={{ strokeDashoffset: 0 }}
+          transition={{
+            duration: intervalMs / 1000,
+            ease: [0, 0, 1, 1],
+            type: 'tween',
           }}
+          onAnimationComplete={() => {
+            const current = index ?? 0;
+            const next = (current + 1) % assets.length;
+            if (!isControlled) setInternalIndex(next);
+            onIndexChange?.(next);
+          }}
+          style={{ willChange: 'stroke-dashoffset' }}
         />
       </svg>
     </div>
