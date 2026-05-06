@@ -744,26 +744,27 @@ export default function DomeGallery({
     }
     .item__label {
       position: absolute;
-      left: 6px;
-      right: 6px;
-      bottom: 8px;
-      padding: 0 2px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px;
+      margin: 0;
       color: #ffffff;
       font-family: var(--font-headline, system-ui, sans-serif);
-      font-size: 14px;
+      font-size: 24px;
       font-weight: 900;
       letter-spacing: 0.04em;
       text-align: center;
-      line-height: 1.1;
+      line-height: 1.15;
       pointer-events: none;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-transform: uppercase;
       text-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.9),
-        0 0 6px rgba(0, 0, 0, 0.7);
+        0 2px 6px rgba(0, 0, 0, 0.95),
+        0 0 10px rgba(0, 0, 0, 0.7);
     }
   `;
 

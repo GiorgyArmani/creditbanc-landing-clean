@@ -50,16 +50,33 @@ const HERO_ASSETS_DESKTOP = [
 
 const HERO_INTERVAL_MS = 9000;
 
-// Cards only render at 2xl+ (1536px), where there's enough room left of the
-// loader for them to peek out without colliding with the heading or the
-// model in the image. Below that they're hidden — the loader carries the
-// hero on its own.
+// Cards render at 1500px+ in a smaller, fixed size. Each `left` clamps the
+// peek-out: at narrower viewports `calc(-50vw + 780px)` pushes the card
+// inside the circle so it never overlaps the heading column; on wider
+// viewports the negative px target lets the card peek out the left side.
 const CARD_POSITIONS = [
-  { top: '58%', left: '-14%' },
-  { top: '36%', left: '-18%' },
-  { top: '14%', left: '-10%' },
-  { top: '44%', left: '-4%' },
+  { top: '58%', left: 'max(-129px, calc(-50vw + 780px))' },
+  { top: '36%', left: 'max(-166px, calc(-50vw + 780px))' },
+  { top: '14%', left: 'max(-92px, calc(-50vw + 780px))' },
+  { top: '44%', left: 'max(-37px, calc(-50vw + 780px))' },
 ];
+
+// Mobile mini-cards: one small chip per hero index, alternating between
+// top-right and bottom-left of the loader. Just the headline value + a
+// short label — no progress bars, paragraphs, or bullets.
+const MOBILE_CARD_CONTENT = [
+  { value: '$500K', label: 'Up to · 24hr' },
+  { value: '$5M', label: 'SBA Programs' },
+  { value: 'No solo.', label: 'Advisor + Team' },
+  { value: '$2B+', label: 'Deployed' },
+];
+
+const MOBILE_CARD_POSITIONS = [
+  { top: '6%', right: '-4%', left: 'auto', bottom: 'auto' },
+  { bottom: '10%', left: '-4%', top: 'auto', right: 'auto' },
+  { top: '6%', right: '-4%', left: 'auto', bottom: 'auto' },
+  { bottom: '10%', left: '-4%', top: 'auto', right: 'auto' },
+] as const;
 
 function CardEyebrow({
   icon,
@@ -244,9 +261,13 @@ export default function Hero() {
   const [heroIndex, setHeroIndex] = useState(0);
   // xl: 1280px+
   const isDesktop = useMediaQuery('(min-width: 1280px)');
-  // 2xl: 1536px+ — only show floating cards on wide desktops where they
-  // have room to peek out without colliding with the heading or model.
-  const isWideDesktop = useMediaQuery('(min-width: 1536px)');
+  // Cards show at 1500x925 and up. Below that (smaller laptops) the
+  // loader carries the hero on its own. Cards stay at a single smaller
+  // size at all visible widths; the clamp on each card's `left` keeps it
+  // inside the circle on narrower screens and lets it peek out on wider.
+  const isWideDesktop = useMediaQuery(
+    '(min-width: 1500px) and (min-height: 925px)'
+  );
   // Skip the heavy 2.4 MB GIF on mobile — only cycle the 3 lighter images.
   const heroAssets = isDesktop ? HERO_ASSETS_DESKTOP : HERO_ASSETS_BASE;
 
@@ -343,6 +364,24 @@ export default function Hero() {
                 size={460}
                 index={heroIndex}
               />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={heroIndex}
+                  style={MOBILE_CARD_POSITIONS[heroIndex]}
+                  initial={{ opacity: 0, y: 12, scale: 0.92 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.94 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute z-20 bg-surface-container-lowest px-3.5 py-2 rounded-xl shadow-[0_12px_24px_-8px_rgba(0,3,33,0.25)] border border-outline-variant/15"
+                >
+                  <p className="font-headline text-xl font-black text-on-surface tracking-tight tabular-nums leading-none">
+                    {MOBILE_CARD_CONTENT[heroIndex].value}
+                  </p>
+                  <p className="text-[9px] uppercase tracking-widest font-bold text-on-surface-variant mt-1">
+                    {MOBILE_CARD_CONTENT[heroIndex].label}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         )}
@@ -378,7 +417,7 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ rotate: 0, y: -4 }}
-                className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
+                className="absolute z-20 w-60 bg-surface-container-lowest p-5 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
               >
                 {renderHeroCard(heroIndex)}
               </motion.div>
