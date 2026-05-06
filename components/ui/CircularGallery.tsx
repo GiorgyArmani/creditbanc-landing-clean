@@ -661,7 +661,9 @@ class App {
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     window.addEventListener('resize', this.boundOnResize);
-    this.container.addEventListener('wheel', this.boundOnWheel);
+    this.container.addEventListener('wheel', this.boundOnWheel, {
+      passive: true,
+    });
     this.container.addEventListener('mousedown', this.boundOnTouchDown);
     this.container.addEventListener('mousemove', this.boundOnTouchMove);
     this.container.addEventListener('mouseup', this.boundOnTouchUp);

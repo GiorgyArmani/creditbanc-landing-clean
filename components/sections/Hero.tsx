@@ -50,6 +50,10 @@ const HERO_ASSETS_DESKTOP = [
 
 const HERO_INTERVAL_MS = 9000;
 
+// Cards only render at 2xl+ (1536px), where there's enough room left of the
+// loader for them to peek out without colliding with the heading or the
+// model in the image. Below that they're hidden — the loader carries the
+// hero on its own.
 const CARD_POSITIONS = [
   { top: '58%', left: '-14%' },
   { top: '36%', left: '-18%' },
@@ -240,6 +244,9 @@ export default function Hero() {
   const [heroIndex, setHeroIndex] = useState(0);
   // xl: 1280px+
   const isDesktop = useMediaQuery('(min-width: 1280px)');
+  // 2xl: 1536px+ — only show floating cards on wide desktops where they
+  // have room to peek out without colliding with the heading or model.
+  const isWideDesktop = useMediaQuery('(min-width: 1536px)');
   // Skip the heavy 2.4 MB GIF on mobile — only cycle the 3 lighter images.
   const heroAssets = isDesktop ? HERO_ASSETS_DESKTOP : HERO_ASSETS_BASE;
 
@@ -283,7 +290,7 @@ export default function Hero() {
           </motion.h1>
           <motion.div
             variants={itemVariants}
-            className="font-headline text-xl md:text-2xl xl:text-3xl font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem]"
+            className="font-headline text-xl md:text-2xl xl:text-3xl font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem] xl:max-w-md 2xl:max-w-none"
           >
             <TextType
               as="span"
@@ -302,7 +309,7 @@ export default function Hero() {
           </motion.div>
           <motion.p
             variants={itemVariants}
-            className="text-base md:text-lg text-on-surface-variant max-w-xl mb-8 leading-relaxed"
+            className="text-base md:text-lg text-on-surface-variant max-w-xl xl:max-w-md 2xl:max-w-xl mb-8 leading-relaxed"
           >
             Get working capital for growth, payroll, inventory, equipment, or
             cash-flow gaps, with monthly payment options and real Advisor
@@ -358,23 +365,25 @@ export default function Hero() {
             size={920}
             index={heroIndex}
           />
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={heroIndex}
-              style={{
-                top: CARD_POSITIONS[heroIndex].top,
-                left: CARD_POSITIONS[heroIndex].left,
-              }}
-              initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
-              animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
-              exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ rotate: 0, y: -4 }}
-              className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
-            >
-              {renderHeroCard(heroIndex)}
-            </motion.div>
-          </AnimatePresence>
+          {isWideDesktop && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={heroIndex}
+                style={{
+                  top: CARD_POSITIONS[heroIndex].top,
+                  left: CARD_POSITIONS[heroIndex].left,
+                }}
+                initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
+                animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
+                exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ rotate: 0, y: -4 }}
+                className="absolute z-20 w-72 bg-surface-container-lowest p-7 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
+              >
+                {renderHeroCard(heroIndex)}
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
       )}
       <div

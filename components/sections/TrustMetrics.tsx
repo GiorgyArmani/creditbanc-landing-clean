@@ -22,7 +22,8 @@ const STATS: Stat[] = [
   {
     to: 15,
     suffix: 'k+',
-    label: 'Businesses Funded. (Headaches Downgraded.)',
+    label: 'Businesses Funded.',
+    fineprint: "(Headaches Downgraded)",
   },
   {
     to: 5,
