@@ -116,6 +116,8 @@ export default function Navbar() {
           </motion.a>
           <motion.a
             href={ROUTES.apply}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden md:inline-block signature-gradient text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm uppercase tracking-widest shadow-lg"
             whileHover={{
               scale: 1.04,
@@ -237,6 +239,8 @@ export default function Navbar() {
                 >
                   <a
                     href={ROUTES.apply}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setMenuOpen(false)}
                     className="signature-gradient block text-center text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg"
                   >

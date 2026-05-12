@@ -4,40 +4,84 @@ import { useState } from 'react';
 import Script from 'next/script';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { ROUTES, SITE } from '@/lib/site';
 
-export const FAQ_ITEMS: { q: string; a: string }[] = [
+export const FAQ_ITEMS: { q: string; a: string[] }[] = [
   {
-    q: 'What does Credit Banc do?',
-    a: `Credit Banc helps small business owners and real estate investors compare financing options across working capital, SBA, and real estate. Every applicant works one-on-one with an Advisor who guides them from first conversation to closing.`,
+    q: 'What does Credit Banc actually do?',
+    a: [
+      `Credit Banc helps small business owners and real estate investors find financing that fits the business, the goal, and the cash flow. (Wild concept, apparently.)`,
+      `That may include working capital, SBA financing, business lines of credit, equipment financing, commercial real estate loans, project financing, or business debt consolidation. An Advisor helps you compare options, understand the tradeoffs, and move forward with a structure that makes sense.`,
+      `Because surprises belong at birthday parties, not buried in your funding terms.`,
+    ],
   },
   {
-    q: 'What types of financing does Credit Banc offer?',
-    a: `Credit Banc offers SBA financing (working capital, acquisitions, real estate, refinancing, startup costs), real estate financing (rentals, flips, construction, commercial mortgages, owner-occupied real estate), and small business funding (working capital, equipment financing, lines of credit, and term loans).`,
+    q: 'What types of business financing does Credit Banc offer?',
+    a: [
+      `Credit Banc offers small business funding, SBA financing, business lines of credit, equipment financing, accounts receivable financing, commercial real estate financing, business acquisition financing, project financing, and debt consolidation options.`,
+      `Some programs are built for speed. Others are built for better terms, larger deals, or cleaner monthly payments. Our job is not to bury you in choices. It is to help you find the one worth choosing.`,
+    ],
+  },
+  {
+    q: 'Can I check my funding options without hurting my credit?',
+    a: [
+      `Yes! Getting prequalified with Credit Banc has no impact on your credit score.`,
+      `We start with a soft review to understand your business, goals, and possible funding options. If a lender requires a hard pull later, your Advisor will explain it before anything moves forward. Credit surprises are not our idea of customer service.`,
+    ],
   },
   {
     q: 'How fast can I get funded?',
-    a: `Qualifying small business applicants can receive up to $500K in as little as 24 hours. SBA and real estate timelines vary based on the structure and documentation required, and your Advisor will walk you through realistic expectations up front.`,
+    a: [
+      `Depending on the program, some businesses can receive funding in as little as 24 hours.`,
+      `Working capital and small business funding options may move faster, while SBA financing, commercial real estate loans, business acquisition financing, and larger business debt consolidation structures usually take longer because they require more documentation and underwriting.`,
+      `Fast matters. Getting the right program matters more.`,
+    ],
   },
   {
-    q: 'Is there a credit check or obligation to apply?',
-    a: `No. Telling Credit Banc what you're looking for has no obligation and no impact on your credit. A soft review with your Advisor helps identify the right structures before any lender pulls credit.`,
+    q: 'What are the loan terms and payment structures?',
+    a: [
+      `Credit Banc focuses on financing structures that support cash flow, including monthly payment options and extended terms.`,
+      `Why? We prefer financing that gives your cash flow room to work. Daily and weekly payments just aren't our thing. (They look innocent enough until the withdrawals start running the calendar.)`,
+      `That's why we help you compare loan terms, payment options, and funding structures, including SBA financing, term loans, business lines of credit, equipment financing, and real estate loans, so the repayment plan supports the business instead of crowding it.`,
+    ],
   },
   {
-    q: 'What are the loan terms and payment structure?',
-    a: `Credit Banc focuses on financing with monthly payments — not the daily or weekly debit structure common to merchant cash advances. SBA financing offers terms up to 25 years, and term loans, lines of credit, and equipment financing each carry their own structure that your Advisor will compare for you.`,
+    q: 'Do I need perfect credit to qualify?',
+    a: [
+      `Nope. You do not need perfect credit to start the conversation.`,
+      `Some funding options focus more on revenue. Some look at cash flow. Others consider time in business or the purpose of the funding. Your credit score matters, but it is not the entire personality test.`,
+      `And if your business credit needs work, we won't just shrug and hand you a rejection letter. We may point you toward our free Business Credit Builder Course so you can start improving the parts lenders actually look at.`,
+    ],
   },
   {
-    q: 'Do I need collateral to qualify?',
-    a: `Many small business funding options through Credit Banc require no collateral for qualifying businesses. Real estate and larger SBA structures may use the financed asset as collateral. Your Advisor will explain exactly what each lender requires before you commit.`,
+    q: 'Will I work with a real person?',
+    a: [
+      `Yes. Every applicant works with a real (and handsome!) Credit Banc Advisor.`,
+      `No chatbot handoffs. No "please select from the following options" energy. Your human Advisor helps explain your funding options, review documentation, compare business financing structures, and guide you through the process.`,
+      `Very old-school. Very effective.`,
+    ],
   },
   {
-    q: 'Who works with me through the process?',
-    a: `Every applicant is paired with a Credit Banc Advisor — a real person, not an algorithm. Your Advisor explains your options, prepares your documentation, and stays with you from application to closing.`,
+    q: 'Do I need collateral?',
+    a: [
+      `Not always.`,
+      `Many small business funding options may not require collateral for qualifying businesses. SBA financing, commercial real estate loans, equipment financing, and business acquisition financing may involve collateral depending on the structure, deal size, and lender requirements.`,
+      `Your Advisor will explain what each option requires before you move forward, because "wait, I need what" is not a fun surprise halfway through.`,
+    ],
+  },
+  {
+    q: 'Can Credit Banc help with business debt consolidation or MCA payments?',
+    a: [
+      `Yes. Credit Banc helps business owners explore options for business debt consolidation, MCA consolidation, and refinancing expensive short-term business debt, including merchant cash advances, daily payments, and weekly payments.`,
+      `Stacked short-term debt happens fast. We get it. One advance solves an immediate problem, then the repayment schedule starts acting like it owns the place. The goal is to reduce pressure on cash flow and move toward a cleaner repayment structure.`,
+    ],
   },
   {
     q: 'How do I get started?',
-    a: `Apply at ${ROUTES.apply}, call ${SITE.phone}, or email ${SITE.email}. The first conversation is free, takes a few minutes, and carries no obligation.`,
+    a: [
+      `Get started here by sharing a few details about your business.`,
+      `Tell us what you're trying to accomplish, the amount you have in mind, and how the funding would support the business. Your Credit Banc Advisor will use that information to understand the situation and recommend possible funding options.`,
+      `Like any good introduction, the goal is simple: understand what you need before anyone starts making recommendations.`,
+    ],
   },
 ];
 
@@ -49,7 +93,7 @@ const FAQ_LD = {
     name: item.q,
     acceptedAnswer: {
       '@type': 'Answer',
-      text: item.a,
+      text: item.a.join('\n\n'),
     },
   })),
 };
@@ -85,10 +129,10 @@ export default function FAQ() {
             id="faq-heading"
             className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-4"
           >
-            What business owners ask Credit Banc
+            Questions Worth Asking Before You Borrow
           </h2>
-          <p className="text-on-surface-variant leading-relaxed">
-            Answers to the questions we hear most often.
+          <p className="text-on-surface-variant leading-relaxed max-w-2xl mx-auto">
+            Call us old-fashioned, but you should know who you're getting into bed with before the fine print takes its pants off.
           </p>
         </motion.div>
 
@@ -168,8 +212,10 @@ export default function FAQ() {
                             }}
                             className="overflow-hidden"
                           >
-                            <div className="px-6 pb-5 text-on-surface-variant leading-relaxed">
-                              {item.a}
+                            <div className="px-6 pb-5 text-on-surface-variant leading-relaxed space-y-3">
+                              {item.a.map((p, j) => (
+                                <p key={j}>{p}</p>
+                              ))}
                             </div>
                           </motion.div>
                         )}

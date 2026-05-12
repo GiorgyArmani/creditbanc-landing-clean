@@ -25,137 +25,377 @@ interface Program {
 
 const PROGRAMS: Program[] = [
   {
-    id: 'sba',
-    icon: 'account_balance',
-    title: 'SBA Financing',
-    tagline: 'For bigger plans with more moving parts.',
-    body: 'Government-backed financing for acquisitions, working capital, commercial real estate, refinancing, startup costs, and long-term growth.',
+    id: 'term-loans',
+    icon: 'savings',
+    title: 'Term Loans',
+    tagline: 'Big capital. Longer runway. Fewer cash chokeholds.',
+    body: 'A business term loan gives you access to a larger lump sum of capital with predictable monthly payments and longer repayment terms. Use it to expand, buy equipment, increase inventory, support payroll, refinance expensive debt, or make the kind of business move that needs more than a quick cash patch and a prayer.',
     expanded: {
       intro:
-        'SBA loans are designed for the moves that need patient capital and structure. Lower down payments, longer terms, and rates that reflect your business profile rather than the lender’s risk appetite.',
+        'The goal is simple: get the capital you need, structure it in a way the business can actually handle, and avoid letting repayment become the next problem.',
       bullets: [
-        'Loan amounts up to $5M with terms up to 25 years',
-        'Use of funds: acquisitions, real estate, working capital, refi',
-        'Lower down payment than conventional commercial loans',
-        'Designed for established and growing operators',
+        'Up to $5 million in funding',
+        'Terms up to 10 years',
+        'Predictable monthly payments',
+        'Competitive rate options based on the strength of the business',
+        'Can be used for growth, working capital, equipment, or business debt consolidation',
       ],
       bestFor:
-        'Owners ready to acquire a business, buy real estate, or restructure debt with longer-term, lower-payment financing.',
-    },
-    image: '/advisory.webp',
-    imageAlt: 'SBA Financing',
-  },
-  {
-    id: 'real-estate',
-    icon: 'domain',
-    title: 'Real Estate Financing',
-    tagline: 'For deals where the property is doing some of the talking.',
-    body: 'Rental property, fix-and-flip, ground-up construction, hard money, commercial mortgage, and owner-occupied financing.',
-    expanded: {
-      intro:
-        'Property-backed financing built around the deal, not just the borrower. From quick close hard money to long-hold rental DSCR loans, we work with lenders who actually understand real estate.',
-      bullets: [
-        'Rental DSCR, fix-and-flip, ground-up construction, hard money',
-        'Commercial mortgage and owner-occupied options',
-        'Quick close available on hard money / bridge deals',
-        'Programs structured around property cash flow, not personal income',
-      ],
-      bestFor:
-        'Investors and operators with a property in play — acquiring, holding, building, or repositioning.',
-    },
-    image: '/real%20estate.png',
-    imageAlt: 'Real Estate Financing',
-  },
-  {
-    id: 'small-business',
-    icon: 'storefront',
-    title: 'Small Business Funding',
-    tagline: 'For the money stuff owners deal with every week.',
-    body: 'Working capital, equipment, lines of credit, term loans, payroll, inventory, short-term gaps, growth needs, or "oh, sh*t" moments.',
-    expanded: {
-      intro:
-        'The everyday capital that keeps the business running and growing. Faster decisions, less paperwork, and structures that fit cash flow rather than fight it.',
-      bullets: [
-        'Working capital, term loans, lines of credit, equipment financing',
-        'Decisions in hours, funding often within 24–48 hours',
-        'Payment structures matched to revenue cadence',
-        'Stackable with longer-term financing when it makes sense',
-      ],
-      bestFor:
-        'Operators handling payroll, inventory, equipment, growth pushes, or short-term cash-flow gaps.',
+        'Established businesses that need more than a quick cash bandage. Term loans are a good fit when the goal is to stabilize cash flow, fund growth, refinance expensive short-term debt, or make a larger business investment without turning repayment into a full-contact sport.',
     },
     image: '/smallbusinessfunding.png',
-    imageAlt: 'Small Business Funding',
-  },
-  {
-    id: 'lines-of-credit',
-    icon: 'credit_card',
-    title: 'Business Lines of Credit',
-    tagline: 'Capital on standby. Pay only for what you actually use.',
-    body: 'Revolving lines for unpredictable cash needs — inventory swings, seasonal payroll, opportunistic buys, or just sleeping at night.',
-    expanded: {
-      intro:
-        'A line of credit is the most flexible tool in the toolbox. Draw what you need, pay it down, draw again. We help you size and structure it so it fits how cash actually moves through your business.',
-      bullets: [
-        'Revolving access up to $500K on qualifying profiles',
-        'Interest only on what you draw, not what you’re approved for',
-        'Useful for seasonality, payroll smoothing, and quick opportunities',
-        'Pairs well with longer-term financing for bigger projects',
-      ],
-      bestFor:
-        'Owners with seasonal swings, lumpy payables, or who want capital ready before they need it.',
-    },
-    image: '/moneythrow.mp4',
-    imageAlt: 'Business Lines of Credit',
+    imageAlt: 'Term Loans',
   },
   {
     id: 'equipment',
     icon: 'precision_manufacturing',
     title: 'Equipment Financing',
-    tagline: 'For the gear that pays itself off.',
-    body: 'Trucks, machinery, tech, kitchen, medical, and specialty equipment — financed against the asset, not just the balance sheet.',
+    tagline: 'Yes, the tractor’s sexy. The terms still matter.',
+    body: 'Equipment financing helps business owners purchase or lease the equipment they need without draining working capital. New equipment, used equipment, heavy machinery, vehicles, tech, tools, production equipment — whatever keeps the business moving and the revenue coming in.',
     expanded: {
       intro:
-        'Equipment financing is built around the asset itself, which usually means simpler underwriting, lower down payments, and tax treatment that often works in your favor. New or used. Buy or lease.',
+        'Instead of tying up cash upfront, financing spreads the cost over time so the equipment can start earning its keep.',
       bullets: [
-        'Up to 100% financing on qualifying equipment',
-        'Terms typically 24–84 months matched to useful life',
-        'New, used, and private-party purchases supported',
-        'Section 179 / bonus depreciation often applies',
+        'Up to $25 million in equipment financing for heavy equipment, vehicles, machinery, tech, and tools',
+        'Terms up to 120 months',
+        '100% financing options available',
+        'New and used equipment may qualify',
+        'Application-only options may be available for requests under $150,000',
       ],
       bestFor:
-        'Operators expanding capacity, replacing aging gear, or buying revenue-generating assets.',
+        'Businesses that need equipment to operate, grow, replace outdated assets, or take on bigger work without tying up cash upfront. Equipment financing makes sense when the equipment has a clear business purpose, and waiting to buy it would cost more than financing it properly.',
     },
-    image: '/happy%20owner%202.mp4',
+    image: '/smallbusinessfunding.png',
     imageAlt: 'Equipment Financing',
   },
   {
-    id: 'term-loans',
-    icon: 'savings',
-    title: 'Term Loans',
-    tagline: 'A defined plan with a clear finish line.',
-    body: 'Lump-sum financing with fixed payments and a defined term — for projects, expansions, debt restructure, or one-time growth bets.',
+    id: 'lines-of-credit',
+    icon: 'credit_card',
+    title: 'Lines of Credit',
+    tagline: 'Use what you need. Pay for what you use. Imagine that.',
+    body: 'A small business line of credit gives you access to flexible capital you can pull from when the business needs a little backup. Payroll timing gets weird. Inventory needs to be ordered. A vendor needs to be paid. A slow week shows up uninvited. A good opportunity pops up before the cash lands.',
     expanded: {
       intro:
-        'Term loans are the workhorse of business financing: take a lump sum today, pay it back on a known schedule. Best when you know exactly what the capital is for and what it should produce.',
+        'That’s where a line of credit helps. You use what you need, when you need it, and pay interest only on what you actually draw. Wildly reasonable. We know.',
       bullets: [
-        'Fixed payments, fixed term, fully amortizing structures',
-        'Loan amounts from $25K up to $1M+ depending on profile',
-        'Often used for expansion, build-outs, debt consolidation',
-        'Simpler underwriting than SBA when speed matters',
+        'Revolving credit lines up to $750,000',
+        'Funding may be available in as little as 24 hours',
+        'No collateral required for qualifying businesses',
+        'Pay interest only on what you use',
+        'Use it for payroll, inventory, vendor payments, short-term gaps, or working capital',
+        'Unsecured business line of credit options may be available for qualifying businesses',
       ],
       bestFor:
-        'Owners with a defined project, a known ROI, and a desire to avoid open-ended debt.',
+        'Businesses that want flexible access to capital without taking the whole bag upfront. A line of credit makes sense when your cash needs come and go, because business expenses have a real talent for showing up before the money does.',
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s',
-    imageAlt: 'Term Loans',
+    image: '/smallbusinessfunding.png',
+    imageAlt: 'Lines of Credit',
+  },
+  {
+    id: 'accounts-receivable',
+    icon: 'receipt_long',
+    title: 'Accounts Receivable Factoring',
+    tagline: 'Get paid now. Let the invoice age somewhere else.',
+    body: 'Accounts receivable factoring, also called invoice factoring, helps turn unpaid invoices into working capital without waiting 30, 60, or 90 days for customers to finally remember money is part of the arrangement.',
+    expanded: {
+      intro:
+        'Instead of taking on a traditional loan, you can factor eligible invoices and receive a portion of the invoice amount upfront. That cash can help cover payroll, materials, vendor payments, operating expenses, new projects, or the delightful little gap between “work completed” and “payment received.”',
+      bullets: [
+        'Advance rates up to 90% of eligible invoices',
+        'Funding may be available in as little as 48 hours',
+        'Choose which invoices you want to factor',
+        'Often easier to qualify for than traditional financing',
+        'Useful for covering payroll, materials, vendors, operations, or new work',
+      ],
+      bestFor:
+        'Businesses that invoice customers but have to wait weeks or months to get paid. Factoring makes sense when revenue is there on paper, but cash is stuck in limbo, and the business still has real expenses due right now. Because unfortunately, payroll does not accept “the client said they’ll send it next week” as legal tender. (If only.)',
+    },
+    image: '/smallbusinessfunding.png',
+    imageAlt: 'Accounts Receivable Factoring',
+  },
+  {
+    id: 'ecommerce-funding',
+    icon: 'shopping_cart',
+    title: 'eCommerce Funding',
+    tagline: 'Growth capital without handing over the keys to the store.',
+    body: 'eCommerce funding through the Credit Banc and onRamp partnership helps online businesses access capital for inventory, marketing, fulfillment, cash flow, platform growth, and the expensive little realities of selling things on the internet.',
+    expanded: {
+      intro:
+        'Instead of giving up equity or getting buried under high-fee financing, this program helps online brands get the money they need to keep moving, restock faster, test new channels, or scale without inviting a stranger onto the cap table.',
+      bullets: [
+        'Funding up to $2 million',
+        'Funds may be available in as little as 24 hours',
+        'No equity dilution',
+        'Built for online sellers and eCommerce brands',
+        'Can be used for inventory, marketing, fulfillment, operations, or growth',
+      ],
+      bestFor:
+        'eCommerce businesses with real sales momentum that need cash to keep the machine moving. Inventory has to be ordered. Ads have to run. Fulfillment has to happen. Customers do not care that your cash is somewhere between Stripe, Shopify, and a warehouse invoice. The goal is to keep growth moving without turning the business into a fee machine for someone else.',
+    },
+    image: '/smallbusinessfunding.png',
+    imageAlt: 'eCommerce Funding',
+  },
+  {
+    id: 'merchant-cash-advance',
+    icon: 'bolt',
+    title: 'Merchant Cash Advance',
+    tagline: 'Fast capital, with the fine print taken seriously.',
+    body: 'A merchant cash advance is not a traditional loan. It is an advance against future revenue, which can make it faster and easier to access than other types of financing. That speed can be useful when timing matters. But it also comes with tradeoffs. Shorter repayment windows, higher costs, and frequent payments can put real pressure on cash flow if the structure does not fit the business.',
+    expanded: {
+      intro:
+        'At Credit Banc, we look at merchant cash advances carefully. Sometimes they are the right tool. Sometimes MCAs are just the fastest way to make an expensive problem worse.',
+      bullets: [
+        'Up to $5 million in working capital',
+        'Funding may be available in as little as 24 hours',
+        'Terms up to 18 months',
+        'Based largely on business revenue and deposits',
+        'May be available to a wide range of industries',
+      ],
+      bestFor:
+        'Businesses that need fast access to capital and understand the cost, timing, and repayment structure before moving forward. An MCA may make sense for a short-term opportunity, urgent need, or revenue-backed situation where speed matters and the cash flow can support it. It does not make sense as the default answer every time a business owner needs money. That is how too many companies end up stacking expensive debt and wondering why their bank account feels like it has a leak.',
+    },
+    image: '/smallbusinessfunding.png',
+    imageAlt: 'Merchant Cash Advance',
+  },
+  {
+    id: 'rental-property',
+    icon: 'apartment',
+    title: 'Rental Property Loans',
+    tagline: 'Portfolio capital that doesn’t faint at your tax return.',
+    body: 'Rental property loans help real estate investors finance income-producing properties based largely on the cash flow of the property itself. That can mean less reliance on personal income documentation and a lending structure built around the deal, the rent roll, and whether the property can actually support the debt.',
+    expanded: {
+      intro:
+        'Because if the property can support the debt, the conversation should start there.',
+      bullets: [
+        'Loans up to $25 million',
+        'Up to 80% loan-to-value',
+        'Cash flow-based lending',
+        'No tax returns required in many cases',
+        '30-year fixed-rate and interest-only options may be available',
+        '1–4 family and multifamily properties may qualify',
+        'Foreign nationals may be eligible',
+      ],
+      bestFor:
+        'Real estate investors who want to buy, refinance, or grow a rental portfolio without forcing every deal through traditional personal-income underwriting. This can work well for seasoned operators, newer investors with a strong property, foreign nationals investing in U.S. real estate, or anyone building a portfolio where the numbers on the property matter more than the bank’s outdated checklist.',
+    },
+    image: '/real%20estate.png',
+    imageAlt: 'Rental Property Loans',
+  },
+  {
+    id: 'commercial-mortgage',
+    icon: 'domain',
+    title: 'Commercial Mortgage Loans',
+    tagline: 'For properties too complex for copy-paste lending.',
+    body: 'Commercial mortgage loans help business owners and real estate investors finance, refinance, build, or reposition commercial property through commercial real estate loan options built around the deal. That may include office buildings, retail space, warehouses, self-storage, multifamily properties, mixed-use developments, owner-occupied real estate, construction projects, bridge needs, and larger commercial deals that require a more thoughtful structure.',
+    expanded: {
+      intro:
+        'Because commercial real estate is not one-size-fits-all. The property, use, timeline, cash flow, and exit plan all matter. Anyone pretending otherwise is probably trying to shove your deal into whatever product they happen to sell.',
+      bullets: [
+        'Options for commercial real estate, multifamily, mixed-use, construction, bridge, CMBS, agency, and mezzanine financing',
+        'Access to a network of 100+ lending partners',
+        'Owner-occupied commercial real estate options may be available, including SBA-backed structures',
+        'Financing available for purchases, refinances, construction, repositioning, and portfolio needs',
+        'Advisor support to help compare structures, terms, tradeoffs, and lender fit',
+      ],
+      bestFor:
+        'Business owners and real estate investors financing commercial property that needs more than a generic loan quote. This can work for owner-occupied properties, multifamily assets, mixed-use developments, warehouses, retail, office, self-storage, construction projects, bridge scenarios, or deals where the structure matters just as much as the rate. Commercial real estate has too many moving parts for lazy financing. The right loan should match the property, the plan, and the way the deal actually makes money.',
+    },
+    image: '/real%20estate.png',
+    imageAlt: 'Commercial Mortgage Loans',
+  },
+  {
+    id: 'hard-money',
+    icon: 'speed',
+    title: 'Hard Money Loans',
+    tagline: 'Capital for real estate deals that cannot wait for a committee meeting.',
+    body: 'Hard money loans give real estate investors fast, asset-based financing for acquisitions, bridge needs, property stabilization, and value-add projects. Instead of relying heavily on traditional income documentation, the structure is built around the property, the deal, the equity, and the exit plan.',
+    expanded: {
+      intro:
+        'This is not meant to be forever money. It is short-term capital for investors who need to move quickly, secure the property, execute the plan, and either refinance, sell, or stabilize into a better long-term structure.',
+      bullets: [
+        'Loans up to $20 million',
+        'Up to 70% loan-to-value, with ARV considered when applicable',
+        'Fast closings, sometimes in as little as two weeks',
+        'Interest-only options may be available',
+        'Can be used across rental, multifamily, office, retail, industrial, self-storage, mobile home parks, and other real estate assets',
+      ],
+      bestFor:
+        'Real estate investors who need speed, flexibility, and a loan structure based more on the asset than the usual bank checklist. Hard money can make sense for acquisitions, bridge financing, stabilization, value-add projects, or deals where timing matters and the exit plan is clear. It’s also a program where structure matters a lot. Fast capital can help you win the deal. Bad fast capital can make the deal wish it had never met you. (Don’t worry. Your Credit Banc Advisor is here to keep that from happening.)',
+    },
+    image: '/real%20estate.png',
+    imageAlt: 'Hard Money Loans',
+  },
+  {
+    id: 'fix-and-flip',
+    icon: 'construction',
+    title: 'Fix-and-Flip Loans',
+    tagline: 'Buy the ugly property. (Just don’t let the financing make it uglier.)',
+    body: 'Fix-and-flip loans help real estate investors purchase and renovate properties with short-term financing built around the project, the budget, and the exit plan. Use it for rental homes, multifamily properties, commercial real estate, or value-add projects where the plan is to renovate, sell, refinance, or stabilize the property.',
+    expanded: {
+      intro:
+        'The right financing gives you room to move quickly, fund the work, and avoid tying up too much cash before the project has a chance to prove itself.',
+      bullets: [
+        'Loan amounts from $250,000 to $20 million',
+        'Up to 85% of after-repair value',
+        'Up to 90% loan-to-cost',
+        '12-month interest-only options may be available',
+        'Can be used for rental homes, multifamily properties, commercial properties, and renovation projects',
+      ],
+      bestFor:
+        'Investors who see the upside in a rough property and need capital to move before the opportunity disappears. Fix-and-flip loans make sense when the renovation budget is clear, the timeline is realistic, and the exit plan doesn’t rely on crossed fingers and a hot market.',
+    },
+    image: '/real%20estate.png',
+    imageAlt: 'Fix-and-Flip Loans',
+  },
+  {
+    id: 'ground-up-construction',
+    icon: 'engineering',
+    title: 'Ground-Up Construction Loans',
+    tagline: 'Dirt is cheap. Building on it is not.',
+    body: 'Ground-up construction loans help real estate investors, developers, and business owners finance new construction projects from the ground up. That can include land acquisition, site development, and vertical construction, all structured around the project, budget, timeline, and exit plan.',
+    expanded: {
+      intro:
+        'Use it for single-family rental builds, multifamily projects, commercial real estate, or owner-user construction where the plan is bigger than “buy it and fix it.” New construction has more moving parts, which is exactly why the financing needs to be built around the full project, not just the purchase price.',
+      bullets: [
+        'Loans up to $50 million',
+        'Up to 85% loan-to-cost',
+        'Land acquisition, site development, and vertical construction may be included',
+        'Interest-only draw schedules may be available',
+        'Can be used for single-family rentals, multifamily, commercial real estate, and business-use properties',
+      ],
+      bestFor:
+        'Projects where the opportunity is solid, but the capital needs to cover more than just the build. Land, site development, construction costs, and draw timing all matter here, which is why ground-up financing works best for borrowers who already know what they’re building, why it makes sense, and how the project gets paid off.',
+    },
+    image: '/real%20estate.png',
+    imageAlt: 'Ground-Up Construction Loans',
+  },
+  {
+    id: 'sba-flexfund',
+    icon: 'rocket_launch',
+    title: 'FlexFund Program',
+    tagline: 'Good things come in small (funding) packages.',
+    body: 'FlexFund is built for business owners who need a practical amount of capital without turning the whole process into a three-act drama. Use it for equipment, repairs, marketing, hiring, inventory, cash flow gaps, or a smaller business move that still needs to get done.',
+    expanded: {
+      intro:
+        'The point is simple: get useful capital in the door, keep the payment manageable, and avoid borrowing more than the situation actually calls for.',
+      bullets: [
+        'Loan amounts from $15,000 to $50,000',
+        'Funding in 10 days or less',
+        'Terms up to 10 years',
+        'Monthly payments',
+        'Minimum FICO of 640',
+      ],
+      bestFor:
+        'Business owners with a specific need that is too important to ignore, but not big enough for a massive financing package. FlexFund is a fit when the business needs a clean, manageable way to handle the next move without overborrowing or settling for short-term money with an attitude problem.',
+    },
+    image: '/advisory.webp',
+    imageAlt: 'FlexFund Program',
+  },
+  {
+    id: 'sba-refinance',
+    icon: 'sync',
+    title: 'SBA Loan Refinance',
+    tagline: 'Your SBA loan might be due for a rate intervention.',
+    body: 'An SBA loan refinance can help business owners replace an existing SBA 7(a) loan with a cleaner, better-priced structure. The goal is to lower the monthly payment, improve cash flow, and possibly pull out additional working capital. This may make sense if your current SBA loan is priced at Prime + 3.5% or higher.',
+    expanded: {
+      intro:
+        'Refinancing could help move that loan into a lower-rate SBA structure, reset the term, and give the business more room to work with. Just because a loan made sense when you signed it does not mean it gets a lifetime pass.',
+      bullets: [
+        'Designed for existing SBA 7(a) loans',
+        'Current loan typically must be priced at Prime + 3.5% or higher',
+        'New rate options may include Prime + 1% fixed or Prime + 1.25% variable',
+        'Loan term may reset to 10 or 25 years, depending on the structure',
+        'Requires full underwriting, including business and global DSCR of 1.15x',
+        'Three years of financials may be required',
+      ],
+      bestFor:
+        'Business owners with an SBA loan that may be costing more than it should. SBA refinancing makes sense when the goal is to reduce monthly payments, free up cash flow, access additional working capital, or finally ask the very reasonable question: “Why the hell are we still paying it like this?”',
+    },
+    image: '/advisory.webp',
+    imageAlt: 'SBA Loan Refinance',
+  },
+  {
+    id: 'sba-commercial-real-estate',
+    icon: 'business',
+    title: 'SBA Commercial Real Estate Loans',
+    tagline: 'Commercial property financing for owners ready to stop renting forever.',
+    body: 'SBA commercial real estate loans help business owners buy, refinance, renovate, or build owner-occupied commercial property with longer terms and, in some cases, up to 100% financing. Office, warehouse, retail, mixed-use, medical, industrial, or other commercial property may qualify, as long as the business occupies enough of the space to meet SBA requirements.',
+    expanded: {
+      intro:
+        'Owning is not always the right move. But if the numbers work, it is nice when the monthly payment builds your balance sheet instead of your landlord’s.',
+      bullets: [
+        'SBA 7(a) and SBA 504 options may be available',
+        'Financing may be available up to $10 million',
+        'Terms up to 25 years',
+        'Up to 100% financing may be available for qualifying businesses',
+        'Business must typically occupy at least 51% of the rentable square footage',
+        'SBA 7(a): minimum FICO may start around 640',
+        'SBA 504: minimum FICO may start around 660',
+        'Can be used for commercial real estate purchase, refinance, renovation, ground-up construction, or heavy machinery',
+      ],
+      bestFor:
+        'Business owners who want to own the property their business operates from and use the space as a long-term asset. SBA commercial real estate financing makes sense when the goal is to preserve cash, build equity, control the property, lease out unused square footage, or finally stop asking a landlord for permission to improve the building you’re already paying for.',
+    },
+    image: '/advisory.webp',
+    imageAlt: 'SBA Commercial Real Estate Loans',
+  },
+  {
+    id: 'sba-business-acquisition',
+    icon: 'handshake',
+    title: 'SBA Business Acquisition Loans',
+    tagline: 'Buy the business. Skip the “starting from scratch” headaches.',
+    body: 'SBA business acquisition loans help qualified buyers purchase an existing business with longer repayment terms, competitive SBA-backed rates, and, in some cases, little to no money down. This can be used to buy an established business, acquire a franchise, purchase business assets, include working capital, finance equipment, cover inventory, fund renovations, or even buy owner-occupied commercial real estate as part of the deal.',
+    expanded: {
+      intro:
+        'The business still has to make sense on paper. Profitability matters. Buyer experience matters. The numbers have to support the loan. Shocking, we know. But that is also what keeps “I bought a business” from turning into “I bought myself a very expensive job.”',
+      bullets: [
+        'SBA acquisition financing may be available with as little as 0% down',
+        'Loan terms may range from 10 to 25 years',
+        'Financing may be available up to $10 million with combined SBA and conventional structures',
+        'Minimum FICO may start around 640',
+        'The business being purchased must show enough profitability to support repayment',
+        'Buyer typically needs relevant or transferable industry experience',
+        'Business plan and financial projections required',
+      ],
+      bestFor:
+        'Buyers who want to purchase a business with history, revenue, customers, and systems already in place. SBA acquisition financing makes sense when the deal can support the debt, the buyer can run the business, and the purchase price is grounded in a little thing we like to call “reality”.',
+    },
+    image: '/advisory.webp',
+    imageAlt: 'SBA Business Acquisition Loans',
+  },
+  {
+    id: 'sba-startup',
+    icon: 'lightbulb',
+    title: 'SBA Startup Loans',
+    tagline: 'Startup capital for people with a plan, not just a pretty pitch deck.',
+    body: 'SBA startup loans help qualified entrepreneurs launch a new business with longer repayment terms and SBA-backed financing. Funds may be used for working capital, equipment, inventory, renovations, leasehold improvements, or owner-occupied commercial real estate.',
+    expanded: {
+      intro:
+        'This is not “I had an idea in the shower” money. SBA startup financing usually requires relevant experience, a strong business plan, financial projections, and enough borrower investment to show the lender you are not just emotionally committed.',
+      bullets: [
+        'Funding from $100,000 up to $5 million',
+        'Terms may range from 10 to 25 years',
+        'As little as 10% equity injection may be required',
+        'Minimum FICO start at 700',
+        'Funds may be used for working capital, inventory, equipment, renovations, leasehold improvements, or owner-occupied commercial real estate',
+        'Strong business plan and financial projections required',
+        'Transferable experience matters. A lot.',
+        'Available collateral may strengthen the application',
+      ],
+      bestFor:
+        'Entrepreneurs who are ready to start a business and have more than blind enthusiasm carrying the deal. SBA startup financing makes sense when the borrower has relevant experience, a clear plan, realistic projections, and enough capital invested to show they are serious. A good idea helps. A plan that survives basic math helps more.',
+    },
+    image: '/advisory.webp',
+    imageAlt: 'SBA Startup Loans',
   },
 ];
+
+const CATEGORY_ANCHORS = ['sba', 'real-estate', 'small-business'] as const;
 
 export default function Products() {
   const [openId, setOpenId] = useState<string | null>(null);
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isXl = useMediaQuery('(min-width: 1280px)');
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -209,6 +449,14 @@ export default function Products() {
       id="solutions"
       className="relative bg-surface-container-low overflow-hidden"
     >
+      {CATEGORY_ANCHORS.map((id) => (
+        <span
+          key={`cat-${id}`}
+          id={id}
+          aria-hidden
+          className="block absolute -top-24"
+        />
+      ))}
       {PROGRAMS.map((p) => (
         <span
           key={p.id}
@@ -299,17 +547,18 @@ export default function Products() {
       )}
 
       {isDesktop && (
-        <div className="relative w-screen h-[760px] lg:h-[900px] xl:h-[1100px]">
+        <div className="relative w-screen h-[560px] md:h-[640px] lg:h-[820px] xl:h-[1000px] 2xl:h-[1100px]">
           <DomeGallery
             images={galleryItems}
             grayscale={true}
             overlayBlurColor="#f4f3f1"
-            imageBorderRadius="12px"
+            imageBorderRadius="10px"
             openedImageBorderRadius="20px"
-            fit={1}
-            minRadius={1080}
-            maxVerticalRotationDeg={7}
-            segments={14}
+            fit={isXl ? 0.8 : 0.85}
+            minRadius={isXl ? 600 : 400}
+            maxRadius={isXl ? 1333 : 900}
+            maxVerticalRotationDeg={9}
+            segments={isXl ? 34 : 24}
             dragDampening={2}
             onItemClick={(id) => setOpenId(id)}
           />
@@ -333,104 +582,100 @@ export default function Products() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="program-title"
-              className="relative z-10 w-full max-w-4xl max-h-[85vh] bg-surface-container-lowest rounded-[28px] shadow-2xl overflow-hidden flex flex-col"
+              className="relative z-10 w-full max-w-6xl max-h-[90vh] bg-surface-container-lowest rounded-[28px] shadow-2xl overflow-hidden flex flex-col md:flex-row"
               initial={{ opacity: 0, y: 30, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.97 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="relative flex-1 overflow-y-auto overscroll-contain">
-                <div className="sticky top-0 z-20 h-0 pointer-events-none">
-                  <button
-                    type="button"
-                    onClick={() => setOpenId(null)}
-                    aria-label="Close"
-                    className="pointer-events-auto absolute top-4 right-4 w-10 h-10 rounded-full bg-on-secondary-fixed/60 hover:bg-on-secondary-fixed/80 text-white backdrop-blur-sm flex items-center justify-center transition-colors shadow-md"
-                  >
-                    <Icon name="close" />
-                  </button>
+              <button
+                type="button"
+                onClick={() => setOpenId(null)}
+                aria-label="Close"
+                className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-on-secondary-fixed/60 hover:bg-on-secondary-fixed/80 text-white backdrop-blur-sm flex items-center justify-center transition-colors shadow-md"
+              >
+                <Icon name="close" />
+              </button>
+              <div className="relative shrink-0 w-full md:w-[45%] aspect-[4/3] md:aspect-auto md:h-auto bg-on-secondary-fixed">
+                {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(openProgram.image) ? (
+                  <video
+                    src={openProgram.image}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={openProgram.image}
+                    alt={openProgram.imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 540px"
+                    className="object-cover"
+                    unoptimized={openProgram.image.endsWith('.gif')}
+                  />
+                )}
+                <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
+                <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 text-white">
+                  <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                    <Icon
+                      name={openProgram.icon}
+                      className="text-on-primary-container text-2xl"
+                    />
+                  </div>
+                  <div className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary-container">
+                    Credit Banc Program
+                  </div>
                 </div>
-                <div className="grid md:grid-cols-2">
-                  <div className="relative aspect-square md:aspect-auto md:min-h-[420px] bg-on-secondary-fixed">
-                  {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(openProgram.image) ? (
-                    <video
-                      src={openProgram.image}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Image
-                      src={openProgram.image}
-                      alt={openProgram.imageAlt}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 480px"
-                      className="object-cover"
-                      unoptimized={openProgram.image.endsWith('.gif')}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
-                  <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 text-white">
-                    <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+              </div>
+              <div className="flex-1 min-w-0 overflow-y-auto overscroll-contain p-6 sm:p-8 md:p-10">
+                <h3
+                  id="program-title"
+                  className="font-headline text-3xl font-extrabold text-on-surface mb-2 pr-12"
+                >
+                  {openProgram.title}
+                </h3>
+                <p className="text-base font-semibold text-primary mb-5">
+                  {openProgram.tagline}
+                </p>
+                <p className="text-on-surface-variant leading-relaxed mb-6">
+                  {openProgram.body}
+                </p>
+                <p className="text-on-surface-variant leading-relaxed mb-6">
+                  {openProgram.expanded.intro}
+                </p>
+                <ul className="space-y-3 mb-6">
+                  {openProgram.expanded.bullets.map((b) => (
+                    <li
+                      key={b}
+                      className="flex items-start gap-3 text-sm leading-relaxed text-on-surface"
+                    >
                       <Icon
-                        name={openProgram.icon}
-                        className="text-on-primary-container text-2xl"
+                        name="check_circle"
+                        className="text-primary text-lg shrink-0 mt-0.5"
                       />
-                    </div>
-                    <div className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary-container">
-                      Credit Banc Program
-                    </div>
-                  </div>
-                </div>
-                <div className="p-8 md:p-10">
-                  <h3
-                    id="program-title"
-                    className="font-headline text-3xl font-extrabold text-on-surface mb-2"
-                  >
-                    {openProgram.title}
-                  </h3>
-                  <p className="text-base font-semibold text-primary mb-5">
-                    {openProgram.tagline}
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="rounded-lg p-4 bg-primary-container/15 border border-primary/10 mb-6">
+                  <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
+                    Best for
                   </p>
-                  <p className="text-on-surface-variant leading-relaxed mb-6">
-                    {openProgram.body}
+                  <p className="text-sm leading-relaxed text-on-surface">
+                    {openProgram.expanded.bestFor}
                   </p>
-                  <p className="text-on-surface-variant leading-relaxed mb-6">
-                    {openProgram.expanded.intro}
-                  </p>
-                  <ul className="space-y-3 mb-6">
-                    {openProgram.expanded.bullets.map((b) => (
-                      <li
-                        key={b}
-                        className="flex items-start gap-3 text-sm leading-relaxed text-on-surface"
-                      >
-                        <Icon
-                          name="check_circle"
-                          className="text-primary text-lg shrink-0 mt-0.5"
-                        />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="rounded-lg p-4 bg-primary-container/15 border border-primary/10 mb-6">
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">
-                      Best for
-                    </p>
-                    <p className="text-sm leading-relaxed text-on-surface">
-                      {openProgram.expanded.bestFor}
-                    </p>
-                  </div>
-                  <a
-                    href="https://creditbanc.io/apply-now"
-                    className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-bold"
-                  >
-                    Check Eligibility
-                    <Icon name="arrow_forward" />
-                  </a>
                 </div>
-                </div>
+                <a
+                  href="https://creditbanc.io/apply-now"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-bold"
+                >
+                  Check Eligibility
+                  <Icon name="arrow_forward" />
+                </a>
               </div>
             </motion.div>
           </motion.div>

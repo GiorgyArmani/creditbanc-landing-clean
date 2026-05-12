@@ -23,7 +23,7 @@ const COMPANY = [
 const RESOURCES = [
   // TODO: Re-enable once Blog page is revamped
   // { label: 'Blog', href: ROUTES.blog },
-  { label: 'Apply for Funding', href: ROUTES.apply },
+  { label: 'Apply for Funding', href: ROUTES.apply, external: true },
   { label: 'Privacy Policy', href: ROUTES.privacy },
 ];
 
@@ -127,6 +127,8 @@ export default function Footer() {
           </a>
           <a
             href={ROUTES.apply}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hover:text-white transition-colors"
           >
             Apply for Funding
@@ -143,7 +145,7 @@ export default function Footer() {
 
 interface FooterColumnProps {
   heading: string;
-  links: { label: string; href: string }[];
+  links: { label: string; href: string; external?: boolean }[];
   index: number;
   children?: React.ReactNode;
 }
@@ -165,6 +167,9 @@ function FooterColumn({ heading, links, index, children }: FooterColumnProps) {
           <li key={link.label}>
             <a
               href={link.href}
+              {...(link.external
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
               className="hover:text-primary-container transition-colors"
             >
               {link.label}

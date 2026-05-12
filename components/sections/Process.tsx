@@ -100,6 +100,8 @@ export default function Process() {
         >
           <motion.a
             href={ROUTES.apply}
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-primary-container text-on-secondary-fixed px-8 sm:px-12 py-4 sm:py-5 rounded-lg font-bold text-base sm:text-lg inline-block"
             whileHover={{
               scale: 1.04,

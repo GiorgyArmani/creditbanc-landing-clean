@@ -66,9 +66,9 @@ const CARD_POSITIONS = [
 // short label — no progress bars, paragraphs, or bullets.
 const MOBILE_CARD_CONTENT = [
   { value: '$500K', label: 'Up to · 24hr' },
-  { value: '$5M', label: 'SBA Programs' },
-  { value: 'No solo.', label: 'Advisor + Team' },
-  { value: '$2B+', label: 'Deployed' },
+  { value: '$10M', label: 'Long Term Capital' },
+  { value: '1-on-1', label: 'Direct Advisor' },
+  { value: 'Multi', label: 'Funding Programs' },
 ];
 
 const MOBILE_CARD_POSITIONS = [
@@ -163,24 +163,24 @@ function renderHeroCard(index: number) {
       return (
         <>
           <CardEyebrow
-            icon="verified"
-            title="SBA Programs"
-            note="Government-backed financing"
+            icon="schedule"
+            title="Long Term Capital"
+            note="10-year terms · monthly payments"
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-4xl font-black text-on-surface tracking-tight tabular-nums">
-              $5M
+              $10M
             </span>
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
               Up to
             </span>
           </div>
           <p className="text-xs leading-relaxed text-on-surface-variant mb-3">
-            Terms up to 25 years. Lower down payments than conventional
-            commercial loans.
+            10-year terms, monthly payments, and competitive rates structured
+            around real cash flow.
           </p>
           <div className="flex flex-wrap gap-2">
-            {['7(a)', '504', 'Express'].map((chip) => (
+            {['SBA', 'Term Loans', 'CRE'].map((chip) => (
               <span
                 key={chip}
                 className="px-2.5 py-1 rounded-full bg-primary-container/40 text-[10px] font-bold uppercase tracking-widest text-on-primary-container"
@@ -195,25 +195,25 @@ function renderHeroCard(index: number) {
       return (
         <>
           <CardEyebrow
-            icon="groups"
-            title="Advisor + Whole Team"
-            note="Not just one person on your side"
+            icon="support_agent"
+            title="Direct Advisor Access"
+            note="One-on-one support"
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-3xl font-black text-on-surface tracking-tight">
-              No solo.
+              1-on-1
             </span>
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
               Promise
             </span>
           </div>
           <p className="text-xs leading-relaxed text-on-surface-variant mb-4">
-            A real Advisor leads — and a full team of underwriters, lender
-            contacts, and process pros has your back. <em>(Yes, all yours.)</em>
+            Talk through your options with a real advisor &mdash; not a call
+            center script reader.
           </p>
           <div className="flex items-center gap-2 text-[11px] font-semibold text-on-surface">
             <Icon name="check_circle" className="text-primary text-base" />
-            Team backed. Advisor led.
+            No chatbot handoffs.
           </div>
         </>
       );
@@ -222,35 +222,30 @@ function renderHeroCard(index: number) {
       return (
         <>
           <CardEyebrow
-            icon="rocket_launch"
-            title="Capital Deployed"
-            note="Trusted by operators"
+            icon="apps"
+            title="Not a One-Trick Lender"
+            note="Multiple funding programs"
           />
           <div className="flex items-baseline justify-between mb-3">
-            <span className="text-4xl font-black text-on-surface tracking-tight tabular-nums">
-              $2B+
+            <span className="text-3xl font-black text-on-surface tracking-tight">
+              Multi
             </span>
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              To Date
+              Programs
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-3 pt-1">
-            <div>
-              <p className="text-lg font-black text-on-surface tabular-nums">
-                15k+
-              </p>
-              <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">
-                Businesses Funded
-              </p>
-            </div>
-            <div>
-              <p className="text-lg font-black text-on-surface tabular-nums">
-                94%
-              </p>
-              <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">
-                Lives Changed
-              </p>
-            </div>
+          <p className="text-xs leading-relaxed text-on-surface-variant mb-3">
+            SBA, equipment, LOC, real estate, and more.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {['SBA', 'Equipment', 'LOC', 'Real Estate'].map((chip) => (
+              <span
+                key={chip}
+                className="px-2.5 py-1 rounded-full bg-primary-container/40 text-[10px] font-bold uppercase tracking-widest text-on-primary-container"
+              >
+                {chip}
+              </span>
+            ))}
           </div>
         </>
       );
@@ -339,6 +334,8 @@ export default function Hero() {
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
             <motion.a
               href={ROUTES.apply}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-on-secondary-fixed text-primary-fixed px-10 py-5 rounded-lg font-bold text-base inline-block"
               whileHover={{
                 scale: 1.04,

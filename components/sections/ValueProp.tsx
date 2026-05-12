@@ -5,21 +5,34 @@ import { useEffect, useRef, useState } from 'react';
 import Stepper, { Step } from '../ui/Stepper';
 import { ROUTES } from '@/lib/site';
 
-const VALUES = [
+const VALUES: { title: string; body: string[] }[] = [
   {
-    icon: 'psychology',
-    title: 'We start with the problem.',
-    body: 'Not the product. Not the shiny offer. The actual reason you need capital in the first place.',
+    title: 'First, tell us what the money needs to do.',
+    body: [
+      'Buy equipment. Cover cash flow. Refinance debt. Fund a project. Move on a property. Hire people. Clean up a mess. Jump on an opportunity before your bank finishes forming a committee.',
+      'Whatever the move is, the money needs a job before it needs a product.',
+    ],
   },
   {
-    icon: 'compare_arrows',
-    title: 'We look at the structure.',
-    body: 'We focus on repayment, timing, cash flow, and whether the financing actually makes sense.',
+    title: 'Next, we look at the structure.',
+    body: [
+      'Repayment, timing, cash flow, use of funds, existing debt, and whether the financing actually makes sense. You know…all the small details that become one giant "WTF happened?" if nobody pays attention.',
+      'Getting approved is nice. Getting approved with the wrong structure is not exactly the victory lap people think it is.',
+    ],
   },
   {
-    icon: 'forum',
-    title: 'We stay in the room.',
-    body: 'Questions, documents, lender requests, next steps. We walk you through the process from first review to final decision, without leaving you to chase answers on your own.',
+    title: 'Then, we sort through the options.',
+    body: [
+      'Term loans, SBA, lines of credit, equipment financing, real estate, factoring, consolidation — the list goes on. Plenty to choose from. Not all of them belong on your plate.',
+      'Some funding solves the problem. Some funding creates more problems. Your Advisor’s job is to help you compare what fits, what doesn’t, what it may cost, and what kind of strings come attached.',
+    ],
+  },
+  {
+    title: 'Finally, we help get you funded.',
+    body: [
+      'Once the choice has been made, the paperwork gets its moment in the sun. Applications, lender questions, document requests, next steps, closing details… your Advisor helps manage all those thrilling little administrative obstacles. (You’re welcome.)',
+      'And once the money hits the account, good luck getting rid of us that easily. We stick around for the next move, the next question, the next opportunity, and the next time the business decides it has plans.',
+    ],
   },
 ];
 
@@ -82,28 +95,43 @@ export default function ValueProp() {
               The Human Edge
             </p>
             <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
-              Funding Is Better With a{' '}
-              <span className="text-primary">Human Involved</span>
+              Funding Works Better With a{' '}
+              <span className="text-primary">Human in the Room</span>
             </h2>
-            <p className="text-on-surface-variant text-lg leading-relaxed mb-10">
-              Business financing should not feel like a second full-time job. At
-              Credit Banc, you work directly with an Advisor who helps you
-              understand your options, prepare what is needed, and keep the
-              process moving.
-            </p>
+            <div className="text-on-surface-variant text-lg leading-relaxed mb-10 space-y-4">
+              <p>
+                There are a lot of ways to fund a business. (Like, a lot a
+                lot.) Some are smart. Some are expensive. Some should come
+                with a warning label and a stiff drink.
+              </p>
+              <p>
+                That&rsquo;s why we don&rsquo;t start by tossing your
+                information into a robot blender and hoping the algorithm has
+                a good day. We start with the need, then work through the
+                options like adults.
+              </p>
+              <p className="font-semibold text-on-secondary-fixed">
+                Here&rsquo;s what that looks like.
+              </p>
+            </div>
             <Stepper
               backButtonText="Back"
               nextButtonText="Next Step"
-              completeButtonText="Got It"
+              completeButtonText="Get Prequalified"
+              onFinalStepCompleted={() => {
+                window.open(ROUTES.apply, '_blank', 'noopener,noreferrer');
+              }}
             >
               {VALUES.map((value) => (
                 <Step key={value.title}>
-                  <h4 className="font-headline text-xl md:text-2xl font-extrabold tracking-tight text-on-secondary-fixed mb-2 leading-snug">
+                  <h4 className="font-headline text-xl md:text-2xl font-extrabold tracking-tight text-on-secondary-fixed mb-3 leading-snug">
                     {value.title}
                   </h4>
-                  <p className="text-on-surface-variant leading-relaxed">
-                    {value.body}
-                  </p>
+                  <div className="text-on-surface-variant leading-relaxed space-y-3">
+                    {value.body.map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
                 </Step>
               ))}
             </Stepper>
@@ -132,22 +160,17 @@ export default function ValueProp() {
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               >
-                <p className="font-headline text-lg sm:text-xl font-bold tracking-tight text-on-secondary-fixed mb-4 leading-snug">
-                  Less guessing. Fewer surprises. Better funding decisions.{' '}
-                  <em className="text-primary">Revolutionary stuff.</em>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+                    Credit Banc &middot; Just now
+                  </p>
+                </div>
+                <p className="font-headline text-lg sm:text-xl font-bold tracking-tight text-on-secondary-fixed leading-snug">
+                  Your loan has been{' '}
+                  <em className="text-primary not-italic">approved.</em> Funds
+                  on the way.
                 </p>
-                <motion.a
-                  href={ROUTES.apply}
-                  className="signature-gradient text-white px-6 py-3 rounded-lg font-bold text-xs uppercase tracking-widest shadow-lg inline-block"
-                  whileHover={{
-                    scale: 1.04,
-                    boxShadow: '0 18px 35px -10px rgba(0, 108, 76, 0.45)',
-                  }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-                >
-                  Start Today!
-                </motion.a>
               </motion.div>
             </motion.div>
             <motion.div

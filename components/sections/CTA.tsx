@@ -26,15 +26,22 @@ export default function CTA() {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 sm:mb-8 tracking-tighter">
-          Tell us what you&rsquo;re looking for.
+          Not sure what kind of funding you need?
         </h2>
-        <p className="text-base sm:text-lg md:text-xl text-primary-fixed mb-10 sm:mb-12 leading-relaxed">
-          There&rsquo;s no obligation and no impact on your credit to get
-          started.
+        <p className="text-lg sm:text-xl md:text-2xl text-white font-semibold mb-4 sm:mb-6 leading-relaxed">
+          Good. That means you probably haven&rsquo;t been sold the wrong thing
+          yet.
+        </p>
+        <p className="text-base sm:text-lg text-primary-fixed mb-10 sm:mb-12 leading-relaxed max-w-3xl mx-auto">
+          Tell us what you need the money to do. Buy equipment? Cover cash flow?
+          Refinance debt? Fund a project? Move on a property? Whatever it is,
+          we&rsquo;ll help match the need to the right solution.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
           <motion.a
             href={ROUTES.apply}
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-on-secondary-fixed text-primary-fixed px-8 sm:px-12 py-4 sm:py-6 rounded-lg font-bold text-base sm:text-xl inline-block"
             whileHover={{
               scale: 1.05,
@@ -43,7 +50,7 @@ export default function CTA() {
             whileTap={{ scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 380, damping: 22 }}
           >
-            Apply for Funding
+            Get Pre-Qualified Today
           </motion.a>
           <motion.a
             href={SITE.phoneTel}
@@ -55,7 +62,7 @@ export default function CTA() {
             whileTap={{ scale: 0.97 }}
             transition={{ duration: 0.25 }}
           >
-            Call {SITE.phone}
+            Talk to an Advisor: {SITE.phone}
           </motion.a>
         </div>
       </motion.div>
