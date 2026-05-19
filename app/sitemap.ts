@@ -29,10 +29,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: ROUTES.apply,
+      url: `${SITE.baseUrl}/cash-flow-gap`,
       lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.8,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${SITE.baseUrl}/apply-now`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
     },
     {
       url: ROUTES.team,
@@ -47,7 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: ROUTES.privacy,
+      url: `${SITE.baseUrl}/privacypolicy`,
       lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.3,

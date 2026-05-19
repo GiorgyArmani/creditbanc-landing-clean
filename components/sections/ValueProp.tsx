@@ -141,7 +141,7 @@ export default function ValueProp() {
               completeButtonText="Get Prequalified"
               onStepChange={setCurrentStep}
               onFinalStepCompleted={() => {
-                window.open(ROUTES.apply, '_blank', 'noopener,noreferrer');
+                window.location.href = ROUTES.apply;
               }}
             >
               {VALUES.map((value) => (

@@ -641,9 +641,7 @@ export default function Products() {
                   </p>
                 </div>
                 <a
-                  href="https://creditbanc.io/apply-now"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/apply-now"
                   className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-bold"
                 >
                   Check Eligibility

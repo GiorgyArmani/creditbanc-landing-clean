@@ -23,7 +23,7 @@ const COMPANY = [
 const RESOURCES = [
   // TODO: Re-enable once Blog page is revamped
   // { label: 'Blog', href: ROUTES.blog },
-  { label: 'Apply for Funding', href: ROUTES.apply, external: true },
+  { label: 'Apply for Funding', href: ROUTES.apply },
   { label: 'Privacy Policy', href: ROUTES.privacy },
 ];
 
@@ -127,8 +127,6 @@ export default function Footer() {
           </a>
           <a
             href={ROUTES.apply}
-            target="_blank"
-            rel="noopener noreferrer"
             className="hover:text-white transition-colors"
           >
             Apply for Funding

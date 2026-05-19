@@ -334,8 +334,6 @@ export default function Hero() {
           <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
             <motion.a
               href={ROUTES.apply}
-              target="_blank"
-              rel="noopener noreferrer"
               className="bg-on-secondary-fixed text-primary-fixed px-10 py-5 rounded-lg font-bold text-base inline-block"
               whileHover={{
                 scale: 1.04,

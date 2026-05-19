@@ -3,13 +3,14 @@
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { ROUTES, SITE } from '@/lib/site';
+import { SITE } from '@/lib/site';
 
 const NAV_LINKS = [
   { label: 'SBA Financing', href: '#sba' },
   { label: 'Real Estate Financing', href: '#real-estate' },
   { label: 'Small Business Funding', href: '#small-business' },
   { label: 'Our Process', href: '#process' },
+  { label: 'Cash Flow Tool', href: '/cash-flow-gap' },
   // TODO: Re-enable once these pages are revamped
   // { label: 'Our Team', href: ROUTES.team },
   // { label: 'Blog', href: ROUTES.blog },
@@ -115,9 +116,7 @@ export default function Navbar() {
             Login
           </motion.a>
           <motion.a
-            href={ROUTES.apply}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/apply-now"
             className="hidden md:inline-block signature-gradient text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm uppercase tracking-widest shadow-lg"
             whileHover={{
               scale: 1.04,
@@ -238,9 +237,7 @@ export default function Navbar() {
                   className="px-6 pt-3 pb-2"
                 >
                   <a
-                    href={ROUTES.apply}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/apply-now"
                     onClick={() => setMenuOpen(false)}
                     className="signature-gradient block text-center text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-widest shadow-lg"
                   >

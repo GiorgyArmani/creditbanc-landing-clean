@@ -40,8 +40,6 @@ export default function CTA() {
         <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
           <motion.a
             href={ROUTES.apply}
-            target="_blank"
-            rel="noopener noreferrer"
             className="bg-on-secondary-fixed text-primary-fixed px-8 sm:px-12 py-4 sm:py-6 rounded-lg font-bold text-base sm:text-xl inline-block"
             whileHover={{
               scale: 1.05,

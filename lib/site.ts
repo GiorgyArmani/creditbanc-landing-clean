@@ -12,10 +12,10 @@ export const ROUTES = {
   sba: 'https://creditbanc.io/sba-loans',
   realEstate: 'https://creditbanc.io/real-estate-financing',
   smallBusiness: 'https://creditbanc.io/small-business-funding',
-  apply: 'https://creditbanc.io/apply-now',
+  apply: '/apply-now',
   blog: 'https://creditbanc.io/blog',
   team: 'https://creditbanc.io/meet-the-team',
-  privacy: 'https://creditbanc.io/privacypolicy',
+  privacy: '/privacypolicy',
 } as const;
 
 export const SOCIAL = {
