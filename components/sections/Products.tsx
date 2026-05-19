@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Icon from '../ui/Icon';
-import DomeGallery, { type DomeImageItem } from '../ui/DomeGallery';
 import CircularGallery from '../ui/CircularGallery';
 import { useMediaQuery } from '@/lib/useMediaQuery';
 
@@ -43,7 +42,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Established businesses that need more than a quick cash bandage. Term loans are a good fit when the goal is to stabilize cash flow, fund growth, refinance expensive short-term debt, or make a larger business investment without turning repayment into a full-contact sport.',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/term%20loans.png',
     imageAlt: 'Term Loans',
   },
   {
@@ -65,7 +64,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Businesses that need equipment to operate, grow, replace outdated assets, or take on bigger work without tying up cash upfront. Equipment financing makes sense when the equipment has a clear business purpose, and waiting to buy it would cost more than financing it properly.',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/equipment%20financing.png',
     imageAlt: 'Equipment Financing',
   },
   {
@@ -88,7 +87,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Businesses that want flexible access to capital without taking the whole bag upfront. A line of credit makes sense when your cash needs come and go, because business expenses have a real talent for showing up before the money does.',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/lines%20of%20credit.png',
     imageAlt: 'Lines of Credit',
   },
   {
@@ -110,7 +109,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Businesses that invoice customers but have to wait weeks or months to get paid. Factoring makes sense when revenue is there on paper, but cash is stuck in limbo, and the business still has real expenses due right now. Because unfortunately, payroll does not accept “the client said they’ll send it next week” as legal tender. (If only.)',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/accounts%20receivable%20factoring.png',
     imageAlt: 'Accounts Receivable Factoring',
   },
   {
@@ -132,7 +131,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'eCommerce businesses with real sales momentum that need cash to keep the machine moving. Inventory has to be ordered. Ads have to run. Fulfillment has to happen. Customers do not care that your cash is somewhere between Stripe, Shopify, and a warehouse invoice. The goal is to keep growth moving without turning the business into a fee machine for someone else.',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/ecommerce%20funding.png',
     imageAlt: 'eCommerce Funding',
   },
   {
@@ -154,7 +153,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Businesses that need fast access to capital and understand the cost, timing, and repayment structure before moving forward. An MCA may make sense for a short-term opportunity, urgent need, or revenue-backed situation where speed matters and the cash flow can support it. It does not make sense as the default answer every time a business owner needs money. That is how too many companies end up stacking expensive debt and wondering why their bank account feels like it has a leak.',
     },
-    image: '/smallbusinessfunding.png',
+    image: '/program%20cards/mca.png',
     imageAlt: 'Merchant Cash Advance',
   },
   {
@@ -178,7 +177,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Real estate investors who want to buy, refinance, or grow a rental portfolio without forcing every deal through traditional personal-income underwriting. This can work well for seasoned operators, newer investors with a strong property, foreign nationals investing in U.S. real estate, or anyone building a portfolio where the numbers on the property matter more than the bank’s outdated checklist.',
     },
-    image: '/real%20estate.png',
+    image: '/program%20cards/rental%20property%20loans.png',
     imageAlt: 'Rental Property Loans',
   },
   {
@@ -200,7 +199,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Business owners and real estate investors financing commercial property that needs more than a generic loan quote. This can work for owner-occupied properties, multifamily assets, mixed-use developments, warehouses, retail, office, self-storage, construction projects, bridge scenarios, or deals where the structure matters just as much as the rate. Commercial real estate has too many moving parts for lazy financing. The right loan should match the property, the plan, and the way the deal actually makes money.',
     },
-    image: '/real%20estate.png',
+    image: '/program%20cards/commercial%20mortgage.png',
     imageAlt: 'Commercial Mortgage Loans',
   },
   {
@@ -222,7 +221,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Real estate investors who need speed, flexibility, and a loan structure based more on the asset than the usual bank checklist. Hard money can make sense for acquisitions, bridge financing, stabilization, value-add projects, or deals where timing matters and the exit plan is clear. It’s also a program where structure matters a lot. Fast capital can help you win the deal. Bad fast capital can make the deal wish it had never met you. (Don’t worry. Your Credit Banc Advisor is here to keep that from happening.)',
     },
-    image: '/real%20estate.png',
+    image: '/program%20cards/hard%20money.png',
     imageAlt: 'Hard Money Loans',
   },
   {
@@ -244,7 +243,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Investors who see the upside in a rough property and need capital to move before the opportunity disappears. Fix-and-flip loans make sense when the renovation budget is clear, the timeline is realistic, and the exit plan doesn’t rely on crossed fingers and a hot market.',
     },
-    image: '/real%20estate.png',
+    image: '/program%20cards/fix%20and%20flip.png',
     imageAlt: 'Fix-and-Flip Loans',
   },
   {
@@ -266,7 +265,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Projects where the opportunity is solid, but the capital needs to cover more than just the build. Land, site development, construction costs, and draw timing all matter here, which is why ground-up financing works best for borrowers who already know what they’re building, why it makes sense, and how the project gets paid off.',
     },
-    image: '/real%20estate.png',
+    image: '/program%20cards/ground%20up%20construction.png',
     imageAlt: 'Ground-Up Construction Loans',
   },
   {
@@ -288,7 +287,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Business owners with a specific need that is too important to ignore, but not big enough for a massive financing package. FlexFund is a fit when the business needs a clean, manageable way to handle the next move without overborrowing or settling for short-term money with an attitude problem.',
     },
-    image: '/advisory.webp',
+    image: '/program%20cards/flexfund.png',
     imageAlt: 'FlexFund Program',
   },
   {
@@ -311,7 +310,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Business owners with an SBA loan that may be costing more than it should. SBA refinancing makes sense when the goal is to reduce monthly payments, free up cash flow, access additional working capital, or finally ask the very reasonable question: “Why the hell are we still paying it like this?”',
     },
-    image: '/advisory.webp',
+    image: '/program%20cards/sba%20refinance.png',
     imageAlt: 'SBA Loan Refinance',
   },
   {
@@ -336,7 +335,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Business owners who want to own the property their business operates from and use the space as a long-term asset. SBA commercial real estate financing makes sense when the goal is to preserve cash, build equity, control the property, lease out unused square footage, or finally stop asking a landlord for permission to improve the building you’re already paying for.',
     },
-    image: '/advisory.webp',
+    image: '/program%20cards/sba%20commercial%20real%20estate.png',
     imageAlt: 'SBA Commercial Real Estate Loans',
   },
   {
@@ -360,7 +359,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Buyers who want to purchase a business with history, revenue, customers, and systems already in place. SBA acquisition financing makes sense when the deal can support the debt, the buyer can run the business, and the purchase price is grounded in a little thing we like to call “reality”.',
     },
-    image: '/advisory.webp',
+    image: '/program%20cards/sba%20business%20acquisition.png',
     imageAlt: 'SBA Business Acquisition Loans',
   },
   {
@@ -385,7 +384,7 @@ const PROGRAMS: Program[] = [
       bestFor:
         'Entrepreneurs who are ready to start a business and have more than blind enthusiasm carrying the deal. SBA startup financing makes sense when the borrower has relevant experience, a clear plan, realistic projections, and enough capital invested to show they are serious. A good idea helps. A plan that survives basic math helps more.',
     },
-    image: '/advisory.webp',
+    image: '/program%20cards/sba%20startup.png',
     imageAlt: 'SBA Startup Loans',
   },
 ];
@@ -395,7 +394,6 @@ const CATEGORY_ANCHORS = ['sba', 'real-estate', 'small-business'] as const;
 export default function Products() {
   const [openId, setOpenId] = useState<string | null>(null);
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const isXl = useMediaQuery('(min-width: 1280px)');
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -427,17 +425,18 @@ export default function Products() {
     }
   }, [openId]);
 
-  // Filter video and animated-GIF sources out of the dome — each tile spawns
+  // Filter video and animated-GIF sources out of the ring — each tile spawns
   // its own <video> request or runs its own decode pass for a GIF, which
   // multiplies network and CPU cost. Animated assets still play in the
   // program modal when the user opens that program's card.
-  const galleryItems: DomeImageItem[] = PROGRAMS.filter(
-    (p) => !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
+  const galleryItems = PROGRAMS.filter(
+    (p) =>
+      p.image.startsWith('/program%20cards/') &&
+      !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
   ).map((p) => ({
-    src: p.image,
-    alt: p.title,
+    image: p.image,
+    text: '',
     id: p.id,
-    label: p.title,
   }));
 
   const openProgram = openId
@@ -510,8 +509,8 @@ export default function Products() {
           <p className="text-on-surface-variant text-sm md:text-base leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="inline-flex items-center gap-2">
               <Icon name="open_with" className="text-primary text-base" />
-              <span className="md:hidden">Swipe to explore.</span>
-              <span className="hidden md:inline">Drag the dome to explore.</span>
+              <span className="md:hidden">Swipe to spin. (It also spins itself.)</span>
+              <span className="hidden md:inline">Drag to spin. (It also spins itself.)</span>
             </span>
             <span className="hidden md:inline text-on-surface-variant/30">
               |
@@ -525,45 +524,19 @@ export default function Products() {
         </motion.div>
       </div>
 
-      {!isDesktop && (
-        <div className="relative w-screen h-[460px] bg-on-secondary-fixed">
-          <CircularGallery
-            items={PROGRAMS.filter(
-              (p) => !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
-            ).map((p) => ({
-              image: p.image,
-              text: p.title.toUpperCase(),
-              id: p.id,
-            }))}
-            bend={1}
-            textColor="#ffffff"
-            borderRadius={0.06}
-            font="900 32px Manrope, system-ui, sans-serif"
-            scrollSpeed={2}
-            scrollEase={0.05}
-            onItemClick={(id) => setOpenId(id)}
-          />
-        </div>
-      )}
-
-      {isDesktop && (
-        <div className="relative w-screen h-[560px] md:h-[640px] lg:h-[820px] xl:h-[1000px] 2xl:h-[1100px]">
-          <DomeGallery
-            images={galleryItems}
-            grayscale={true}
-            overlayBlurColor="#f4f3f1"
-            imageBorderRadius="10px"
-            openedImageBorderRadius="20px"
-            fit={isXl ? 0.8 : 0.85}
-            minRadius={isXl ? 600 : 400}
-            maxRadius={isXl ? 1333 : 900}
-            maxVerticalRotationDeg={9}
-            segments={isXl ? 34 : 24}
-            dragDampening={2}
-            onItemClick={(id) => setOpenId(id)}
-          />
-        </div>
-      )}
+      <div className="relative w-screen h-[460px] md:h-[560px] lg:h-[640px] xl:h-[720px] bg-on-secondary-fixed">
+        <CircularGallery
+          items={galleryItems}
+          bend={1}
+          textColor="#ffffff"
+          borderRadius={0.06}
+          font={`900 ${isDesktop ? '40px' : '32px'} Manrope, system-ui, sans-serif`}
+          scrollSpeed={2}
+          scrollEase={0.05}
+          autoScrollSpeed={0.08}
+          onItemClick={(id) => setOpenId(id)}
+        />
+      </div>
 
       <AnimatePresence>
         {openProgram && (

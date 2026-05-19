@@ -127,9 +127,12 @@ export default function FAQ() {
           </p>
           <h2
             id="faq-heading"
-            className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-4"
+            className="font-headline text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-on-secondary-fixed mb-4 leading-[1.02]"
           >
-            Questions Worth Asking Before You Borrow
+            <span className="md:whitespace-nowrap">Questions Worth Asking</span>{' '}
+            <span className="block md:inline text-primary md:text-on-secondary-fixed mt-1 md:mt-0">
+              Before You Borrow
+            </span>
           </h2>
           <p className="text-on-surface-variant leading-relaxed max-w-2xl mx-auto">
             Call us old-fashioned, but you should know who you're getting into bed with before the fine print takes its pants off.

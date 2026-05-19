@@ -214,6 +214,9 @@ class Media {
   speed: number = 0;
   isBefore: boolean = false;
   isAfter: boolean = false;
+  targetGrayscale: number = 1;
+  currentGrayscale: number = 1;
+  planarX: number = 0;
 
   constructor({
     geometry,
@@ -270,7 +273,6 @@ class Media {
         void main() {
           vUv = uv;
           vec3 p = position;
-          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }
       `,
@@ -280,6 +282,7 @@ class Media {
         uniform vec2 uPlaneSizes;
         uniform sampler2D tMap;
         uniform float uBorderRadius;
+        uniform float uGrayscale;
         varying vec2 vUv;
 
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -298,12 +301,15 @@ class Media {
           );
           vec4 color = texture2D(tMap, uv);
 
+          float luma = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+          vec3 finalColor = mix(color.rgb, vec3(luma), clamp(uGrayscale, 0.0, 1.0));
+
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
 
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
 
-          gl_FragColor = vec4(color.rgb, alpha);
+          gl_FragColor = vec4(finalColor, alpha);
         }
       `,
       uniforms: {
@@ -313,6 +319,7 @@ class Media {
         uSpeed: { value: 0 },
         uTime: { value: 100 * Math.random() },
         uBorderRadius: { value: this.borderRadius },
+        uGrayscale: { value: 1 },
       },
       transparent: true,
     });
@@ -351,45 +358,65 @@ class Media {
     scroll: { current: number; last: number },
     direction: 'right' | 'left'
   ) {
-    this.plane.position.x = this.x - scroll.current - this.extra;
-
-    const x = this.plane.position.x;
-    const H = this.viewport.width / 2;
-
     if (this.bend === 0) {
+      const planarX = this.x - scroll.current - this.extra;
+      this.planarX = planarX;
+      this.plane.position.x = planarX;
       this.plane.position.y = 0;
+      this.plane.position.z = 0;
+      this.plane.rotation.y = 0;
       this.plane.rotation.z = 0;
-    } else {
-      const B_abs = Math.abs(this.bend);
-      const R = (H * H + B_abs * B_abs) / (2 * B_abs);
-      const effectiveX = Math.min(Math.abs(x), H);
+      this.plane.visible = true;
 
-      const arc = R - Math.sqrt(R * R - effectiveX * effectiveX);
-      if (this.bend > 0) {
-        this.plane.position.y = -arc;
-        this.plane.rotation.z = -Math.sign(x) * Math.asin(effectiveX / R);
-      } else {
-        this.plane.position.y = arc;
-        this.plane.rotation.z = Math.sign(x) * Math.asin(effectiveX / R);
+      const planeOffset = this.plane.scale.x / 2;
+      const viewportOffset = this.viewport.width / 2;
+      this.isBefore = planarX + planeOffset < -viewportOffset;
+      this.isAfter = planarX - planeOffset > viewportOffset;
+      if (direction === 'right' && this.isBefore) {
+        this.extra -= this.widthTotal;
+        this.isBefore = this.isAfter = false;
       }
+      if (direction === 'left' && this.isAfter) {
+        this.extra += this.widthTotal;
+        this.isBefore = this.isAfter = false;
+      }
+    } else {
+      // 3D ring: every card has a fixed angular slot; scroll rotates the
+      // whole ring uniformly. The ring radius is sized so all N cards fit
+      // around one full revolution.
+      const baseAngle = (this.index / this.length) * 2 * Math.PI;
+      const angle = baseAngle - scroll.current * 0.04;
+      const R = this.widthTotal / (2 * Math.PI);
+      this.plane.position.x = R * Math.sin(angle);
+      this.plane.position.z = R * (Math.cos(angle) - 1);
+      this.plane.position.y = 0;
+      this.plane.rotation.y = -angle;
+      this.plane.rotation.z = 0;
+      // Hide cards on the back half of the ring (facing away from camera).
+      this.plane.visible = Math.cos(angle) > -0.1;
+      // planarX used for tap/hover lookup — track the projected screen-X
+      // of this card so click detection matches what the user sees.
+      const camDist = 20; // camera.position.z, mirrors createCamera()
+      const persp = camDist / (camDist - this.plane.position.z);
+      this.planarX = this.plane.position.x * persp;
+      this.isBefore = false;
+      this.isAfter = false;
     }
+
+    // Render back-to-front so the side cards properly tuck behind the
+    // center cards as the arc curves away from the camera.
+    this.plane.renderOrder = this.plane.position.z;
 
     this.speed = scroll.current - scroll.last;
     this.program.uniforms.uTime.value += 0.04;
     this.program.uniforms.uSpeed.value = this.speed;
 
-    const planeOffset = this.plane.scale.x / 2;
-    const viewportOffset = this.viewport.width / 2;
-    this.isBefore = this.plane.position.x + planeOffset < -viewportOffset;
-    this.isAfter = this.plane.position.x - planeOffset > viewportOffset;
-    if (direction === 'right' && this.isBefore) {
-      this.extra -= this.widthTotal;
-      this.isBefore = this.isAfter = false;
-    }
-    if (direction === 'left' && this.isAfter) {
-      this.extra += this.widthTotal;
-      this.isBefore = this.isAfter = false;
-    }
+    this.currentGrayscale = lerp(
+      this.currentGrayscale,
+      this.targetGrayscale,
+      0.12
+    );
+    this.program.uniforms.uGrayscale.value = this.currentGrayscale;
   }
 
   onResize({
@@ -406,9 +433,12 @@ class Media {
         ];
       }
     }
-    this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+    // Plane matches the 2:3 (400×600) program-card aspect exactly so the
+    // shader's object-cover doesn't crop the baked-in headers/CTAs.
+    const targetHeight = this.viewport.height * 0.85;
+    this.plane.scale.y = targetHeight;
+    this.plane.scale.x = targetHeight * (2 / 3);
+    this.scale = this.plane.scale.y / this.viewport.height;
     this.plane.program.uniforms.uPlaneSizes.value = [
       this.plane.scale.x,
       this.plane.scale.y,
@@ -428,6 +458,7 @@ interface AppConfig {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  autoScrollSpeed?: number;
   onItemClick?: (id: string) => void;
 }
 
@@ -464,6 +495,12 @@ class App {
   start: number = 0;
   startY: number = 0;
   movedDist: number = 0;
+  downAt: number = 0;
+  lastClientX: number | null = null;
+  lastClientY: number | null = null;
+  boundOnPointerLeave!: () => void;
+  autoScrollSpeed: number = 0;
+  bend: number = 0;
 
   constructor(
     container: HTMLElement,
@@ -475,12 +512,15 @@ class App {
       font = 'bold 30px Figtree',
       scrollSpeed = 2,
       scrollEase = 0.05,
+      autoScrollSpeed = 0,
       onItemClick,
     }: AppConfig
   ) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.autoScrollSpeed = autoScrollSpeed;
+    this.bend = bend;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.onItemClick = onItemClick;
@@ -531,7 +571,9 @@ class App {
   ) {
     const galleryItems = items && items.length ? items : [];
     if (galleryItems.length === 0) return;
-    this.mediasImages = galleryItems.concat(galleryItems);
+    // 3D ring mode shows each card once around the loop; the linear flat
+    // mode duplicates the list so cards refill the screen during scroll.
+    this.mediasImages = bend !== 0 ? galleryItems : galleryItems.concat(galleryItems);
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
@@ -555,26 +597,52 @@ class App {
   onTouchDown(e: MouseEvent | TouchEvent) {
     this.isDown = true;
     this.movedDist = 0;
+    this.downAt = performance.now();
     this.scroll.position = this.scroll.current;
     this.start = 'touches' in e ? e.touches[0].clientX : e.clientX;
     this.startY = 'touches' in e ? e.touches[0].clientY : e.clientY;
   }
 
   onTouchMove(e: MouseEvent | TouchEvent) {
+    const clientX = 'touches' in e ? e.touches[0]?.clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0]?.clientY : e.clientY;
+    if (clientX !== undefined) this.lastClientX = clientX;
+    if (clientY !== undefined) this.lastClientY = clientY;
+
     if (!this.isDown) return;
-    const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const distance = (this.start - x) * (this.scrollSpeed * 0.025);
-    this.movedDist = Math.max(this.movedDist, Math.abs(this.start - x));
+    if (clientX === undefined) return;
+    const distance = (this.start - clientX) * (this.scrollSpeed * 0.025);
+    const dx = Math.abs(this.start - clientX);
+    const dy = clientY !== undefined ? Math.abs(this.startY - clientY) : 0;
+    this.movedDist = Math.max(this.movedDist, Math.max(dx, dy));
     this.scroll.target = (this.scroll.position ?? 0) + distance;
+  }
+
+  onPointerLeave(e: MouseEvent | TouchEvent) {
+    this.lastClientX = null;
+    this.lastClientY = null;
+    this.onTouchUp(e);
   }
 
   onTouchUp(e: MouseEvent | TouchEvent) {
     this.isDown = false;
-    if (this.movedDist < 6 && this.onItemClick) {
+    const heldFor = performance.now() - this.downAt;
+    // Treat as a tap only if it was short and barely moved. We don't check
+    // scroll momentum here — auto-scroll keeps target ahead of current, so
+    // any momentum-based gate would block legitimate clicks on the ring.
+    const isTap = this.movedDist < 12 && heldFor < 400;
+    if (isTap && this.onItemClick) {
       const tappedId = this.findTappedId(e);
       if (tappedId) {
         this.onItemClick(tappedId);
       }
+    }
+    // Touch has no persistent "hover" — clear the hover position so the
+    // auto-scroll resumes after a swipe/tap on mobile. (For mouse, the
+    // hover state persists naturally until mouseleave.)
+    if ('changedTouches' in e) {
+      this.lastClientX = null;
+      this.lastClientY = null;
     }
     this.onCheck();
   }
@@ -589,7 +657,8 @@ class App {
     let closest: Media | undefined;
     let bestDist = Infinity;
     for (const m of this.medias) {
-      const dist = Math.abs(m.plane.position.x - worldX);
+      if (!m.plane.visible) continue;
+      const dist = Math.abs(m.planarX - worldX);
       if (dist < bestDist) {
         bestDist = dist;
         closest = m;
@@ -612,6 +681,9 @@ class App {
   }
 
   onCheck() {
+    // 3D ring mode flows continuously — don't snap to grid (it would
+    // jerk every wheel tick or drag-release).
+    if (this.bend !== 0) return;
     if (!this.medias || !this.medias[0]) return;
     const width = this.medias[0].width;
     const itemIndex = Math.round(Math.abs(this.scroll.target) / width);
@@ -640,14 +712,49 @@ class App {
   }
 
   update() {
+    const isHovering = this.lastClientX !== null && this.lastClientY !== null;
+    if (this.autoScrollSpeed > 0 && !this.isDown && !isHovering) {
+      this.scroll.target += this.autoScrollSpeed;
+    }
+
     this.scroll.current = lerp(
       this.scroll.current,
       this.scroll.target,
       this.scroll.ease
     );
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
+
+    let hoverWorldX: number | null = null;
+    let hoverWorldY: number | null = null;
+    if (this.lastClientX !== null && this.lastClientY !== null && !this.isDown) {
+      const rect = this.container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        const ndcX = ((this.lastClientX - rect.left) / rect.width) * 2 - 1;
+        const ndcY = -(((this.lastClientY - rect.top) / rect.height) * 2 - 1);
+        hoverWorldX = (ndcX * this.viewport.width) / 2;
+        hoverWorldY = (ndcY * this.viewport.height) / 2;
+      }
+    }
+
     if (this.medias) {
-      this.medias.forEach((media) => media.update(this.scroll, direction));
+      this.medias.forEach((media) => {
+        media.update(this.scroll, direction);
+        if (
+          hoverWorldX !== null &&
+          hoverWorldY !== null &&
+          media.plane.visible
+        ) {
+          const halfW = media.plane.scale.x / 2;
+          const halfH = media.plane.scale.y / 2;
+          // planarX is the projected screen-X (set in Media.update),
+          // so hit-testing matches what the user actually sees.
+          const inX = Math.abs(media.planarX - hoverWorldX) <= halfW;
+          const inY = Math.abs(media.plane.position.y - hoverWorldY) <= halfH;
+          media.targetGrayscale = inX && inY ? 0 : 1;
+        } else {
+          media.targetGrayscale = 1;
+        }
+      });
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
@@ -660,6 +767,7 @@ class App {
     this.boundOnTouchDown = this.onTouchDown.bind(this);
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
+    this.boundOnPointerLeave = this.onPointerLeave.bind(this) as () => void;
     window.addEventListener('resize', this.boundOnResize);
     this.container.addEventListener('wheel', this.boundOnWheel, {
       passive: true,
@@ -667,7 +775,7 @@ class App {
     this.container.addEventListener('mousedown', this.boundOnTouchDown);
     this.container.addEventListener('mousemove', this.boundOnTouchMove);
     this.container.addEventListener('mouseup', this.boundOnTouchUp);
-    this.container.addEventListener('mouseleave', this.boundOnTouchUp);
+    this.container.addEventListener('mouseleave', this.boundOnPointerLeave);
     this.container.addEventListener('touchstart', this.boundOnTouchDown, {
       passive: true,
     });
@@ -684,7 +792,7 @@ class App {
     this.container.removeEventListener('mousedown', this.boundOnTouchDown);
     this.container.removeEventListener('mousemove', this.boundOnTouchMove);
     this.container.removeEventListener('mouseup', this.boundOnTouchUp);
-    this.container.removeEventListener('mouseleave', this.boundOnTouchUp);
+    this.container.removeEventListener('mouseleave', this.boundOnPointerLeave);
     this.container.removeEventListener('touchstart', this.boundOnTouchDown);
     this.container.removeEventListener('touchmove', this.boundOnTouchMove);
     this.container.removeEventListener('touchend', this.boundOnTouchUp);
@@ -708,6 +816,7 @@ interface CircularGalleryProps {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  autoScrollSpeed?: number;
   onItemClick?: (id: string) => void;
 }
 
@@ -719,6 +828,7 @@ export default function CircularGallery({
   font = 'bold 30px Figtree',
   scrollSpeed = 2,
   scrollEase = 0.05,
+  autoScrollSpeed = 0,
   onItemClick,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -737,6 +847,7 @@ export default function CircularGallery({
         font,
         scrollSpeed,
         scrollEase,
+        autoScrollSpeed,
         onItemClick,
       });
     };
@@ -751,10 +862,10 @@ export default function CircularGallery({
       cancelled = true;
       app?.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, onItemClick]);
+  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, autoScrollSpeed, onItemClick]);
   return (
     <div
-      className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+      className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
       ref={containerRef}
     />
   );

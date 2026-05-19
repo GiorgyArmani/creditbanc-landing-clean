@@ -47,8 +47,11 @@ export default function Process() {
             Getting Started is Simple
           </h2>
           <p className="text-slate-300 text-lg leading-relaxed">
-            At Credit Banc, you work directly with an Advisor who helps you
-            through the process from start to finish.
+            Drop your business documents into the{' '}
+            <span className="font-bold text-white">Vault</span> — easy, fast,
+            and secure. A simple process that gets you funded with the right
+            capital for the actual job. (No fax machines, no late-night
+            email chains, no missing pages.)
           </p>
         </motion.div>
         <div className="relative">

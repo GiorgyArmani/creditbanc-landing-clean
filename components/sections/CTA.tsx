@@ -32,7 +32,7 @@ export default function CTA() {
           Good. That means you probably haven&rsquo;t been sold the wrong thing
           yet.
         </p>
-        <p className="text-base sm:text-lg text-primary-fixed mb-10 sm:mb-12 leading-relaxed max-w-3xl mx-auto">
+        <p className="text-base sm:text-lg text-white mb-10 sm:mb-12 leading-relaxed max-w-3xl mx-auto">
           Tell us what you need the money to do. Buy equipment? Cover cash flow?
           Refinance debt? Fund a project? Move on a property? Whatever it is,
           we&rsquo;ll help match the need to the right solution.

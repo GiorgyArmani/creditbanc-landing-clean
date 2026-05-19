@@ -1,9 +1,19 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Stepper, { Step } from '../ui/Stepper';
 import { ROUTES } from '@/lib/site';
+
+// Per-step background video. Index matches Stepper's currentStep - 1.
+// Swap these to real assets per step when the final cuts land — only 3
+// distinct videos exist today, so step 3 reuses the step-1 clip.
+const STEP_VIDEOS = [
+  '/happy%20owner.mp4',
+  '/happy%20owner%202.mp4',
+  '/happy%20owner.mp4',
+  '/moneythrow.mp4',
+];
 
 const VALUES: { title: string; body: string[] }[] = [
   {
@@ -36,7 +46,7 @@ const VALUES: { title: string; body: string[] }[] = [
   },
 ];
 
-function LazyValueVideo() {
+function StepVideo({ src }: { src: string }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -62,24 +72,35 @@ function LazyValueVideo() {
   return (
     <div
       ref={wrapperRef}
-      className="block w-full h-full object-cover aspect-[4/5] bg-on-secondary-fixed"
+      className="relative block w-full h-full aspect-[4/5] bg-on-secondary-fixed overflow-hidden"
     >
-      {shouldLoad && (
-        <video
-          src="/happy%20owner.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="block w-full h-full object-cover aspect-[4/5]"
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {shouldLoad && (
+          <motion.video
+            key={src}
+            src={src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 block w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 export default function ValueProp() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const videoSrc =
+    STEP_VIDEOS[Math.min(Math.max(currentStep, 1), STEP_VIDEOS.length) - 1];
+
   return (
     <section className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface">
       <div className="max-w-7xl mx-auto">
@@ -118,6 +139,7 @@ export default function ValueProp() {
               backButtonText="Back"
               nextButtonText="Next Step"
               completeButtonText="Get Prequalified"
+              onStepChange={setCurrentStep}
               onFinalStepCompleted={() => {
                 window.open(ROUTES.apply, '_blank', 'noopener,noreferrer');
               }}
@@ -148,7 +170,7 @@ export default function ValueProp() {
               whileHover={{ y: -4 }}
               transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             >
-              <LazyValueVideo />
+              <StepVideo src={videoSrc} />
               <div
                 aria-hidden
                 className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-on-secondary-fixed/90 via-on-secondary-fixed/50 to-transparent pointer-events-none"
