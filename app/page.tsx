@@ -18,7 +18,7 @@ export default function Home() {
         <TrustMetrics />
         <Products />
         <ValueProp />
-        <Process />
+       
         <FAQ />
         <CTA />
       </main>

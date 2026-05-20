@@ -611,7 +611,7 @@ export default function PrivacyPolicyPage() {
             </Section>
 
             <div className="border-t border-outline-variant/40 pt-8 text-sm text-on-surface-variant">
-              <p>© 2024 creditbanc.io</p>
+              <p>© 2026 creditbanc.io</p>
             </div>
           </article>
         </section>

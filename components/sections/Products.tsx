@@ -509,8 +509,8 @@ export default function Products() {
           <p className="text-on-surface-variant text-sm md:text-base leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="inline-flex items-center gap-2">
               <Icon name="open_with" className="text-primary text-base" />
-              <span className="md:hidden">Swipe to spin. (It also spins itself.)</span>
-              <span className="hidden md:inline">Drag to spin. (It also spins itself.)</span>
+              <span className="md:hidden">Swipe to spin.</span>
+              <span className="hidden md:inline">Drag to spin.</span>
             </span>
             <span className="hidden md:inline text-on-surface-variant/30">
               |
@@ -524,13 +524,38 @@ export default function Products() {
         </motion.div>
       </div>
 
-      <div className="relative w-screen h-[460px] md:h-[560px] lg:h-[640px] xl:h-[720px] bg-on-secondary-fixed">
+      <div className="relative w-screen h-[560px] md:h-[680px] lg:h-[800px] xl:h-[900px] bg-on-secondary-fixed overflow-hidden">
+        <motion.div
+          aria-hidden
+          className="absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none"
+          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"
+          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
+            maskImage:
+              'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+          }}
+        />
         <CircularGallery
           items={galleryItems}
           bend={1}
           textColor="#ffffff"
           borderRadius={0.06}
-          font={`900 ${isDesktop ? '40px' : '32px'} Manrope, system-ui, sans-serif`}
+          font={`900 ${isDesktop ? '48px' : '38px'} Manrope, system-ui, sans-serif`}
           scrollSpeed={2}
           scrollEase={0.05}
           autoScrollSpeed={0.08}

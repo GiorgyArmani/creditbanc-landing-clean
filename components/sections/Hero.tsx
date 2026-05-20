@@ -25,27 +25,18 @@ const itemVariants = {
   },
 };
 
+// Hero loop assets live in /public/Hero Video. Mobile cycles the lighter
+// three to keep bandwidth in check; desktop plays the full five.
 const HERO_ASSETS_BASE = [
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBx-1ZcsggNhD2ZhUYAZZUBg1AdIoYkmas-JjvqGCcQmbqBsF-UNSuORDgkTz176LBlfuHnxkFWAgUbXlIRbtCmGtvHw6jkpn1JFdH10rOvtZZBZr5c6ZCLJ72bNiXitYu1Vrutqya5AdD25s8ouQV4NnU5T98c1jtaTavquDk9a8z9ngplnrjwkoHu9ZIbR5PpwDU1AcznnHMGt5QrTY1g702q1cyDKLYtf1BeH7QRjEWmKzKx6Qk8mbuXs1tD2UdMQsh5EMxfyLY',
-    alt: 'Business owner reviewing financing options',
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDtfPh2GVbAf1ZSwDsqv9GNZ96yUEklqMoJXkM6vhKzFiTSp2OurfAFaTIxvrzsFulKa3m4IGET6GeoFVZVbZblfwFz974x1Y8VFNex4QbN8zRgm1L7jzqlU6myl_Bb-d5gdJFaW5O4BNIkDCFCf8hVCcje408P8OVf4ZOtWcMsh-HHdAjblw6782plIxF1Xwp4kOuqevmMbCfy3S2s-gyURWIgIVf9UaZr8M55lnqinujSqQ4zwQX0ZtbQtJl759Jw264NOYNo7aU',
-    alt: 'Capital and SBA financing illustrated by a stack of coins',
-  },
-  {
-    src: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCLHJ3M7hF-CdJznUP3qmGm9tA6XEmD6DYD21VBAbrXmERtYt4z88Tah4AJbgn98bHP-DJK-jmGR6otffcx7eLvWDs4E2tiZxqyOM69dKZ_vATg-LDx1eGJ_d9MIc4KaayZwvvhOKGOVTvWEncD8Jqq8Z0h7mKJnsboDVWERWy9unj63RH3koPq8I7C5coyLLQA0H84ckB7VsX6uvcMX2qziYn6YK3sS6nZ_tpJDIxGe_u-GY6766K8cI8pg7I7AsHx3h5NaL2E29s',
-    alt: 'Small business owner reviewing capital options',
-  },
+  { src: '/Hero%20Video/3.mp4', alt: 'Business owner success moment' },
+  { src: '/Hero%20Video/5.mp4', alt: 'Operations on the move after funding' },
+  { src: '/Hero%20Video/4.mp4', alt: 'Funded business in motion' },
 ];
 
 const HERO_ASSETS_DESKTOP = [
   ...HERO_ASSETS_BASE,
-  {
-    src: '/moneythrow.mp4',
-    alt: 'Capital deployed for business growth',
-  },
+  { src: '/Hero%20Video/1.mp4', alt: 'Advisor conversation with a business owner' },
+  { src: '/Hero%20Video/2.mp4', alt: 'Capital deployed for business growth' },
 ];
 
 const HERO_INTERVAL_MS = 9000;
@@ -164,8 +155,8 @@ function renderHeroCard(index: number) {
         <>
           <CardEyebrow
             icon="schedule"
-            title="Long Term Capital"
-            note="10-year terms · monthly payments"
+            title="Long Term Capital Solutions"
+            note=""
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-4xl font-black text-on-surface tracking-tight tabular-nums">
@@ -176,11 +167,11 @@ function renderHeroCard(index: number) {
             </span>
           </div>
           <p className="text-xs leading-relaxed text-on-surface-variant mb-3">
-            10-year terms, monthly payments, and competitive rates structured
-            around real cash flow.
+            10-year terms, monthly 
+            payments & competitive rates.
           </p>
           <div className="flex flex-wrap gap-2">
-            {['SBA', 'Term Loans', 'CRE'].map((chip) => (
+            {['SBA', 'Term Loans'].map((chip) => (
               <span
                 key={chip}
                 className="px-2.5 py-1 rounded-full bg-primary-container/40 text-[10px] font-bold uppercase tracking-widest text-on-primary-container"
@@ -254,6 +245,7 @@ function renderHeroCard(index: number) {
 
 export default function Hero() {
   const [heroIndex, setHeroIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   // xl: 1280px+
   const isDesktop = useMediaQuery('(min-width: 1280px)');
   // Cards show at 1500x925 and up. Below that (smaller laptops) the
@@ -265,6 +257,14 @@ export default function Hero() {
   );
   // Skip the heavy 2.4 MB GIF on mobile — only cycle the 3 lighter images.
   const heroAssets = isDesktop ? HERO_ASSETS_DESKTOP : HERO_ASSETS_BASE;
+
+  // Gate loader rendering until after hydration. useMediaQuery defaults
+  // to false on SSR/first paint, so without this the mobile loader
+  // briefly renders on desktop before snapping to the desktop layout —
+  // visible as a small flash of the hero circle at viewport center.
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Reset to the first asset whenever the asset set changes (e.g. mobile
   // ↔ desktop swap). The loader itself drives index advancement via its
@@ -284,7 +284,7 @@ export default function Hero() {
         >
           <motion.h1
             variants={itemVariants}
-            className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-on-secondary-fixed leading-[0.95] mb-6"
+            className="font-headline text-5xl md:text-6xl xl:text-[5.5rem] 2xl:text-[6.5rem] font-extrabold tracking-tighter text-on-secondary-fixed leading-[0.95] mb-6"
           >
             Funding Is Our Favorite{' '}
             <span className="relative inline-block px-3 text-white">
@@ -305,7 +305,7 @@ export default function Hero() {
           </motion.h1>
           <motion.div
             variants={itemVariants}
-            className="font-headline text-xl md:text-2xl xl:text-3xl font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem] xl:max-w-md 2xl:max-w-none"
+            className="font-headline text-xl md:text-2xl xl:text-4xl 2xl:text-[2.75rem] font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem] xl:max-w-none"
           >
             <TextType
               as="span"
@@ -324,7 +324,7 @@ export default function Hero() {
           </motion.div>
           <motion.p
             variants={itemVariants}
-            className="text-base md:text-lg text-on-surface-variant max-w-xl xl:max-w-md 2xl:max-w-xl mb-8 leading-relaxed"
+            className="text-base md:text-lg xl:text-xl 2xl:text-2xl text-on-surface-variant max-w-xl xl:max-w-none mb-8 leading-relaxed"
           >
             Get working capital for growth, payroll, inventory, equipment, or
             cash-flow gaps, with monthly payment options and real Advisor
@@ -346,7 +346,7 @@ export default function Hero() {
             </motion.a>
           </motion.div>
         </motion.div>
-        {!isDesktop && (
+        {isMounted && !isDesktop && (
           <div className="flex justify-center w-full">
             <div
               className="relative"
@@ -362,7 +362,11 @@ export default function Hero() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={heroIndex}
-                  style={MOBILE_CARD_POSITIONS[heroIndex]}
+                  style={
+                    MOBILE_CARD_POSITIONS[
+                      heroIndex % MOBILE_CARD_POSITIONS.length
+                    ]
+                  }
                   initial={{ opacity: 0, y: 12, scale: 0.92 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.94 }}
@@ -370,10 +374,18 @@ export default function Hero() {
                   className="absolute z-20 bg-surface-container-lowest px-3.5 py-2 rounded-xl shadow-[0_12px_24px_-8px_rgba(0,3,33,0.25)] border border-outline-variant/15"
                 >
                   <p className="font-headline text-xl font-black text-on-surface tracking-tight tabular-nums leading-none">
-                    {MOBILE_CARD_CONTENT[heroIndex].value}
+                    {
+                      MOBILE_CARD_CONTENT[
+                        heroIndex % MOBILE_CARD_CONTENT.length
+                      ].value
+                    }
                   </p>
                   <p className="text-[9px] uppercase tracking-widest font-bold text-on-surface-variant mt-1">
-                    {MOBILE_CARD_CONTENT[heroIndex].label}
+                    {
+                      MOBILE_CARD_CONTENT[
+                        heroIndex % MOBILE_CARD_CONTENT.length
+                      ].label
+                    }
                   </p>
                 </motion.div>
               </AnimatePresence>
@@ -382,7 +394,7 @@ export default function Hero() {
         )}
       </div>
 
-      {isDesktop && (
+      {isMounted && isDesktop && (
         <div
           className="absolute z-0"
           style={{
@@ -405,8 +417,8 @@ export default function Hero() {
               <motion.div
                 key={heroIndex}
                 style={{
-                  top: CARD_POSITIONS[heroIndex].top,
-                  left: CARD_POSITIONS[heroIndex].left,
+                  top: CARD_POSITIONS[heroIndex % CARD_POSITIONS.length].top,
+                  left: CARD_POSITIONS[heroIndex % CARD_POSITIONS.length].left,
                 }}
                 initial={{ opacity: 0, y: 32, rotate: -8, scale: 0.92 }}
                 animate={{ opacity: 1, y: 0, rotate: -3, scale: 1 }}
@@ -415,7 +427,7 @@ export default function Hero() {
                 whileHover={{ rotate: 0, y: -4 }}
                 className="absolute z-20 w-60 bg-surface-container-lowest p-5 rounded-xl shadow-[0_40px_60px_-15px_rgba(0,3,33,0.18)] border border-outline-variant/15"
               >
-                {renderHeroCard(heroIndex)}
+                {renderHeroCard(heroIndex % CARD_POSITIONS.length)}
               </motion.div>
             </AnimatePresence>
           )}

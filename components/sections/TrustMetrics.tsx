@@ -99,7 +99,7 @@ export default function TrustMetrics() {
                 {stat.label}
               </p>
               {stat.fineprint && (
-                <p className="text-sm sm:text-base italic leading-snug text-white/90 max-w-[22ch] mx-auto mt-2">
+                <p className="font-label text-sm sm:text-base font-semibold uppercase tracking-wider leading-snug text-slate-300 max-w-[22ch] mx-auto mt-2">
                   {stat.fineprint}
                 </p>
               )}

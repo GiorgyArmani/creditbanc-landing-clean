@@ -156,19 +156,20 @@ function calculate(inputs: CalculatorInputs): CalculatorResults {
   else if (readinessScore < 70) risk = "Elevated";
   else if (readinessScore < 85) risk = "Moderate";
 
-  let meaning = "No obvious short-term gap. Review timing before borrowing.";
+  let meaning =
+    "Nothing is on fire. Lovely. There’s no obvious short-term funding gap right now, but keep an eye on timing, bills, and receivables before borrowing money your business may not need.";
   if (gap > 0 && gapPct < 15) {
     meaning =
-      "Small timing gap. Bridge financing or a line of credit may make sense — not a heavy MCA.";
+      "A little tight, not a five-alarm funding fire. A line of credit or bridge option may help, but a heavy MCA is probably overkill.";
   } else if (gap > 0 && gapPct < 40) {
     meaning =
-      "Meaningful gap. Worth comparing structure carefully before grabbing the first offer.";
+      "This deserves a closer look. Compare the timing, payments, and actual cost before a “quick approval” starts looking a little too friendly.";
   } else if (gap > 0) {
     meaning =
-      "Significant gap. The structure of the capital matters as much as the amount. Talk to a human before signing.";
+      "This is not the time to wing it. When the gap gets this big, the money matters, but the payments matter more. Talk to an Advisor before signing something that wrecks the next six months.";
   } else if (surplus > 0 && inputs.cashOnHand >= inputs.cushion) {
     meaning =
-      "You may not need outside capital right now. Watch timing and revisit if costs front-load.";
+      "Look at you, financially hydrated. You may not need outside capital right now, but keep an eye on upcoming costs, slow-paying customers, and anything that could shrink the cushion faster than expected.";
   }
 
   return {
@@ -383,6 +384,9 @@ export default function CashFlowGapCalculator() {
   const [revealed, setRevealed] = useState(false);
   const [maxStepReached, setMaxStepReached] = useState<StepNum>(1);
   const revealRef = useRef<HTMLDivElement>(null);
+  const [showLeadGate, setShowLeadGate] = useState(false);
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadError, setLeadError] = useState<string | null>(null);
 
   const goToStep = (next: StepNum) => {
     if (next === step) return;
@@ -450,7 +454,7 @@ export default function CashFlowGapCalculator() {
     });
   };
 
-  const reveal = () => {
+  const doReveal = () => {
     setRevealed(true);
     if (typeof window !== "undefined") {
       const w = window as unknown as { dataLayer?: unknown[] };
@@ -467,6 +471,66 @@ export default function CashFlowGapCalculator() {
       setTimeout(() => {
         revealRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
+    }
+  };
+
+  const reveal = () => {
+    // Gate the results behind contact capture. If the user already entered
+    // their info (e.g. via the hero "Skip ahead" form), skip the modal.
+    if (lead.firstName && lead.email && lead.phone) {
+      doReveal();
+      return;
+    }
+    setShowLeadGate(true);
+  };
+
+  const handleLeadGateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (leadSubmitting) return;
+    setLeadError(null);
+    setLeadSubmitting(true);
+    try {
+      const res = await fetch("/api/cash-flow-gap-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: lead.firstName,
+          email: lead.email,
+          phone: lead.phone,
+          businessName: inputs.businessName || undefined,
+          gap: results.gap || undefined,
+          target: results.fundingTarget || undefined,
+          risk: results.risk,
+          score: results.readinessScore,
+        }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(
+          data?.error || "We couldn’t save your info. Please try again."
+        );
+      }
+      if (typeof window !== "undefined") {
+        const w = window as unknown as { dataLayer?: unknown[] };
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({
+          event: "lead_submit",
+          source: "cashflow_gap_results_gate",
+          ...lead,
+        });
+      }
+      setShowLeadGate(false);
+      doReveal();
+    } catch (err) {
+      setLeadError(
+        err instanceof Error
+          ? err.message
+          : "We couldn’t save your info. Please try again."
+      );
+    } finally {
+      setLeadSubmitting(false);
     }
   };
 
@@ -509,37 +573,6 @@ export default function CashFlowGapCalculator() {
     key: K,
     value: CalculatorInputs[K]
   ) => setInputs((prev) => ({ ...prev, [key]: value }));
-
-  const loadExample = () => {
-    setInputs({
-      businessName: "Sample HVAC Co.",
-      preparedBy: "Owner",
-      cashOnHand: 45000,
-      cushion: 30000,
-      ar30: 25000,
-      ar60: 65000,
-      ar90: 40000,
-      otherCashIn: 0,
-      payroll: 42000,
-      inventory: 55000,
-      equipment: 15000,
-      marketing: 8000,
-      overhead: 12000,
-      debt: 9000,
-      taxes: 5000,
-      otherCosts: 4000,
-      collectionDays: 45,
-      urgency: "Within 30 days",
-      pressure: "Medium",
-    });
-    setStep(3);
-    setMaxStepReached(3);
-    setRevealed(true);
-    setTimeout(
-      () => revealRef.current?.scrollIntoView({ behavior: "smooth" }),
-      150
-    );
-  };
 
   const reset = () => {
     setInputs(defaultInputs);
@@ -604,229 +637,68 @@ export default function CashFlowGapCalculator() {
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
-          {/* Left: value prop + tool entry */}
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
-            >
-              Credit Banc · Free Planning Tool
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.95] mb-6"
-            >
-              Find the{" "}
-              <motion.span
-                className="text-primary inline-block origin-bottom-left"
-                initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  rotate: [-8, 5, -3, 1, 0],
-                }}
-                transition={{
-                  opacity: { delay: 0.7, duration: 0.35 },
-                  scale: {
-                    delay: 0.7,
-                    duration: 0.55,
-                    type: "spring",
-                    stiffness: 320,
-                    damping: 14,
-                  },
-                  rotate: {
-                    delay: 0.7,
-                    duration: 0.85,
-                    times: [0, 0.3, 0.6, 0.85, 1],
-                    ease: [0.22, 1, 0.36, 1],
-                  },
-                }}
-              >
-                Gap.
-              </motion.span>{" "}
-              Then Fund It Right.
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.25,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="text-base md:text-lg text-white/85 max-w-xl leading-relaxed mb-7"
-            >
-              Busy isn&rsquo;t the same as paid. Plug in your numbers and see
-              what your cash flow actually needs before the revenue catches up.{" "}
-              <em className="text-primary not-italic font-semibold">
-                (Yes, &ldquo;nothing&rdquo; is sometimes the right answer.)
-              </em>
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.35,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="grid grid-cols-3 gap-3 sm:gap-5 mb-8 max-w-xl"
-            >
-              {[
-                { stat: "$2B+", label: "Deployed" },
-                { stat: "15k+", label: "Businesses funded" },
-                { stat: "15 min", label: "Avg. advisor call" },
-              ].map((t) => (
-                <div
-                  key={t.label}
-                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 sm:px-4 sm:py-3.5"
-                >
-                  <div className="font-headline text-lg sm:text-xl font-extrabold text-primary tracking-tight">
-                    {t.stat}
-                  </div>
-                  <div className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-white/55 mt-0.5">
-                    {t.label}
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.45,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="flex flex-wrap items-center gap-3"
-            >
-              <motion.button
-                type="button"
-                onClick={loadExample}
-                className="bg-primary text-on-secondary-fixed px-6 py-3 rounded-lg font-bold text-sm"
-                whileHover={{
-                  scale: 1.03,
-                  boxShadow: "0 18px 30px -12px rgba(85, 207, 158, 0.5)",
-                }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 380, damping: 22 }}
-              >
-                Load example scenario
-              </motion.button>
-              <button
-                type="button"
-                onClick={reset}
-                className="text-white/60 hover:text-white px-3 py-3 rounded-lg text-sm font-semibold transition-colors"
-              >
-                Reset
-              </button>
-            </motion.div>
-          </div>
-
-          {/* Right: lead capture card */}
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+        <div className="relative max-w-4xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
+          >
+            Credit Banc · Free Planning Tool
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.8,
-              delay: 0.4,
+              delay: 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="relative"
+            className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.95] mb-6"
           >
-            <div
-              aria-hidden
-              className="absolute -inset-4 bg-primary/10 rounded-[28px] blur-2xl"
-            />
-            <div className="relative rounded-2xl border border-white/12 bg-white/[0.04] backdrop-blur-xl p-7 sm:p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] overflow-hidden">
-              <div
-                aria-hidden
-                className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-              />
-
-              <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
-                Talk to a real human
-              </p>
-              <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight leading-tight">
-                Skip ahead. Book the call.
-              </h3>
-              <p className="text-white/65 text-sm leading-relaxed mb-6">
-                Drop your info and we&rsquo;ll book a 15-min call. No pitch
-                deck, no script — just an honest read on your numbers.
-              </p>
-
-              <form onSubmit={handleLeadSubmit} className="space-y-3">
-                <LeadInput
-                  type="text"
-                  placeholder="First name"
-                  value={lead.firstName}
-                  autoComplete="given-name"
-                  required
-                  onChange={(v) => setLead({ ...lead, firstName: v })}
-                />
-                <LeadInput
-                  type="email"
-                  placeholder="Work email"
-                  value={lead.email}
-                  autoComplete="email"
-                  required
-                  onChange={(v) => setLead({ ...lead, email: v })}
-                />
-                <LeadInput
-                  type="tel"
-                  placeholder="Phone (optional)"
-                  value={lead.phone}
-                  autoComplete="tel"
-                  onChange={(v) => setLead({ ...lead, phone: v })}
-                />
-
-                <motion.button
-                  type="submit"
-                  whileHover={{
-                    scale: 1.02,
-                    boxShadow: "0 20px 36px -12px rgba(85, 207, 158, 0.55)",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 360,
-                    damping: 22,
-                  }}
-                  className="w-full bg-primary text-on-secondary-fixed font-bold text-sm py-3.5 rounded-lg flex items-center justify-center gap-2 group"
-                >
-                  Book My 15-Min Call
-                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-                </motion.button>
-              </form>
-
-              <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-white/45">
-                <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
-                No spam · Response within a business day
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2 text-xs text-white/50">
-                <Phone className="h-3.5 w-3.5 text-primary" />
-                Prefer to talk now?{" "}
-                <a
-                  href={SITE.phoneTel}
-                  className="text-primary font-bold hover:underline"
-                >
-                  {SITE.phone}
-                </a>
-              </div>
-            </div>
-          </motion.div>
+            Find the{" "}
+            <motion.span
+              className="text-primary inline-block origin-bottom-left"
+              initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                rotate: [-8, 5, -3, 1, 0],
+              }}
+              transition={{
+                opacity: { delay: 0.7, duration: 0.35 },
+                scale: {
+                  delay: 0.7,
+                  duration: 0.55,
+                  type: "spring",
+                  stiffness: 320,
+                  damping: 14,
+                },
+                rotate: {
+                  delay: 0.7,
+                  duration: 0.85,
+                  times: [0, 0.3, 0.6, 0.85, 1],
+                  ease: [0.22, 1, 0.36, 1],
+                },
+              }}
+            >
+              Gap.
+            </motion.span>{" "}
+            Then Fund It Right.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.25,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="text-base md:text-lg text-white/85 max-w-2xl leading-relaxed"
+          >
+            You can be booked, busy, and still short on cash. Use the
+            calculator to find the gap before it starts calling the shots.
+          </motion.p>
         </div>
       </section>
 
@@ -1101,7 +973,6 @@ export default function CashFlowGapCalculator() {
               step1HasData={step1HasData}
               step2HasData={step2HasData}
               step3HasData={step3HasData}
-              onReveal={reveal}
               canReveal={maxStepReached >= 3}
             />
           </div>
@@ -1148,6 +1019,263 @@ export default function CashFlowGapCalculator() {
           </div>
         </div>
       </div>
+
+      {/* ---------- Skip ahead lead capture (moved out of hero) ---------- */}
+      <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 py-16 sm:py-20 md:py-24">
+        <motion.div
+          aria-hidden
+          className="absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none"
+          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"
+          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage:
+              "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at center, black 30%, transparent 75%)",
+          }}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative max-w-xl mx-auto"
+        >
+          <div
+            aria-hidden
+            className="absolute -inset-4 bg-primary/10 rounded-[28px] blur-2xl"
+          />
+          <div className="relative rounded-2xl border border-white/12 bg-white/[0.04] backdrop-blur-xl p-7 sm:p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)] overflow-hidden">
+            <div
+              aria-hidden
+              className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+            />
+
+            <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
+              Talk to a real human
+            </p>
+            <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight leading-tight">
+              Skip ahead. Book the call.
+            </h3>
+            <p className="text-white/65 text-sm leading-relaxed mb-6">
+              Drop your info and we&rsquo;ll book a 15-min call. No pitch
+              deck, no script — just an honest read on your numbers.
+            </p>
+
+            <form onSubmit={handleLeadSubmit} className="space-y-3">
+              <LeadInput
+                type="text"
+                placeholder="First name"
+                value={lead.firstName}
+                autoComplete="given-name"
+                required
+                onChange={(v) => setLead({ ...lead, firstName: v })}
+              />
+              <LeadInput
+                type="email"
+                placeholder="Work email"
+                value={lead.email}
+                autoComplete="email"
+                required
+                onChange={(v) => setLead({ ...lead, email: v })}
+              />
+              <LeadInput
+                type="tel"
+                placeholder="Phone (optional)"
+                value={lead.phone}
+                autoComplete="tel"
+                onChange={(v) => setLead({ ...lead, phone: v })}
+              />
+
+              <motion.button
+                type="submit"
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 20px 36px -12px rgba(85, 207, 158, 0.55)",
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 360,
+                  damping: 22,
+                }}
+                className="w-full bg-primary text-on-secondary-fixed font-bold text-sm py-3.5 rounded-lg flex items-center justify-center gap-2 group"
+              >
+                Book My 15-Min Call
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+              </motion.button>
+            </form>
+
+            <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-white/45">
+              <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
+              No spam · Response within a business day
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2 text-xs text-white/50">
+              <Phone className="h-3.5 w-3.5 text-primary" />
+              Prefer to talk now?{" "}
+              <a
+                href={SITE.phoneTel}
+                className="text-primary font-bold hover:underline"
+              >
+                {SITE.phone}
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ---------- Lead-gate modal (shown when user requests results) ---------- */}
+      <AnimatePresence>
+        {showLeadGate && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="lead-gate-title"
+          >
+            <motion.button
+              type="button"
+              aria-label="Close"
+              onClick={() => setShowLeadGate(false)}
+              className="absolute inset-0 bg-on-secondary-fixed/70 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+            <motion.div
+              className="relative w-full max-w-md rounded-2xl border border-white/12 bg-on-secondary-fixed p-7 sm:p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] overflow-hidden"
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div
+                aria-hidden
+                className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+              />
+              <div
+                aria-hidden
+                className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-primary/20 blur-3xl pointer-events-none"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowLeadGate(false)}
+                aria-label="Close"
+                className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors"
+              >
+                <span aria-hidden className="text-xl leading-none">×</span>
+              </button>
+
+              <div className="relative">
+                <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
+                  One quick step
+                </p>
+                <h3
+                  id="lead-gate-title"
+                  className="font-headline text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight leading-tight"
+                >
+                  Where should we send your results?
+                </h3>
+                <p className="text-white/65 text-sm leading-relaxed mb-6">
+                  Drop your info so we can save your snapshot and keep the
+                  conversation going if you want a real advisor to weigh in.
+                </p>
+
+                <form onSubmit={handleLeadGateSubmit} className="space-y-3">
+                  <LeadInput
+                    type="text"
+                    placeholder="First name"
+                    value={lead.firstName}
+                    autoComplete="given-name"
+                    required
+                    onChange={(v) => setLead({ ...lead, firstName: v })}
+                  />
+                  <LeadInput
+                    type="email"
+                    placeholder="Email"
+                    value={lead.email}
+                    autoComplete="email"
+                    required
+                    onChange={(v) => setLead({ ...lead, email: v })}
+                  />
+                  <LeadInput
+                    type="tel"
+                    placeholder="Phone"
+                    value={lead.phone}
+                    autoComplete="tel"
+                    required
+                    onChange={(v) => setLead({ ...lead, phone: v })}
+                  />
+
+                  <motion.button
+                    type="submit"
+                    disabled={leadSubmitting}
+                    whileHover={
+                      leadSubmitting
+                        ? undefined
+                        : {
+                            scale: 1.02,
+                            boxShadow:
+                              "0 20px 36px -12px rgba(85, 207, 158, 0.55)",
+                          }
+                    }
+                    whileTap={leadSubmitting ? undefined : { scale: 0.98 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 360,
+                      damping: 22,
+                    }}
+                    className="w-full bg-primary text-on-secondary-fixed font-bold text-sm py-3.5 rounded-lg flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {leadSubmitting ? (
+                      <>Saving…</>
+                    ) : (
+                      <>
+                        See My Results
+                        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                      </>
+                    )}
+                  </motion.button>
+
+                  {leadError && (
+                    <p
+                      role="alert"
+                      className="text-rose-400 text-xs leading-snug text-center"
+                    >
+                      {leadError}
+                    </p>
+                  )}
+                </form>
+
+                <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-white/50">
+                  <Lock className="h-3 w-3 text-primary shrink-0" />
+                  Your info stays with us. No spam.
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1162,7 +1290,6 @@ function TeaserPanel({
   step2HasData,
   step3HasData,
   canReveal,
-  onReveal,
 }: {
   step: StepNum;
   totalCashIn: number;
@@ -1171,7 +1298,6 @@ function TeaserPanel({
   step2HasData: boolean;
   step3HasData: boolean;
   canReveal: boolean;
-  onReveal: () => void;
 }) {
   const stepRows: Array<{
     num: StepNum;
@@ -1183,21 +1309,21 @@ function TeaserPanel({
     {
       num: 1,
       label: "Cash in",
-      hint: "On-hand + receivables",
+      hint: "What's on hand, what's owed, & what's coming in",
       done: step1HasData,
       value: step1HasData ? fmtUSD(totalCashIn) : undefined,
     },
     {
       num: 2,
       label: "Cash out",
-      hint: "What must be paid",
+      hint: "Bills, payroll, debt…the usual suspects",
       done: step2HasData,
       value: step2HasData ? fmtUSD(totalCashNeeded) : undefined,
     },
     {
       num: 3,
       label: "Timing",
-      hint: "Urgency + pressure",
+      hint: "How soon the gap could turn into an “oh sh*t” moment",
       done: step3HasData,
     },
   ];
@@ -1215,12 +1341,15 @@ function TeaserPanel({
             Building your snapshot
           </div>
           <h3 className="font-headline text-2xl font-extrabold tracking-tight leading-tight">
-            Your numbers,{" "}
-            <span className="text-primary">in real time.</span>
+            The numbers are doing{" "}
+            <span className="text-primary">the talking now.</span>
           </h3>
+          <p className="mt-3 text-sm font-semibold text-white leading-snug">
+            Do you have a cash flow gap? Let&rsquo;s find out.
+          </p>
           <p className="mt-2 text-sm leading-relaxed text-white/70">
-            Finish the three steps and we&rsquo;ll unlock your funding target,
-            readiness score, and risk read.
+            In three steps, we&rsquo;ll show whether your cash flow needs
+            capital, patience, or a stern talking-to.
           </p>
         </div>
       </div>
@@ -1287,23 +1416,20 @@ function TeaserPanel({
             <LockedStat label="Recommendation" />
           </div>
 
-          <motion.button
-            type="button"
-            onClick={onReveal}
-            disabled={!canReveal}
-            whileHover={canReveal ? { scale: 1.02 } : undefined}
-            whileTap={canReveal ? { scale: 0.98 } : undefined}
-            transition={{ type: "spring", stiffness: 380, damping: 22 }}
-            className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold transition ${
+          {/* Status row — informational, not the action. The actual reveal
+              button lives in the step-nav at the bottom of the form so we
+              don't ship two side-by-side CTAs that do the same thing. */}
+          <div
+            className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold ${
               canReveal
-                ? "bg-primary text-on-secondary-fixed shadow-[0_18px_32px_-10px_rgba(85,207,158,0.55)]"
-                : "bg-surface-container-high text-on-surface-variant/60 cursor-not-allowed"
+                ? "bg-primary/15 text-primary ring-1 ring-primary/30"
+                : "bg-surface-container-high text-on-surface-variant/60"
             }`}
           >
             {canReveal ? (
               <>
                 <Sparkles className="h-4 w-4" />
-                Reveal my results
+                Ready — tap reveal below
               </>
             ) : (
               <>
@@ -1311,7 +1437,7 @@ function TeaserPanel({
                 Finish step {Math.max(1, step)} to unlock
               </>
             )}
-          </motion.button>
+          </div>
         </div>
       </div>
     </div>

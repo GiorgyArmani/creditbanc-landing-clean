@@ -102,7 +102,10 @@ export default function ValueProp() {
     STEP_VIDEOS[Math.min(Math.max(currentStep, 1), STEP_VIDEOS.length) - 1];
 
   return (
-    <section className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface">
+    <section
+      id="process"
+      className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-center">
           <motion.div
@@ -131,7 +134,7 @@ export default function ValueProp() {
                 a good day. We start with the need, then work through the
                 options like adults.
               </p>
-              <p className="font-semibold text-on-secondary-fixed">
+              <p className="font-headline text-2xl sm:text-3xl font-bold text-on-secondary-fixed tracking-tight">
                 Here&rsquo;s what that looks like.
               </p>
             </div>

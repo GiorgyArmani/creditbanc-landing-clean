@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Asset {
   src: string;
@@ -34,6 +34,29 @@ export default function CLoader({
   const isControlled = controlledIndex !== undefined;
   const [internalIndex, setInternalIndex] = useState(0);
   const index = isControlled ? controlledIndex : internalIndex;
+
+  // Keep refs to every <video> so we can manually drive playback. Letting
+  // all six autoplay simultaneously triggers concurrent decoding and a
+  // visible flicker each time a backgrounded video catches up; this
+  // effect keeps only the active video playing and pauses the rest.
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === index) {
+        // Restart the active video so transitions always begin at frame 0.
+        try {
+          video.currentTime = 0;
+        } catch {
+          /* some browsers throw if metadata isn't ready yet */
+        }
+        const p = video.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, [index, assets]);
 
   // Index advancement is driven by the arc animation's onComplete (below) —
   // no setInterval. This keeps the loader sweep, image cross-fade, and any
@@ -78,6 +101,13 @@ export default function CLoader({
           left: `${imgInsetPct}%`,
           right: `${imgInsetPct}%`,
           bottom: `${imgInsetPct}%`,
+          // Force a dedicated compositing layer so the circular clip is
+          // applied on the GPU and child <video> repaints never escape
+          // the border-radius boundary.
+          transform: 'translateZ(0)',
+          isolation: 'isolate',
+          WebkitMaskImage:
+            '-webkit-radial-gradient(circle, white 100%, black 100%)',
         }}
       >
         {assets.map((asset, i) => (
@@ -91,13 +121,26 @@ export default function CLoader({
           >
             {isVideo(asset.src) ? (
               <video
+                ref={(el) => {
+                  videoRefs.current[i] = el;
+                }}
                 src={asset.src}
-                autoPlay
                 loop
                 muted
                 playsInline
-                preload="metadata"
-                className="absolute inset-0 w-full h-full object-cover"
+                // Suppress every browser-injected control surface. Without
+                // these, Chromium overlays a Picture-in-Picture button and
+                // the OS media-session shows "previous/next track" chips on
+                // hover — both visible in the hero loop unless explicitly
+                // disabled here.
+                disablePictureInPicture
+                disableRemotePlayback
+                controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
+                // First clip preloads aggressively so the hero never starts
+                // on a black frame; the rest load on demand to keep mobile
+                // payload reasonable.
+                preload={i === 0 ? 'auto' : 'metadata'}
+                className="absolute inset-0 w-full h-full object-cover bg-on-secondary-fixed pointer-events-none"
               />
             ) : (
               <Image
