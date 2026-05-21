@@ -20,6 +20,7 @@ interface Program {
   };
   image: string;
   imageAlt: string;
+  popupImage?: string;
 }
 
 const PROGRAMS: Program[] = [
@@ -44,6 +45,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/term%20loans.png',
     imageAlt: 'Term Loans',
+    popupImage: '/program%20pop%20up%20image/Term%20Loans.png',
   },
   {
     id: 'equipment',
@@ -66,6 +68,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/equipment%20financing.png',
     imageAlt: 'Equipment Financing',
+    popupImage: '/program%20pop%20up%20image/equipment%20financing.png',
   },
   {
     id: 'lines-of-credit',
@@ -89,6 +92,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/lines%20of%20credit.png',
     imageAlt: 'Lines of Credit',
+    popupImage: '/program%20pop%20up%20image/LOC.png',
   },
   {
     id: 'accounts-receivable',
@@ -111,6 +115,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/accounts%20receivable%20factoring.png',
     imageAlt: 'Accounts Receivable Factoring',
+    popupImage: '/program%20pop%20up%20image/AR%20Factoring.png',
   },
   {
     id: 'ecommerce-funding',
@@ -133,6 +138,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/ecommerce%20funding.png',
     imageAlt: 'eCommerce Funding',
+    popupImage: '/program%20pop%20up%20image/ecommerce%20funding.png',
   },
   {
     id: 'merchant-cash-advance',
@@ -155,6 +161,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/mca.png',
     imageAlt: 'Merchant Cash Advance',
+    popupImage: '/program%20pop%20up%20image/MCA.png',
   },
   {
     id: 'rental-property',
@@ -179,6 +186,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/rental%20property%20loans.png',
     imageAlt: 'Rental Property Loans',
+    popupImage: '/program%20pop%20up%20image/Rental%20Property.png',
   },
   {
     id: 'commercial-mortgage',
@@ -201,6 +209,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/commercial%20mortgage.png',
     imageAlt: 'Commercial Mortgage Loans',
+    popupImage: '/program%20pop%20up%20image/commercial%20mortgage.png',
   },
   {
     id: 'hard-money',
@@ -223,6 +232,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/hard%20money.png',
     imageAlt: 'Hard Money Loans',
+    popupImage: '/program%20pop%20up%20image/Hard%20Money.png',
   },
   {
     id: 'fix-and-flip',
@@ -245,6 +255,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/fix%20and%20flip.png',
     imageAlt: 'Fix-and-Flip Loans',
+    popupImage: '/program%20pop%20up%20image/fix%20and%20flip.png',
   },
   {
     id: 'ground-up-construction',
@@ -267,6 +278,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/ground%20up%20construction.png',
     imageAlt: 'Ground-Up Construction Loans',
+    popupImage: '/program%20pop%20up%20image/Ground%20Up%20Construction.png',
   },
   {
     id: 'sba-flexfund',
@@ -289,6 +301,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/flexfund.png',
     imageAlt: 'FlexFund Program',
+    popupImage: '/program%20pop%20up%20image/FlexFund.png',
   },
   {
     id: 'sba-refinance',
@@ -312,6 +325,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/sba%20refinance.png',
     imageAlt: 'SBA Loan Refinance',
+    popupImage: '/program%20pop%20up%20image/SBA%20Refinance.png',
   },
   {
     id: 'sba-commercial-real-estate',
@@ -337,6 +351,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/sba%20commercial%20real%20estate.png',
     imageAlt: 'SBA Commercial Real Estate Loans',
+    popupImage: '/program%20pop%20up%20image/SBA%20Commerical%20Real%20Estate.png',
   },
   {
     id: 'sba-business-acquisition',
@@ -361,6 +376,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/sba%20business%20acquisition.png',
     imageAlt: 'SBA Business Acquisition Loans',
+    popupImage: '/program%20pop%20up%20image/sba%20business%20acquisition.png',
   },
   {
     id: 'sba-startup',
@@ -386,6 +402,7 @@ const PROGRAMS: Program[] = [
     },
     image: '/program%20cards/sba%20startup.png',
     imageAlt: 'SBA Startup Loans',
+    popupImage: '/program%20pop%20up%20image/SBA%20Startup.png',
   },
 ];
 
@@ -594,26 +611,30 @@ export default function Products() {
               >
                 <Icon name="close" />
               </button>
-              <div className="relative shrink-0 w-full md:w-[45%] aspect-[4/3] md:aspect-auto md:h-auto bg-on-secondary-fixed">
-                {/\.(mp4|webm|mov|m4v)(\?|$)/i.test(openProgram.image) ? (
-                  <video
-                    src={openProgram.image}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <Image
-                    src={openProgram.image}
-                    alt={openProgram.imageAlt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 540px"
-                    className="object-cover"
-                    unoptimized={openProgram.image.endsWith('.gif')}
-                  />
-                )}
+              <div className="relative shrink-0 w-full md:w-[240px] lg:w-[260px] aspect-[3/2] md:aspect-auto md:h-auto bg-on-secondary-fixed flex items-center justify-center overflow-hidden">
+                {(() => {
+                  const modalSrc = openProgram.popupImage ?? openProgram.image;
+                  return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(modalSrc) ? (
+                    <video
+                      src={modalSrc}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src={modalSrc}
+                      alt={openProgram.imageAlt}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 260px"
+                      className="object-cover"
+                      priority
+                      unoptimized
+                    />
+                  );
+                })()}
                 <div className="absolute inset-0 bg-on-secondary-fixed/15 pointer-events-none" />
                 <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 text-white">
                   <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shrink-0">
@@ -622,7 +643,7 @@ export default function Products() {
                       className="text-on-primary-container text-2xl"
                     />
                   </div>
-                  <div className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary-container">
+                  <div className="font-label text-xs font-bold uppercase tracking-[0.2em] text-white">
                     Credit Banc Program
                   </div>
                 </div>

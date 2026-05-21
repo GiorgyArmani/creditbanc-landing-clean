@@ -35,7 +35,19 @@ async function ghlFetch<T>(
   init: RequestInit & { version: string }
 ): Promise<T> {
   const { version, headers, ...rest } = init;
-  const res = await fetch(`${GHL_BASE}${path}`, {
+  const url = `${GHL_BASE}${path}`;
+  const method = (rest.method || 'GET').toUpperCase();
+  console.log(`[ghl] → ${method} ${path} (version=${version})`);
+  if (rest.body && typeof rest.body === 'string') {
+    try {
+      const parsed = JSON.parse(rest.body);
+      console.log('[ghl] request body:', parsed);
+    } catch {
+      // non-JSON body, skip
+    }
+  }
+
+  const res = await fetch(url, {
     ...rest,
     headers: {
       Authorization: `Bearer ${GHL_TOKEN}`,
@@ -54,13 +66,16 @@ async function ghlFetch<T>(
   } catch {
     body = text;
   }
+  console.log(`[ghl] ← ${method} ${path} status=${res.status}`);
   if (!res.ok) {
+    console.error('[ghl] error body:', body);
     throw new GhlError(
       `GHL ${path} failed (${res.status})`,
       res.status,
       body
     );
   }
+  console.log('[ghl] success body:', body);
   return body as T;
 }
 
@@ -127,6 +142,7 @@ export interface UpsertContactInput {
   source?: string;
   tags?: string[];
   notes?: string;
+  customFields?: Array<{ id: string; field_value: string | number }>;
 }
 
 export interface UpsertContactResponse {
@@ -152,6 +168,10 @@ export async function upsertContact(
     companyName: input.companyName,
     source: input.source || 'apply-now',
     tags: tags.length ? tags : undefined,
+    customFields:
+      input.customFields && input.customFields.length
+        ? input.customFields
+        : undefined,
   };
 
   const data = await ghlFetch<UpsertContactResponse>('/contacts/upsert', {
@@ -165,6 +185,20 @@ export async function upsertContact(
     throw new GhlError('GHL upsert returned no contact id', 502, data);
   }
   return { contactId: id, isNew: Boolean(data.new) };
+}
+
+// ---------- Contact note ----------
+
+export async function addContactNote(
+  contactId: string,
+  noteBody: string
+): Promise<void> {
+  ensureConfig();
+  await ghlFetch(`/contacts/${encodeURIComponent(contactId)}/notes`, {
+    method: 'POST',
+    body: JSON.stringify({ body: noteBody }),
+    version: VERSION_CONTACTS,
+  });
 }
 
 // ---------- Appointment create ----------

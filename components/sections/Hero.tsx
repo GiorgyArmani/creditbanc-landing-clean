@@ -305,7 +305,7 @@ export default function Hero() {
           </motion.h1>
           <motion.div
             variants={itemVariants}
-            className="font-headline text-xl md:text-2xl xl:text-4xl 2xl:text-[2.75rem] font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem] xl:max-w-none"
+            className="font-headline text-lg md:text-xl xl:text-2xl 2xl:text-3xl font-bold tracking-tight text-on-secondary-fixed mb-6 min-h-[2.5rem] xl:max-w-none"
           >
             <TextType
               as="span"

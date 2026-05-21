@@ -481,6 +481,11 @@ export default function CashFlowGapCalculator() {
       doReveal();
       return;
     }
+    // Prefill the lead-gate first name from the "Prepared by" field on
+    // step 1 so the user doesn't retype what they already gave us.
+    if (!lead.firstName && inputs.preparedBy.trim()) {
+      setLead((prev) => ({ ...prev, firstName: inputs.preparedBy.trim() }));
+    }
     setShowLeadGate(true);
   };
 
@@ -498,8 +503,11 @@ export default function CashFlowGapCalculator() {
           email: lead.email,
           phone: lead.phone,
           businessName: inputs.businessName || undefined,
-          gap: results.gap || undefined,
-          target: results.fundingTarget || undefined,
+          gap: results.gap,
+          surplus: results.surplus,
+          target: results.fundingTarget,
+          totalCashIn: results.totalCashIn,
+          totalCashNeeded: results.totalCashNeeded,
           risk: results.risk,
           score: results.readinessScore,
         }),
@@ -1079,9 +1087,9 @@ export default function CashFlowGapCalculator() {
             <form onSubmit={handleLeadSubmit} className="space-y-3">
               <LeadInput
                 type="text"
-                placeholder="First name"
+                placeholder="Full name"
                 value={lead.firstName}
-                autoComplete="given-name"
+                autoComplete="name"
                 required
                 onChange={(v) => setLead({ ...lead, firstName: v })}
               />
@@ -1204,9 +1212,9 @@ export default function CashFlowGapCalculator() {
                 <form onSubmit={handleLeadGateSubmit} className="space-y-3">
                   <LeadInput
                     type="text"
-                    placeholder="First name"
+                    placeholder="Full name"
                     value={lead.firstName}
-                    autoComplete="given-name"
+                    autoComplete="name"
                     required
                     onChange={(v) => setLead({ ...lead, firstName: v })}
                   />
@@ -1515,57 +1523,6 @@ function RevealedResults({
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="max-w-5xl mx-auto"
     >
-      {/* Collapsed summary bar */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-        className="mb-6 flex flex-wrap items-center gap-3 sm:gap-5 rounded-xl border border-outline-variant/30 bg-surface-container-lowest px-5 py-3 text-sm"
-      >
-        <span className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
-          Your inputs
-        </span>
-        <div className="flex flex-wrap gap-x-5 gap-y-1 text-on-secondary-fixed font-semibold">
-          <span>
-            In{" "}
-            <span className="font-headline font-extrabold tabular-nums">
-              {fmtUSD(results.totalCashIn)}
-            </span>
-          </span>
-          <span className="text-on-surface-variant">·</span>
-          <span>
-            Out{" "}
-            <span className="font-headline font-extrabold tabular-nums">
-              {fmtUSD(results.totalCashNeeded)}
-            </span>
-          </span>
-          <span className="text-on-surface-variant">·</span>
-          <span>
-            Collection{" "}
-            <span className="font-headline font-extrabold tabular-nums">
-              {inputs.collectionDays}d
-            </span>
-          </span>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onEdit}
-            className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container-high hover:text-on-secondary-fixed transition"
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={onReset}
-            className="rounded-md px-3 py-1.5 text-xs font-bold text-on-surface-variant hover:bg-surface-container-high hover:text-on-secondary-fixed transition"
-          >
-            Start over
-          </button>
-        </div>
-      </motion.div>
-
       {/* Hero number card */}
       <div className="relative overflow-hidden rounded-3xl border border-outline-variant/30 bg-on-secondary-fixed text-white shadow-[0_30px_80px_-30px_rgba(0,3,33,0.6)]">
         <motion.div

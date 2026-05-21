@@ -7,6 +7,16 @@ import Script from 'next/script';
 const FORM_ID = 'n4aCgud8X9ItLI36ZRch';
 const FORM_BASE = `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`;
 
+const METRICS: Array<{ value: string; label: string; valueClass?: string }> = [
+  { value: '$2B+', label: 'Capital Deployed' },
+  { value: '15k+', label: 'Businesses Funded' },
+  {
+    value: 'Advisor Support',
+    label: 'Not lender roulette.',
+    valueClass: 'text-xl sm:text-2xl xl:text-3xl',
+  },
+];
+
 const STEPS = [
   {
     title: 'Have a chat with your Advisor.',
@@ -62,12 +72,12 @@ export default function ApplyNowFunnel() {
                 <>
                   Almost there,{' '}
                   <span
-                    className="relative inline-block px-3 text-white"
+                    className="relative inline-block px-3 pb-2 text-white"
                     style={{ isolation: 'isolate' }}
                   >
                     <motion.span
                       aria-hidden
-                      className="absolute inset-y-1 left-0 right-0 bg-primary-container rounded-sm"
+                      className="absolute top-1 -bottom-0 left-0 right-0 bg-primary-container rounded-sm"
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
                       transition={{
@@ -78,7 +88,7 @@ export default function ApplyNowFunnel() {
                       style={{ originX: 0, zIndex: 0 }}
                     />
                     <span className="relative" style={{ zIndex: 1 }}>
-                      {firstName}.
+                      {firstName.charAt(0).toUpperCase() + firstName.slice(1)}.
                     </span>
                   </span>
                 </>
@@ -114,6 +124,33 @@ export default function ApplyNowFunnel() {
                 We&rsquo;ll bring the funding.
               </span>
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-8">
+              {METRICS.map((m, i) => (
+                <motion.div
+                  key={m.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.4 + i * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-5 sm:py-6 shadow-[0_12px_30px_-20px_rgba(0,3,33,0.18)] flex flex-col items-center justify-center text-center gap-2 min-h-[120px]"
+                >
+                  <p
+                    className={`font-headline font-extrabold tracking-tight text-primary leading-[1.05] ${
+                      m.valueClass ?? 'text-3xl sm:text-4xl xl:text-5xl'
+                    }`}
+                  >
+                    {m.value}
+                  </p>
+                  <p className="font-label text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
+                    {m.label}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           <div className="relative rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-6 sm:p-8 shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)]">
@@ -145,6 +182,15 @@ export default function ApplyNowFunnel() {
               ))}
             </ol>
           </div>
+        </div>
+
+        {/* Divider between hero and form */}
+        <div className="max-w-3xl mx-auto mt-4 mb-10 sm:mb-14 flex items-center gap-4">
+          <div className="flex-1 h-px bg-outline-variant/50" />
+          <span className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+            Start your application
+          </span>
+          <div className="flex-1 h-px bg-outline-variant/50" />
         </div>
 
         {/* Form iframe */}
