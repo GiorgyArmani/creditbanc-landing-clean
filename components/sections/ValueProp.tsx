@@ -1,18 +1,17 @@
 'use client';
 
+import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Stepper, { Step } from '../ui/Stepper';
 import { ROUTES } from '@/lib/site';
 
-// Per-step background video. Index matches Stepper's currentStep - 1.
-// Swap these to real assets per step when the final cuts land — only 3
-// distinct videos exist today, so step 3 reuses the step-1 clip.
-const STEP_VIDEOS = [
-  '/happy%20owner.mp4',
-  '/happy%20owner%202.mp4',
-  '/happy%20owner.mp4',
-  '/moneythrow.mp4',
+// Per-step illustration. Index matches Stepper's currentStep - 1.
+const STEP_IMAGES = [
+  '/step%201.png',
+  '/step%202.png',
+  '/step%203.png',
+  '/step%204.png',
 ];
 
 const VALUES: { title: string; body: string[] }[] = [
@@ -46,51 +45,27 @@ const VALUES: { title: string; body: string[] }[] = [
   },
 ];
 
-function StepVideo({ src }: { src: string }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
-
-  useEffect(() => {
-    const node = wrapperRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setShouldLoad(true);
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      { rootMargin: '300px 0px' }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
+function StepImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div
-      ref={wrapperRef}
-      className="relative block w-full h-full aspect-[4/5] bg-on-secondary-fixed overflow-hidden"
-    >
+    <div className="relative block w-full h-full">
       <AnimatePresence mode="wait">
-        {shouldLoad && (
-          <motion.video
-            key={src}
+        <motion.div
+          key={src}
+          className="absolute inset-0"
+          initial={{ opacity: 0, scale: 1.03 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.99 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Image
             src={src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 block w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            alt={alt}
+            fill
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-contain object-bottom"
+            unoptimized
           />
-        )}
+        </motion.div>
       </AnimatePresence>
     </div>
   );
@@ -98,46 +73,55 @@ function StepVideo({ src }: { src: string }) {
 
 export default function ValueProp() {
   const [currentStep, setCurrentStep] = useState(1);
-  const videoSrc =
-    STEP_VIDEOS[Math.min(Math.max(currentStep, 1), STEP_VIDEOS.length) - 1];
+  const stepIndex = Math.min(Math.max(currentStep, 1), STEP_IMAGES.length) - 1;
+  const imageSrc = STEP_IMAGES[stepIndex];
 
   return (
     <section
       id="process"
-      className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface"
+      className="relative overflow-hidden px-6 sm:px-8 pt-20 sm:pt-24 md:pt-28 pb-16 lg:pb-0"
+      style={{
+        background:
+          'linear-gradient(135deg, #1f6b4e 0%, #2ea878 45%, #55cf9e 100%)',
+      }}
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-center">
+      <motion.div
+        aria-hidden
+        className="absolute top-12 right-4 w-72 h-72 bg-white rounded-full opacity-10 blur-3xl pointer-events-none"
+        animate={{ scale: [1, 1.15, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div className="relative max-w-7xl mx-auto">
+        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start lg:h-[700px] xl:h-[720px]">
+          {/* Person image — grounded bottom-left, fills the section bottom */}
           <motion.div
-            className="flex-1"
-            initial={{ opacity: 0, x: -40 }}
+            className="relative self-end lg:order-1 w-full aspect-[763/658] lg:aspect-auto lg:h-full"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <StepImage src={imageSrc} alt={VALUES[stepIndex].title} />
+          </motion.div>
+
+          {/* Title + stepper */}
+          <motion.div
+            className="lg:order-2"
+            initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
+            <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-white/80 mb-4">
               The Human Edge
             </p>
-            <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-6">
+            <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6">
               Funding Works Better With a{' '}
-              <span className="text-primary">Human in the Room</span>
+              <span className="text-primary-fixed">Human in the Room</span>
             </h2>
-            <div className="text-on-surface-variant text-lg leading-relaxed mb-10 space-y-4">
-              <p>
-                There are a lot of ways to fund a business. (Like, a lot a
-                lot.) Some are smart. Some are expensive. Some should come
-                with a warning label and a stiff drink.
-              </p>
-              <p>
-                That&rsquo;s why we don&rsquo;t start by tossing your
-                information into a robot blender and hoping the algorithm has
-                a good day. We start with the need, then work through the
-                options like adults.
-              </p>
-              <p className="font-headline text-2xl sm:text-3xl font-bold text-on-secondary-fixed tracking-tight">
-                Here&rsquo;s what that looks like.
-              </p>
-            </div>
+            <p className="font-headline text-2xl sm:text-3xl font-bold text-white tracking-tight mb-8">
+              Here&rsquo;s what that looks like.
+            </p>
             <Stepper
               backButtonText="Back"
               nextButtonText="Next Step"
@@ -160,49 +144,6 @@ export default function ValueProp() {
                 </Step>
               ))}
             </Stepper>
-          </motion.div>
-          <motion.div
-            className="flex-1 bg-surface-container-high p-4 rounded-2xl relative"
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <motion.div
-              className="relative rounded-xl shadow-xl overflow-hidden bg-on-secondary-fixed"
-              whileHover={{ y: -4 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-            >
-              <StepVideo src={videoSrc} />
-              <div
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-on-secondary-fixed/90 via-on-secondary-fixed/50 to-transparent pointer-events-none"
-              />
-              <motion.div
-                className="absolute left-4 right-4 bottom-4 sm:left-6 sm:right-6 sm:bottom-6 bg-surface-container-lowest/95 backdrop-blur-sm rounded-xl shadow-2xl p-5 sm:p-6"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-                    Credit Banc &middot; Just now
-                  </p>
-                </div>
-                <p className="font-headline text-lg sm:text-xl font-bold tracking-tight text-on-secondary-fixed leading-snug">
-                  Your loan has been{' '}
-                  <em className="text-primary not-italic">approved.</em> Funds
-                  on the way.
-                </p>
-              </motion.div>
-            </motion.div>
-            <motion.div
-              className="absolute -top-6 -right-6 w-24 h-24 signature-gradient rounded-full opacity-20 blur-2xl"
-              animate={{ scale: [1, 1.15, 1], rotate: [0, 30, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-            />
           </motion.div>
         </div>
       </div>

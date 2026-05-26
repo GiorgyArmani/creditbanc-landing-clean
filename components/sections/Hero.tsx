@@ -58,7 +58,7 @@ const CARD_POSITIONS = [
 const MOBILE_CARD_CONTENT = [
   { value: '$500K', label: 'Up to · 24hr' },
   { value: '$10M', label: 'Long Term Capital' },
-  { value: '1-on-1', label: 'Direct Advisor' },
+  { value: 'One-on-One', label: 'Direct Advisor' },
   { value: 'Multi', label: 'Funding Programs' },
 ];
 
@@ -192,10 +192,10 @@ function renderHeroCard(index: number) {
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-3xl font-black text-on-surface tracking-tight">
-              1-on-1
+              One-on-One
             </span>
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              Promise
+              Support
             </span>
           </div>
           <p className="text-xs leading-relaxed text-on-surface-variant mb-4">
@@ -215,19 +215,14 @@ function renderHeroCard(index: number) {
           <CardEyebrow
             icon="apps"
             title="Not a One-Trick Lender"
-            note="Multiple funding programs"
+            note=""
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-3xl font-black text-on-surface tracking-tight">
-              Multi
-            </span>
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              Programs
+              Multiple Funding Programs
             </span>
           </div>
-          <p className="text-xs leading-relaxed text-on-surface-variant mb-3">
-            SBA, equipment, LOC, real estate, and more.
-          </p>
+      
           <div className="flex flex-wrap gap-2">
             {['SBA', 'Equipment', 'LOC', 'Real Estate'].map((chip) => (
               <span
