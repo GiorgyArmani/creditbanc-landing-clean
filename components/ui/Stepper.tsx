@@ -131,6 +131,7 @@ export default function Stepper({
           currentStep={currentStep}
           direction={direction}
           className={`pt-2 ${contentClassName}`}
+          steps={stepsArray}
         >
           {stepsArray[currentStep - 1]}
         </StepContentWrapper>
@@ -174,6 +175,7 @@ interface StepContentWrapperProps {
   direction: number;
   children: ReactNode;
   className?: string;
+  steps: ReactNode[];
 }
 
 function StepContentWrapper({
@@ -182,23 +184,56 @@ function StepContentWrapper({
   direction,
   children,
   className = '',
+  steps,
 }: StepContentWrapperProps) {
-  const [parentHeight, setParentHeight] = useState<number>(0);
+  // Lock the card to the tallest step so it doesn't grow/shrink between steps.
+  // A hidden layer renders every step stacked; we track the max measured height
+  // and re-measure on resize so the lock stays correct as text rewraps.
+  const [maxHeight, setMaxHeight] = useState<number>(0);
+  const measureRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const root = measureRef.current;
+    if (!root) return;
+    const measure = () => {
+      let tallest = 0;
+      root
+        .querySelectorAll<HTMLElement>('[data-step-measure]')
+        .forEach((el) => {
+          tallest = Math.max(tallest, el.offsetHeight);
+        });
+      setMaxHeight(tallest);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    root
+      .querySelectorAll<HTMLElement>('[data-step-measure]')
+      .forEach((el) => ro.observe(el));
+    return () => ro.disconnect();
+  }, [steps]);
 
   return (
     <motion.div
       style={{ position: 'relative', overflow: 'hidden' }}
-      animate={{ height: isCompleted ? 0 : parentHeight }}
+      animate={{ height: isCompleted ? 0 : maxHeight }}
       transition={{ type: 'spring', duration: 0.4 }}
       className={className}
     >
+      <div
+        ref={measureRef}
+        aria-hidden
+        className="pointer-events-none invisible absolute inset-x-0 top-0"
+      >
+        {steps.map((step, i) => (
+          <div key={i} data-step-measure className="absolute inset-x-0 top-0">
+            {step}
+          </div>
+        ))}
+      </div>
+
       <AnimatePresence initial={false} mode="sync" custom={direction}>
         {!isCompleted && (
-          <SlideTransition
-            key={currentStep}
-            direction={direction}
-            onHeightReady={(h) => setParentHeight(h)}
-          >
+          <SlideTransition key={currentStep} direction={direction}>
             {children}
           </SlideTransition>
         )}
@@ -210,25 +245,11 @@ function StepContentWrapper({
 interface SlideTransitionProps {
   children: ReactNode;
   direction: number;
-  onHeightReady: (height: number) => void;
 }
 
-function SlideTransition({
-  children,
-  direction,
-  onHeightReady,
-}: SlideTransitionProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useLayoutEffect(() => {
-    if (containerRef.current) {
-      onHeightReady(containerRef.current.offsetHeight);
-    }
-  }, [children, onHeightReady]);
-
+function SlideTransition({ children, direction }: SlideTransitionProps) {
   return (
     <motion.div
-      ref={containerRef}
       custom={direction}
       variants={stepVariants}
       initial="enter"

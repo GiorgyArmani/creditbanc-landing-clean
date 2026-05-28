@@ -153,20 +153,20 @@ const PROGRAMS: Program[] = [
     id: 'inventory-financing',
     icon: 'inventory_2',
     title: 'Inventory Financing',
-    tagline: 'Stock the shelves now. Pay for them as they sell.',
-    body: 'Inventory financing gives businesses the capital to buy stock, raw materials, or seasonal product without draining the bank account to do it. Use it to prepare for a busy season, take advantage of bulk pricing, keep best-sellers in stock, or fund a big purchase order before the revenue catches up.',
+    tagline: 'Stock the shelves without starving the cash flow.',
+    body: 'Inventory financing helps businesses buy the products, materials, or goods they need before those items turn into sales. It can be useful when demand is picking up, busy season is coming, supplier pricing is favorable, or one big order is about to put your cash flow in a headlock.',
     expanded: {
       intro:
-        'The idea is straightforward: get the product in the door, let it sell, and use the proceeds to handle the financing — instead of tying up every dollar of working capital in boxes sitting on a shelf.',
+        'Good inventory planning means having enough product to meet demand without draining the money needed for payroll, rent, vendors, marketing, and all the other bills that remain deeply committed to showing up.',
       bullets: [
-        'Financing secured by the inventory itself',
-        'Helps fund seasonal buildup, bulk orders, and large purchase orders',
-        'Keeps working capital free for payroll, marketing, and operations',
-        'May be available to retailers, wholesalers, distributors, and eCommerce sellers',
-        'Structures built around your sales cycle and inventory turnover',
+        'Funding to purchase inventory, materials, products, or goods for resale',
+        'Can help prepare for busy seasons, large orders, growth periods, or supplier deadlines',
+        'Useful when inventory must be purchased before revenue is collected',
+        'May help preserve cash for payroll, rent, vendors, marketing, and operating expenses',
+        'Structure depends on business strength, inventory type, sales history, and repayment ability',
       ],
       bestFor:
-        'Product-based businesses that need stock on hand before the sales show up. Inventory financing makes sense when demand is real, the product moves, and the only thing standing between you and a bigger season is the cash to fill the warehouse. Because empty shelves have never sold a single thing.',
+        'Retailers, wholesalers, e-commerce brands, manufacturers, seasonal businesses, and other inventory-heavy companies that need to buy before they sell. Inventory financing can help keep shelves stocked without letting one purchase order shove the rest of the business into a broom closet.',
     },
     image: '/program%20cards/inventory%20financing.png',
     imageAlt: 'Inventory Financing',
@@ -329,20 +329,20 @@ const PROGRAMS: Program[] = [
     id: 'project-financing',
     icon: 'foundation',
     title: 'Project Financing',
-    tagline: 'Big projects need capital that can keep up.',
-    body: 'Project financing helps developers, contractors, and business owners fund large-scale projects with a structure built around the project itself — its budget, timeline, milestones, and the way it eventually pays off. Use it for development deals, large construction projects, energy and infrastructure work, or major business initiatives that need more than a standard loan can carry.',
+    tagline: 'Big project. Big moving parts. Better have the money lined up.',
+    body: 'Project financing helps cover the upfront costs tied to a specific job, contract, buildout, expansion, or revenue-producing project. Use it for materials, labor, deposits, equipment, vendor costs, mobilization, production, or the expensive little details that tend to show up before the revenue does.',
     expanded: {
       intro:
-        'The financing is built around the project, not just the borrower. That means structure, draw schedules, and repayment that actually line up with how the work gets done and when the money comes in.',
+        'The right structure helps match the funding to the project timeline, so a good opportunity does not turn into a cash flow migraine with paperwork.',
       bullets: [
-        'Built for large-scale development, construction, and infrastructure projects',
-        'Financing structured around project budget, milestones, and timeline',
-        'Draw schedules aligned with project phases',
-        'Capital stack solutions, including senior debt, mezzanine, and equity options',
-        'Advisor support to structure the deal and match the right lending partners',
+        'Funding for specific projects, contracts, or business opportunities',
+        'Can help cover upfront costs before revenue is collected',
+        'Useful for buildouts, expansion, materials, labor, production, or project-based growth',
+        'Structure depends on project size, timeline, revenue potential, and business strength',
+        'May help preserve working capital while the project is underway',
       ],
       bestFor:
-        'Developers and business owners taking on projects too large or too complex for a one-size-fits-all loan. Project financing makes sense when the deal has real scale, a clear plan, and a payoff that depends on the project actually getting built — which is exactly why the financing has to be built around it, not bolted on after.',
+        'Businesses with a real project on the table and a clear path to revenue. Project financing can make sense when the opportunity is solid, but the upfront costs would put too much pressure on cash flow. Because “we’ll figure it out as we go” is not a funding strategy. It is a dare.',
     },
     image: '/program%20cards/Project%20Financing.png',
     imageAlt: 'Project Financing',
@@ -569,10 +569,10 @@ export default function Products() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
+          <p className="font-label text-sm font-bold uppercase tracking-[0.2em] text-primary mb-4">
             Financial Solutions
           </p>
-          <h2 className="font-headline text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-on-secondary-fixed mb-6 max-w-5xl">
+          <h2 className="font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-on-secondary-fixed mb-6 max-w-5xl">
             Different Needs Require Different Funding.{' '}
             <motion.span
               className="text-primary inline-block origin-bottom-left"
@@ -603,9 +603,9 @@ export default function Products() {
               (Shocking, We Know.)
             </motion.span>
           </h2>
-          <p className="text-on-surface-variant text-sm md:text-base leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
+          <p className="text-on-surface-variant text-base md:text-lg leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="inline-flex items-center gap-2">
-              <Icon name="open_with" className="text-primary text-base" />
+              <Icon name="open_with" className="text-primary text-lg" />
               <span className="md:hidden">Swipe to spin.</span>
               <span className="hidden md:inline">Drag to spin.</span>
             </span>
@@ -613,7 +613,7 @@ export default function Products() {
               |
             </span>
             <span className="inline-flex items-center gap-2">
-              <Icon name="touch_app" className="text-primary text-base" />
+              <Icon name="touch_app" className="text-primary text-lg" />
               Tap any program to see how it works, what it&rsquo;s for, and who
               it fits.
             </span>

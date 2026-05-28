@@ -41,16 +41,22 @@ const STATS: Stat[] = [
 
 export default function TrustMetrics() {
   return (
-    <section className="bg-on-secondary-fixed py-16 sm:py-24 px-6 sm:px-8 text-white relative overflow-hidden">
+    <section
+      className="py-16 sm:py-24 px-6 sm:px-8 text-white relative overflow-hidden"
+      style={{
+        background:
+          'linear-gradient(135deg, #15402e 0%, #1f6b4e 50%, #2c9168 100%)',
+      }}
+    >
       <motion.div
         aria-hidden
-        className="absolute -top-40 -left-40 w-[28rem] h-[28rem] rounded-full bg-primary/20 blur-3xl"
+        className="absolute -top-40 -left-40 w-[28rem] h-[28rem] rounded-full bg-white/10 blur-3xl"
         animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         aria-hidden
-        className="absolute -bottom-40 -right-40 w-[24rem] h-[24rem] rounded-full bg-primary-container/20 blur-3xl"
+        className="absolute -bottom-40 -right-40 w-[24rem] h-[24rem] rounded-full bg-primary-fixed/15 blur-3xl"
         animate={{ x: [0, -50, 0], y: [0, -40, 0] }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -76,7 +82,7 @@ export default function TrustMetrics() {
                   suffix={stat.suffix}
                   duration={2.4}
                   delay={0.3 + i * 0.18}
-                  className="block text-5xl sm:text-6xl md:text-7xl font-black text-primary-container tabular-nums tracking-tight"
+                  className="block text-5xl sm:text-6xl md:text-7xl font-black text-primary-fixed tabular-nums tracking-tight"
                 />
                 {stat.sticker && (
                   <motion.span
@@ -95,11 +101,11 @@ export default function TrustMetrics() {
                   </motion.span>
                 )}
               </div>
-              <p className="font-label text-sm sm:text-base font-semibold uppercase tracking-wider leading-snug text-slate-300 max-w-[22ch] mx-auto">
+              <p className="font-label text-sm sm:text-base font-semibold uppercase tracking-wider leading-snug text-white/90 max-w-[22ch] mx-auto">
                 {stat.label}
               </p>
               {stat.fineprint && (
-                <p className="font-label text-sm sm:text-base font-semibold uppercase tracking-wider leading-snug text-slate-300 max-w-[22ch] mx-auto mt-2">
+                <p className="font-label text-sm sm:text-base font-semibold uppercase tracking-wider leading-snug text-white/90 whitespace-nowrap mt-2">
                   {stat.fineprint}
                 </p>
               )}

@@ -25,6 +25,8 @@ const NAV_LINKS: NavLink[] = [
       { id: 'sba-commercial-real-estate', label: 'SBA Commercial Real Estate' },
       { id: 'sba-business-acquisition', label: 'SBA Business Acquisition' },
       { id: 'sba-startup', label: 'SBA Startup Loans' },
+      { id: 'project-financing', label: 'Project Financing' },
+      { id: 'inventory-financing', label: 'Inventory Financing' },
     ],
   },
   {
