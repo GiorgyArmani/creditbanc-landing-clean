@@ -15,6 +15,7 @@ import {
   Lock,
   Sparkles,
   Pencil,
+  Quote,
 } from "lucide-react";
 import { SITE } from "@/lib/site";
 
@@ -1013,18 +1014,49 @@ export default function CashFlowGapCalculator() {
       {/* ---------- Advisor note ---------- */}
       <div className="border-t border-outline-variant/30 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 py-12 sm:py-16">
-          <div className="flex items-start gap-4 max-w-4xl">
-            <div className="hidden h-px w-10 shrink-0 translate-y-4 bg-outline-variant sm:block" />
-            <p className="font-headline text-lg md:text-xl italic leading-relaxed text-on-surface-variant">
-              This calculator is designed to start the conversation, not replace
-              one. If the gap is meaningful, the next step is comparing
-              structure, timing, payment schedule, and use of funds —{" "}
-              <span className="text-on-secondary-fixed not-italic font-semibold">
-                before
-              </span>{" "}
-              taking the first offer that lands in your inbox.
-            </p>
-          </div>
+          <motion.figure
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl border border-outline-variant/40 bg-surface-container-lowest p-7 sm:p-9 md:p-10 shadow-[0_24px_60px_-32px_rgba(0,3,33,0.22)]"
+          >
+            {/* Brand accent bar */}
+            <span
+              aria-hidden
+              className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-primary via-primary/60 to-primary/20"
+            />
+            {/* Oversized quote watermark */}
+            <Quote
+              aria-hidden
+              strokeWidth={1.5}
+              className="pointer-events-none absolute -right-2 -top-4 h-24 w-24 rotate-180 text-primary/[0.07]"
+            />
+
+            <div className="relative flex items-start gap-4 sm:gap-5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-container/40 text-on-primary-container ring-1 ring-primary/20">
+                <Quote className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <figcaption className="font-label text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">
+                  A note from your advisor
+                </figcaption>
+                <p className="font-headline text-lg md:text-xl italic leading-relaxed text-on-surface-variant">
+                  This calculator is a starting point, not a magic eight ball.
+                  If your results aren&rsquo;t what you expected, don&rsquo;t
+                  panic. Set up a call, and we&rsquo;ll help you sort through
+                  what the numbers mean, what options may fit, and what should
+                  probably stay unsigned.
+                </p>
+                <div className="mt-5 flex items-center gap-2.5 text-sm">
+                  <span aria-hidden className="h-px w-6 bg-outline-variant" />
+                  <span className="font-semibold text-on-secondary-fixed">
+                    The Credit Banc advisory team
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.figure>
         </div>
       </div>
 

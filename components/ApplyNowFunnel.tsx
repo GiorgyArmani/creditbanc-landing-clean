@@ -42,17 +42,41 @@ export default function ApplyNowFunnel() {
   const lastName = params.get('lastName') || '';
   const email = params.get('email') || '';
   const phone = params.get('phone') || '';
+  const businessName = params.get('businessName') || '';
 
-  // GoHighLevel / LeadConnector forms accept query-string prefill keyed on
-  // each field's API name. Common defaults (first_name, last_name, email,
-  // phone) match Credit Banc's Master Form. Adjust the keys here if the
-  // form's field API names are renamed.
+  // The cash-flow handoff forms ("Book the call" section + results popup)
+  // capture a single "Full name" string and pass it through as `firstName`.
+  // The Master Form's name field is a single "Full Name", so prefill that —
+  // and also split into first/last so prefill still works if the form is ever
+  // switched to separate name fields.
+  const fullName = [firstName, lastName]
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .join(' ');
+  const firstSpace = fullName.indexOf(' ');
+  const splitFirst =
+    firstSpace === -1 ? fullName : fullName.slice(0, firstSpace);
+  const splitLast = firstSpace === -1 ? '' : fullName.slice(firstSpace + 1);
+
+  // GoHighLevel / LeadConnector forms prefill from URL params whose key
+  // matches each field's "Query Key" (configured per-field in the GHL form
+  // builder). We send the common defaults plus a few aliases so the data
+  // lands whether the form uses a single full-name field (full_name / name)
+  // or split name fields (first_name / last_name).
   const iframeSrc = (() => {
     const url = new URL(FORM_BASE);
-    if (firstName) url.searchParams.set('first_name', firstName);
-    if (lastName) url.searchParams.set('last_name', lastName);
+    if (fullName) {
+      url.searchParams.set('full_name', fullName);
+      url.searchParams.set('name', fullName);
+      url.searchParams.set('first_name', splitFirst);
+      if (splitLast) url.searchParams.set('last_name', splitLast);
+    }
     if (email) url.searchParams.set('email', email);
     if (phone) url.searchParams.set('phone', phone);
+    if (businessName) {
+      url.searchParams.set('company_name', businessName);
+      url.searchParams.set('business_name', businessName);
+    }
     return url.toString();
   })();
 

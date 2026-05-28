@@ -48,20 +48,22 @@ const VALUES: { title: string; body: string[] }[] = [
 function StepImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative block w-full h-full">
-      <AnimatePresence mode="wait">
+      {/* No mode="wait": both images overlap during the swap so the old one
+          dissolves into the new one (pure opacity cross-fade). */}
+      <AnimatePresence>
         <motion.div
           key={src}
           className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.03 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.99 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
         >
           <Image
             src={src}
             alt={alt}
             fill
-            sizes="(max-width: 768px) 100vw, 600px"
+            sizes="(max-width: 768px) 100vw, 60vw"
             className="object-contain object-bottom"
             unoptimized
           />
@@ -79,7 +81,7 @@ export default function ValueProp() {
   return (
     <section
       id="process"
-      className="relative overflow-hidden px-6 sm:px-8 pt-20 sm:pt-24 md:pt-28 pb-16 lg:pb-0"
+      className="relative overflow-hidden px-6 sm:px-8 pt-20 sm:pt-24 md:pt-28 pb-16 lg:pb-24"
       style={{
         background:
           'linear-gradient(135deg, #1f6b4e 0%, #2ea878 45%, #55cf9e 100%)',
@@ -92,10 +94,10 @@ export default function ValueProp() {
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <div className="relative max-w-7xl mx-auto">
-        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start lg:h-[700px] xl:h-[720px]">
+        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-12 lg:items-end">
           {/* Person image — grounded bottom-left, fills the section bottom */}
           <motion.div
-            className="relative self-end lg:order-1 w-full aspect-[763/658] lg:aspect-auto lg:h-full"
+            className="relative w-full aspect-[763/658] lg:order-1"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}

@@ -107,7 +107,7 @@ function renderHeroCard(index: number) {
           <CardEyebrow
             icon="bolt"
             title="Funded in 24 hours"
-            note="No collateral · qualifying businesses"
+            note="No collateral for qualifying businesses"
           />
           <div className="flex items-baseline justify-between mb-3">
             <Counter
@@ -188,14 +188,11 @@ function renderHeroCard(index: number) {
           <CardEyebrow
             icon="support_agent"
             title="Direct Advisor Access"
-            note="One-on-one support"
+            note=""
           />
           <div className="flex items-baseline justify-between mb-3">
             <span className="text-3xl font-black text-on-surface tracking-tight">
-              One-on-One
-            </span>
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              Support
+              One-on-One Support
             </span>
           </div>
           <p className="text-xs leading-relaxed text-on-surface-variant mb-4">
