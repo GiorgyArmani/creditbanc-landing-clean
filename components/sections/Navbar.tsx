@@ -53,7 +53,6 @@ const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: 'Our Process', href: '/#process' },
-  { label: 'Cash Flow Tool', href: '/cash-flow-gap' },
 ];
 
 export default function Navbar() {

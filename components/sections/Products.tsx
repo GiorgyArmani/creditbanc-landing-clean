@@ -486,6 +486,31 @@ const PROGRAMS: Program[] = [
   },
 ];
 
+// Marketing interest tags, keyed by program id. When a visitor opens a program
+// modal and clicks "Check Eligibility", we carry this tag to /apply-now so it
+// rides along into the GHL form submission and lands on the contact. Edit the
+// right-hand strings to rename a tag; they are written to GHL verbatim.
+const PROGRAM_INTEREST_TAG: Record<string, string> = {
+  'term-loans': 'interested: term loans',
+  equipment: 'interested: equipment financing',
+  'lines-of-credit': 'interested: lines of credit',
+  'accounts-receivable': 'interested: accounts receivable factoring',
+  'ecommerce-funding': 'interested: ecommerce funding',
+  'inventory-financing': 'interested: inventory financing',
+  'merchant-cash-advance': 'interested: merchant cash advance',
+  'rental-property': 'interested: rental property loans',
+  'commercial-mortgage': 'interested: commercial mortgage loans',
+  'hard-money': 'interested: hard money loans',
+  'fix-and-flip': 'interested: fix and flip loans',
+  'ground-up-construction': 'interested: ground-up construction',
+  'project-financing': 'interested: project financing',
+  'sba-flexfund': 'interested: flexfund program',
+  'sba-refinance': 'interested: SBA refinance',
+  'sba-commercial-real-estate': 'interested: SBA commercial real estate',
+  'sba-business-acquisition': 'interested: SBA acquisition',
+  'sba-startup': 'interested: SBA startup',
+};
+
 const CATEGORY_ANCHORS = ['sba', 'real-estate', 'small-business'] as const;
 
 export default function Products() {
@@ -543,7 +568,7 @@ export default function Products() {
   return (
     <section
       id="solutions"
-      className="relative bg-surface-container-low overflow-hidden"
+      className="relative bg-on-secondary-fixed overflow-hidden"
     >
       {CATEGORY_ANCHORS.map((id) => (
         <span
@@ -562,8 +587,17 @@ export default function Products() {
         />
       ))}
 
+      {/* Brand glow anchored to the top of the section, behind the heading. */}
+      <motion.div
+        aria-hidden
+        className="absolute -top-40 right-[12%] h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none z-0"
+        animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
       <div className="max-w-7xl mx-auto px-6 sm:px-8 pt-20 sm:pt-28 md:pt-32 pb-12 relative z-10">
         <motion.div
+          className="text-center"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -572,7 +606,7 @@ export default function Products() {
           <p className="font-label text-sm font-bold uppercase tracking-[0.2em] text-primary mb-4">
             Financial Solutions
           </p>
-          <h2 className="font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-on-secondary-fixed mb-6 max-w-5xl">
+          <h2 className="font-headline text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 max-w-5xl mx-auto">
             Different Needs Require Different Funding.{' '}
             <motion.span
               className="text-primary inline-block origin-bottom-left"
@@ -603,13 +637,13 @@ export default function Products() {
               (Shocking, We Know.)
             </motion.span>
           </h2>
-          <p className="text-on-surface-variant text-base md:text-lg leading-relaxed flex flex-wrap items-center gap-x-6 gap-y-2">
+          <p className="text-white/70 text-base md:text-lg leading-relaxed flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <span className="inline-flex items-center gap-2">
               <Icon name="open_with" className="text-primary text-lg" />
               <span className="md:hidden">Swipe to spin.</span>
               <span className="hidden md:inline">Drag to spin.</span>
             </span>
-            <span className="hidden md:inline text-on-surface-variant/30">
+            <span className="hidden md:inline text-white/25">
               |
             </span>
             <span className="inline-flex items-center gap-2">
@@ -622,12 +656,6 @@ export default function Products() {
       </div>
 
       <div className="relative w-screen h-[560px] md:h-[680px] lg:h-[800px] xl:h-[900px] bg-on-secondary-fixed overflow-hidden">
-        <motion.div
-          aria-hidden
-          className="absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none"
-          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        />
         <motion.div
           aria-hidden
           className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"
@@ -772,7 +800,14 @@ export default function Products() {
                   </p>
                 </div>
                 <a
-                  href="/apply-now"
+                  href={(() => {
+                    const qs = new URLSearchParams();
+                    const tag = PROGRAM_INTEREST_TAG[openProgram.id];
+                    if (tag) qs.set('interest', tag);
+                    // Mark which program card sent the visitor to apply.
+                    qs.set('appointment_source', openProgram.id);
+                    return `/apply-now?${qs.toString()}`;
+                  })()}
                   className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-bold"
                 >
                   Check Eligibility

@@ -95,9 +95,11 @@ export default function ValueProp() {
       />
       <div className="relative max-w-7xl mx-auto">
         <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-12 lg:items-end">
-          {/* Person image — grounded bottom-left, fills the section bottom */}
+          {/* Person image — grounded bottom-left, fills the section bottom.
+              Hidden on mobile: stacked above the stepper it competes with the
+              numbered steps; the stepper alone reads cleaner on small screens. */}
           <motion.div
-            className="relative w-full aspect-[763/658] lg:order-1"
+            className="hidden lg:block relative w-full aspect-[763/658] lg:order-1"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}

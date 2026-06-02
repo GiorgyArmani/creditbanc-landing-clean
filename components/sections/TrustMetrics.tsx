@@ -18,13 +18,14 @@ const STATS: Stat[] = [
     to: 2,
     prefix: '$',
     suffix: 'B+',
-    label: 'Dollars Put to Work',
+    label: 'Dollars',
+    fineprint: "Put to Work",
   },
   {
     to: 15,
     suffix: 'k+',
     label: 'Businesses Funded.',
-    fineprint: "(Headaches Downgraded)",
+    fineprint: "Headaches Downgraded",
   },
   {
     to: 5,
@@ -45,7 +46,7 @@ export default function TrustMetrics() {
       className="py-16 sm:py-24 px-6 sm:px-8 text-white relative overflow-hidden"
       style={{
         background:
-          'linear-gradient(135deg, #15402e 0%, #1f6b4e 50%, #2c9168 100%)',
+          'linear-gradient(135deg, #1c7d56 0%, #279b6c 50%, #34b07d 100%)',
       }}
     >
       <motion.div
