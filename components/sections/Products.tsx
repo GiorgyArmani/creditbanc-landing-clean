@@ -606,10 +606,12 @@ export default function Products() {
           <p className="font-label text-sm font-bold uppercase tracking-[0.2em] text-primary mb-4">
             Financial Solutions
           </p>
-          <h2 className="font-headline text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 max-w-5xl mx-auto">
-            Different Needs Require Different Funding.{' '}
+          <h2 className="font-headline font-extrabold tracking-tight text-white mb-6 mx-auto px-2">
+            <span className="block text-4xl leading-[1.05] md:whitespace-nowrap md:text-[clamp(1.6rem,3.8vw,3rem)]">
+              Different Needs Require Different Funding.
+            </span>
             <motion.span
-              className="text-primary inline-block origin-bottom-left"
+              className="text-primary inline-block origin-bottom mt-3 text-[clamp(1.6rem,3.2vw,2.75rem)]"
               initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
               whileInView={{
                 opacity: 1,

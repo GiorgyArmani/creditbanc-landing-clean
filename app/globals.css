@@ -36,6 +36,11 @@
 
   body {
     @apply bg-surface text-on-surface font-body;
+    /* Safety net against horizontal scroll from full-bleed `w-screen`
+       elements (e.g. the Products gallery) vs. the vertical scrollbar width.
+       `clip` (not `hidden`) avoids creating a scroll container, so it won't
+       break `position: sticky` descendants. */
+    overflow-x: clip;
   }
 
   ::selection {

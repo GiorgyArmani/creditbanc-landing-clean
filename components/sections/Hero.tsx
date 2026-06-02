@@ -363,7 +363,7 @@ export default function Hero() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.94 }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute z-20 bg-surface-container-lowest px-3.5 py-2 rounded-xl shadow-[0_0_0_1px_rgba(32,37,54,0.05),0_0_18px_-4px_rgba(32,37,54,0.12),0_16px_32px_-10px_rgba(32,37,54,0.30)] border border-outline-variant/25"
+                  className="absolute z-20 bg-[#fdf8e8] px-3.5 py-2 rounded-xl shadow-[0_0_0_1px_rgba(32,37,54,0.05),0_0_18px_-4px_rgba(32,37,54,0.12),0_16px_32px_-10px_rgba(32,37,54,0.30)] border border-outline-variant/25"
                 >
                   <p className="font-headline text-xl font-black text-on-surface tracking-tight tabular-nums leading-none">
                     {
@@ -417,7 +417,7 @@ export default function Hero() {
                 exit={{ opacity: 0, y: -16, rotate: 2, scale: 0.94 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ rotate: 0, y: -4 }}
-                className="absolute z-20 w-60 bg-surface-container-lowest p-5 rounded-xl shadow-[0_0_0_1px_rgba(32,37,54,0.05),0_0_24px_-4px_rgba(32,37,54,0.12),0_28px_50px_-12px_rgba(32,37,54,0.30)] border border-outline-variant/25"
+                className="absolute z-20 w-60 bg-[#fdf8e8] p-5 rounded-xl shadow-[0_0_0_1px_rgba(32,37,54,0.05),0_0_24px_-4px_rgba(32,37,54,0.12),0_28px_50px_-12px_rgba(32,37,54,0.30)] border border-outline-variant/25"
               >
                 {renderHeroCard(heroIndex % CARD_POSITIONS.length)}
               </motion.div>

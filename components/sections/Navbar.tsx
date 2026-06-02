@@ -25,8 +25,7 @@ const NAV_LINKS: NavLink[] = [
       { id: 'sba-commercial-real-estate', label: 'SBA Commercial Real Estate' },
       { id: 'sba-business-acquisition', label: 'SBA Business Acquisition' },
       { id: 'sba-startup', label: 'SBA Startup Loans' },
-      { id: 'project-financing', label: 'Project Financing' },
-      { id: 'inventory-financing', label: 'Inventory Financing' },
+      
     ],
   },
   {
@@ -50,6 +49,8 @@ const NAV_LINKS: NavLink[] = [
       { id: 'accounts-receivable', label: 'Accounts Receivable Factoring' },
       { id: 'ecommerce-funding', label: 'eCommerce Funding' },
       { id: 'merchant-cash-advance', label: 'Merchant Cash Advance' },
+      { id: 'project-financing', label: 'Project Financing' },
+      { id: 'inventory-financing', label: 'Inventory Financing' }
     ],
   },
   { label: 'Our Process', href: '/#process' },

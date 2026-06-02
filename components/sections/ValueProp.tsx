@@ -49,7 +49,7 @@ function StepImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative block w-full h-full">
       {/* No mode="wait": both images overlap during the swap so the old one
-          dissolves into the new one (pure opacity cross-fade). */}
+          slowly dissolves into the new one (pure opacity cross-fade). */}
       <AnimatePresence>
         <motion.div
           key={src}
@@ -57,7 +57,7 @@ function StepImage({ src, alt }: { src: string; alt: string }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          transition={{ duration: 1.4, ease: 'easeInOut' }}
         >
           <Image
             src={src}
@@ -94,12 +94,12 @@ export default function ValueProp() {
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <div className="relative max-w-7xl mx-auto">
-        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-12 lg:items-end">
+        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[1.7fr_1fr] lg:gap-10 lg:items-end">
           {/* Person image — grounded bottom-left, fills the section bottom.
               Hidden on mobile: stacked above the stepper it competes with the
               numbered steps; the stepper alone reads cleaner on small screens. */}
           <motion.div
-            className="hidden lg:block relative w-full aspect-[763/658] lg:order-1"
+            className="hidden lg:block relative w-full aspect-[763/658] lg:order-1 lg:scale-[1.12] origin-bottom"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
