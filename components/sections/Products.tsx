@@ -664,6 +664,16 @@ export default function Products() {
               it fits.
             </span>
           </p>
+          <p className="text-white/60 text-sm md:text-base leading-relaxed mt-3">
+            (Not sure which one fits? That&rsquo;s normal.{' '}
+            <a
+              href="/apply-now?appointment_source=products_advisor_link"
+              className="text-primary font-semibold underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
+            >
+              Click here
+            </a>{' '}
+            to speak with an Advisor.)
+          </p>
         </motion.div>
       </div>
 
