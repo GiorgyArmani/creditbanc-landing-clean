@@ -101,6 +101,14 @@ export default function ApplyNowFunnel() {
     for (const [key, fallback] of Object.entries(SOURCE_FIELD_DEFAULTS)) {
       url.searchParams.set(key, params.get(key) || fallback);
     }
+    // Some campaign links use other lead_source field keys (e.g. the GHL
+    // links use `lead_source_ghl(dashboard_control)`). Forward any of them
+    // verbatim so their attribution reaches the form too.
+    params.forEach((value, key) => {
+      if (key.startsWith('lead_source') && !(key in SOURCE_FIELD_DEFAULTS)) {
+        url.searchParams.set(key, value);
+      }
+    });
     return url.toString();
   })();
 

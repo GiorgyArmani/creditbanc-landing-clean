@@ -58,7 +58,6 @@ const NAV_LINKS: NavLink[] = [
 
 export default function Navbar() {
   const [hovered, setHovered] = useState<string | null>(null);
-  const [active] = useState<string>('SBA Financing');
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [expandedMobileGroup, setExpandedMobileGroup] = useState<string | null>(
@@ -132,7 +131,6 @@ export default function Navbar() {
           onMouseLeave={() => setHovered(null)}
         >
           {NAV_LINKS.map((link) => {
-            const isActive = active === link.label;
             const isHovered = hovered === link.label;
             const hasDropdown = !!link.programs?.length;
             return (
@@ -147,7 +145,7 @@ export default function Navbar() {
                   aria-haspopup={hasDropdown || undefined}
                   aria-expanded={hasDropdown ? isHovered : undefined}
                 >
-                  {(isHovered || (!hovered && isActive)) && (
+                  {isHovered && (
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 rounded-full bg-primary-container/30"
