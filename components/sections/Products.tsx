@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Icon from '../ui/Icon';
 import CircularGallery from '../ui/CircularGallery';
 import { useMediaQuery } from '@/lib/useMediaQuery';
@@ -551,15 +551,25 @@ export default function Products() {
   // its own <video> request or runs its own decode pass for a GIF, which
   // multiplies network and CPU cost. Animated assets still play in the
   // program modal when the user opens that program's card.
-  const galleryItems = PROGRAMS.filter(
-    (p) =>
-      p.image.startsWith('/program%20cards/') &&
-      !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
-  ).map((p) => ({
-    image: p.image,
-    text: '',
-    id: p.id,
-  }));
+  // Memoized so the reference stays stable across renders. CircularGallery
+  // rebuilds its WebGL app whenever `items`/`onItemClick` change identity, and a
+  // rebuild resets the ring to scroll position 0 — which is what made
+  // opening/closing a card snap the spin back to the beginning.
+  const galleryItems = useMemo(
+    () =>
+      PROGRAMS.filter(
+        (p) =>
+          p.image.startsWith('/program%20cards/') &&
+          !/\.(mp4|webm|mov|m4v|gif)(\?|$)/i.test(p.image)
+      ).map((p) => ({
+        image: p.image,
+        text: '',
+        id: p.id,
+      })),
+    []
+  );
+
+  const handleItemClick = useCallback((id: string) => setOpenId(id), []);
 
   const openProgram = openId
     ? PROGRAMS.find((p) => p.id === openId) ?? null
@@ -686,7 +696,8 @@ export default function Products() {
           scrollSpeed={2}
           scrollEase={0.05}
           autoScrollSpeed={0.08}
-          onItemClick={(id) => setOpenId(id)}
+          paused={openId !== null}
+          onItemClick={handleItemClick}
         />
       </div>
 
