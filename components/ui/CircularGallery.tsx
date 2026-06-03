@@ -492,6 +492,7 @@ class App {
   boundOnTouchUp!: (e: MouseEvent | TouchEvent) => void;
 
   isDown: boolean = false;
+  paused: boolean = false;
   start: number = 0;
   startY: number = 0;
   movedDist: number = 0;
@@ -713,7 +714,15 @@ class App {
 
   update() {
     const isHovering = this.lastClientX !== null && this.lastClientY !== null;
-    if (this.autoScrollSpeed > 0 && !this.isDown && !isHovering) {
+    // While paused (e.g. a program modal is open) freeze the ring in place so
+    // it neither auto-advances nor drifts — closing the modal resumes from the
+    // exact same position the user left off at.
+    if (
+      this.autoScrollSpeed > 0 &&
+      !this.isDown &&
+      !isHovering &&
+      !this.paused
+    ) {
       this.scroll.target += this.autoScrollSpeed;
     }
 
@@ -817,6 +826,7 @@ interface CircularGalleryProps {
   scrollSpeed?: number;
   scrollEase?: number;
   autoScrollSpeed?: number;
+  paused?: boolean;
   onItemClick?: (id: string) => void;
 }
 
@@ -829,9 +839,16 @@ export default function CircularGallery({
   scrollSpeed = 2,
   scrollEase = 0.05,
   autoScrollSpeed = 0,
+  paused = false,
   onItemClick,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const appRef = useRef<App | undefined>(undefined);
+  // Track the latest `paused` value so the init effect can seed it without
+  // listing `paused` as a dependency (which would rebuild the whole WebGL app).
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+
   useEffect(() => {
     if (!containerRef.current) return;
     let app: App | undefined;
@@ -850,6 +867,8 @@ export default function CircularGallery({
         autoScrollSpeed,
         onItemClick,
       });
+      app.paused = pausedRef.current;
+      appRef.current = app;
     };
 
     if (typeof document !== 'undefined' && document.fonts?.load) {
@@ -861,8 +880,15 @@ export default function CircularGallery({
     return () => {
       cancelled = true;
       app?.destroy();
+      appRef.current = undefined;
     };
   }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, autoScrollSpeed, onItemClick]);
+
+  // Apply pause/resume on the live app without tearing it down, so the ring
+  // keeps its current scroll position across open/close of a program modal.
+  useEffect(() => {
+    if (appRef.current) appRef.current.paused = paused;
+  }, [paused]);
   return (
     <div
       className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"

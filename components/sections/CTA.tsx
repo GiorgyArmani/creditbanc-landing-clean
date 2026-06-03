@@ -45,7 +45,7 @@ export default function CTA() {
         transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="max-w-4xl mx-auto text-center relative"
+        className="mx-auto text-center relative"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -59,7 +59,7 @@ export default function CTA() {
         </motion.h2>
         <motion.p
           variants={fadeUp}
-          className="text-xl sm:text-2xl md:text-3xl text-white font-semibold mb-4 sm:mb-6 leading-relaxed"
+          className="text-xl sm:text-2xl md:text-3xl text-white font-semibold mb-4 sm:mb-6 leading-relaxed max-w-3xl mx-auto"
         >
           Good. That means you probably haven&rsquo;t been sold the wrong thing
           yet.
