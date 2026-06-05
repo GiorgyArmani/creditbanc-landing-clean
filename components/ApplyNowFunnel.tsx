@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { readAttribution } from '@/lib/attribution';
 
 const FORM_ID = 'n4aCgud8X9ItLI36ZRch';
 const FORM_BASE = `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`;
@@ -51,6 +52,17 @@ export default function ApplyNowFunnel() {
   // open on desktop (lg) regardless of this state via the `lg:block` override.
   const [stepsOpen, setStepsOpen] = useState(false);
   const params = useSearchParams();
+  // Attribution captured on whatever page the campaign link landed on
+  // (app/providers.tsx). Read after mount — sessionStorage doesn't exist
+  // during SSR — and hold the iframe until it's loaded so the GHL form isn't
+  // fetched twice with different srcs.
+  const [storedAttribution, setStoredAttribution] = useState<Record<
+    string,
+    string
+  > | null>(null);
+  useEffect(() => {
+    setStoredAttribution(readAttribution());
+  }, []);
   const firstName = params.get('firstName') || '';
   const lastName = params.get('lastName') || '';
   const email = params.get('email') || '';
@@ -96,14 +108,21 @@ export default function ApplyNowFunnel() {
     // field whose Query Key is `interest`; its submitted value can then drive a
     // workflow that tags the contact (e.g. "interested: flexfund program").
     if (interest) url.searchParams.set('interest', interest);
-    // Source attribution: default each hidden field to `ghl`, but let an
-    // incoming URL param of the same key override it.
+    // Source attribution: a URL param wins, then attribution stashed when the
+    // visitor first landed on the site (lib/attribution.ts), then the default.
+    const stored = storedAttribution ?? {};
     for (const [key, fallback] of Object.entries(SOURCE_FIELD_DEFAULTS)) {
-      url.searchParams.set(key, params.get(key) || fallback);
+      url.searchParams.set(key, params.get(key) || stored[key] || fallback);
     }
     // Some campaign links use other lead_source field keys (e.g. the GHL
     // links use `lead_source_ghl(dashboard_control)`). Forward any of them
-    // verbatim so their attribution reaches the form too.
+    // verbatim so their attribution reaches the form too — stored first so a
+    // param on this page still wins.
+    for (const [key, value] of Object.entries(stored)) {
+      if (key.startsWith('lead_source') && !(key in SOURCE_FIELD_DEFAULTS)) {
+        url.searchParams.set(key, value);
+      }
+    }
     params.forEach((value, key) => {
       if (key.startsWith('lead_source') && !(key in SOURCE_FIELD_DEFAULTS)) {
         url.searchParams.set(key, value);
@@ -223,8 +242,13 @@ export default function ApplyNowFunnel() {
             On mobile they stack — form first so it's reachable immediately,
             steps below it as a foldable card. */}
         <div className="max-w-6xl mx-auto grid lg:grid-cols-[1fr_340px] gap-8 lg:gap-12 items-start">
-          {/* Form iframe */}
+          {/* Form iframe — rendered only after stored attribution is read so
+              the GHL form loads once with its final src. The placeholder
+              reserves the same height to avoid layout shift. */}
           <div>
+            {storedAttribution === null ? (
+              <div aria-hidden style={{ width: '100%', height: '1294px' }} />
+            ) : (
             <iframe
               src={iframeSrc}
               style={{
@@ -247,6 +271,7 @@ export default function ApplyNowFunnel() {
               data-form-id={FORM_ID}
               title="Master Form - Credit Banc"
             />
+            )}
           </div>
 
           {/* How this works — beside the form on desktop (sticky), foldable on mobile */}

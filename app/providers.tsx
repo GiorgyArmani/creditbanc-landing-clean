@@ -1,8 +1,15 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
+import { captureAttribution } from '@/lib/attribution';
 
 export default function Providers({ children }: { children: ReactNode }) {
+  // Stash campaign attribution params (lead_source*, appointment_source) so
+  // /apply-now can recover them after the visitor navigates around the site.
+  useEffect(() => {
+    captureAttribution();
+  }, []);
+
   useEffect(() => {
     if (
       typeof window !== 'undefined' &&

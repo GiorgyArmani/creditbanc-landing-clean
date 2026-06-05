@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { SITE } from '@/lib/site';
+import { SITE, ROUTES } from '@/lib/site';
 
 type Program = { id: string; label: string };
 type NavLink = {
@@ -54,6 +54,7 @@ const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: 'Our Process', href: '/#process' },
+  { label: 'Blog', href: ROUTES.blog },
 ];
 
 export default function Navbar() {
