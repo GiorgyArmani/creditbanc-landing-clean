@@ -21,8 +21,7 @@ const COMPANY = [
 ];
 
 const RESOURCES = [
-  // TODO: Re-enable once Blog page is revamped
-  // { label: 'Blog', href: ROUTES.blog },
+  { label: 'Blog', href: ROUTES.blog },
   { label: 'Apply for Funding', href: ROUTES.apply },
   { label: 'Privacy Policy', href: ROUTES.privacy },
 ];
