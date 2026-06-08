@@ -8,7 +8,7 @@ import { getPosts } from "@/lib/blog";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Insights | Credit Banc",
+  title: "Blog | Credit Banc",
   description:
     "Straight talk on business funding, cash flow, and growth from Credit Banc.",
 };
@@ -42,7 +42,7 @@ export default async function BlogIndex() {
                 Credit Banc
               </p>
               <h1 className="mt-3 font-headline text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-                Insights
+                Blog
               </h1>
               <p className="mt-4 text-lg text-white/90">
                 Straight talk on funding, cash flow, and building a business
