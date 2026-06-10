@@ -531,7 +531,7 @@ export default function Products() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenId(null);
+      if (e.key === 'Escape') closeModal();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -570,6 +570,22 @@ export default function Products() {
   );
 
   const handleItemClick = useCallback((id: string) => setOpenId(id), []);
+
+  // Close the modal AND clear the URL hash. The navbar dropdown items are
+  // anchors to /#<id>; if we leave the hash in place after closing, clicking
+  // the same item again navigates to an unchanged hash, so no `hashchange`
+  // fires and the modal never reopens. Use replaceState to avoid an extra
+  // history entry and the scroll jump a bare `location.hash = ''` would cause.
+  const closeModal = useCallback(() => {
+    setOpenId(null);
+    if (window.location.hash) {
+      window.history.replaceState(
+        null,
+        '',
+        window.location.pathname + window.location.search
+      );
+    }
+  }, []);
 
   const openProgram = openId
     ? PROGRAMS.find((p) => p.id === openId) ?? null
@@ -722,7 +738,7 @@ export default function Products() {
           >
             <motion.div
               className="absolute inset-0 bg-on-secondary-fixed/70 backdrop-blur-sm"
-              onClick={() => setOpenId(null)}
+              onClick={closeModal}
             />
             <motion.div
               role="dialog"
@@ -736,7 +752,7 @@ export default function Products() {
             >
               <button
                 type="button"
-                onClick={() => setOpenId(null)}
+                onClick={closeModal}
                 aria-label="Close"
                 className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-on-secondary-fixed/60 hover:bg-on-secondary-fixed/80 text-white backdrop-blur-sm flex items-center justify-center transition-colors shadow-md"
               >
