@@ -14,10 +14,10 @@ const PROGRAMS = [
 ];
 
 const COMPANY = [
-  // TODO: Re-enable once Team page is revamped
-  // { label: 'Our Team', href: ROUTES.team },
+  // About page not ready yet — re-enable once /about is finished.
+  // { label: 'About Us', href: '/about' },
+  // { label: 'In the Spotlight', href: '/about#spotlight' },
   { label: `Call Us — ${SITE.phone}`, href: SITE.phoneTel },
-  // { label: 'Press Releases', href: `${SITE.baseUrl}/press` },
 ];
 
 const RESOURCES = [
