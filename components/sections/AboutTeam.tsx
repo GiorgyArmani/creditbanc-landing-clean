@@ -82,14 +82,19 @@ function PhotoBlock({
   member,
   accent,
   rounded = 'rounded-2xl',
+  aspect = 'aspect-square',
+  sizes = '(max-width: 768px) 100vw, 33vw',
 }: {
   member: TeamMember;
   accent: string;
   rounded?: string;
+  /** Tailwind aspect-ratio class. Cards use portrait 4:5; popup uses square. */
+  aspect?: string;
+  sizes?: string;
 }) {
   return (
     <div
-      className={`relative w-full aspect-square ${rounded} overflow-hidden`}
+      className={`relative w-full ${aspect} ${rounded} overflow-hidden`}
       style={{ background: accent }}
     >
       {member.photo ? (
@@ -97,7 +102,7 @@ function PhotoBlock({
           src={member.photo}
           alt={member.name}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          sizes={sizes}
           className="object-cover object-top"
         />
       ) : (
@@ -119,6 +124,94 @@ const gridItem: Variants = {
     transition: { duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
   }),
 };
+
+// Single team card. `featured` = larger founder tile (bigger type, taller
+// frame). Renders the portrait photo, name/role, socials, and the bio hover
+// affordance when the member has a bio.
+function TeamCard({
+  member,
+  accent,
+  index,
+  featured = false,
+  onOpen,
+}: {
+  member: TeamMember;
+  accent: string;
+  index: number;
+  featured?: boolean;
+  onOpen: (m: TeamMember) => void;
+}) {
+  const hasBio = !!member.bio?.length;
+  const sizes = featured
+    ? '(max-width: 640px) 100vw, 320px'
+    : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px';
+  return (
+    <motion.div
+      custom={index}
+      variants={gridItem}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+    >
+      <motion.div
+        whileHover={{ y: -6 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+        className={`group relative ${hasBio ? 'cursor-pointer' : ''}`}
+        onClick={() => hasBio && onOpen(member)}
+        role={hasBio ? 'button' : undefined}
+        tabIndex={hasBio ? 0 : undefined}
+        onKeyDown={(e) => {
+          if (hasBio && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onOpen(member);
+          }
+        }}
+        aria-label={hasBio ? `Read ${member.name}’s bio` : undefined}
+      >
+        <div className="relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-20px_rgba(32,37,54,0.35)] ring-1 ring-on-secondary-fixed/5">
+          <motion.div
+            className="will-change-transform"
+            whileHover={{ scale: 1.04 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <PhotoBlock
+              member={member}
+              accent={accent}
+              rounded="rounded-none"
+              aspect="aspect-[4/5]"
+              sizes={sizes}
+            />
+          </motion.div>
+          {hasBio && (
+            <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              <span className="bg-white/95 backdrop-blur text-on-secondary-fixed text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">
+                Read bio
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-5">
+          <h3
+            className={`font-headline font-extrabold tracking-tight text-on-secondary-fixed ${
+              featured ? 'text-2xl sm:text-3xl' : 'text-xl sm:text-2xl'
+            }`}
+          >
+            {member.name}
+          </h3>
+          <p className="font-label text-xs font-bold uppercase tracking-widest text-primary mt-1">
+            {member.role}
+          </p>
+          {member.socials?.length ? (
+            <div className="mt-3">
+              <SocialRow socials={member.socials} />
+            </div>
+          ) : null}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function AboutTeam() {
   const [active, setActive] = useState<TeamMember | null>(null);
@@ -193,75 +286,36 @@ export default function AboutTeam() {
           </p>
         </motion.div>
 
-        {/* Team grid */}
-        <div className="mt-14 sm:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {TEAM_MEMBERS.map((member, i) => {
-            const accent = ACCENTS[i % ACCENTS.length];
-            const hasBio = !!member.bio?.length;
-            return (
-              <motion.div
+        {/* Team — featured bento. Founders (first two) get large portrait
+            tiles; the rest flow in a uniform portrait gallery below. */}
+        <div className="mt-14 sm:mt-20">
+          {/* Featured: Matt & Lou — constrained so the founder tiles read as
+              accents, not oversized hero images. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
+            {TEAM_MEMBERS.slice(0, 2).map((member, i) => (
+              <TeamCard
                 key={member.name + i}
-                custom={i}
-                variants={gridItem}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-              >
-                <motion.div
-                  whileHover={{ y: -6 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                  className={`group relative ${
-                    hasBio ? 'cursor-pointer' : ''
-                  }`}
-                  onClick={() => hasBio && setActive(member)}
-                  role={hasBio ? 'button' : undefined}
-                  tabIndex={hasBio ? 0 : undefined}
-                  onKeyDown={(e) => {
-                    if (hasBio && (e.key === 'Enter' || e.key === ' ')) {
-                      e.preventDefault();
-                      setActive(member);
-                    }
-                  }}
-                  aria-label={hasBio ? `Read ${member.name}’s bio` : undefined}
-                >
-                  <div className="relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-20px_rgba(32,37,54,0.35)] ring-1 ring-on-secondary-fixed/5">
-                    <motion.div
-                      className="will-change-transform"
-                      whileHover={{ scale: 1.04 }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <PhotoBlock
-                        member={member}
-                        accent={accent}
-                        rounded="rounded-none"
-                      />
-                    </motion.div>
-                    {hasBio && (
-                      <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                        <span className="bg-white/95 backdrop-blur text-on-secondary-fixed text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">
-                          Read bio
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                member={member}
+                accent={ACCENTS[i % ACCENTS.length]}
+                index={i}
+                featured
+                onOpen={setActive}
+              />
+            ))}
+          </div>
 
-                  <div className="mt-5">
-                    <h3 className="font-headline text-xl sm:text-2xl font-extrabold tracking-tight text-on-secondary-fixed">
-                      {member.name}
-                    </h3>
-                    <p className="font-label text-xs font-bold uppercase tracking-widest text-primary mt-1">
-                      {member.role}
-                    </p>
-                    {member.socials?.length ? (
-                      <div className="mt-3">
-                        <SocialRow socials={member.socials} />
-                      </div>
-                    ) : null}
-                  </div>
-                </motion.div>
-              </motion.div>
-            );
-          })}
+          {/* Gallery: everyone else */}
+          <div className="mt-8 sm:mt-10 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {TEAM_MEMBERS.slice(2).map((member, i) => (
+              <TeamCard
+                key={member.name + (i + 2)}
+                member={member}
+                accent={ACCENTS[(i + 2) % ACCENTS.length]}
+                index={i}
+                onOpen={setActive}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

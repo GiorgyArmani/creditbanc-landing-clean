@@ -110,6 +110,14 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
+    name: 'Blaine',
+    role: 'Chief Results Officer',
+    photo: '/cbteam/Blain.png',
+    socials: [
+      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+    ],
+  },
+  {
     name: 'Jorge',
     role: 'Lead Software Engineer',
     photo: '/cbteam/Jorge.png',
@@ -125,14 +133,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
     ],
   },
-  {
-    name: 'Blaine',
-    role: 'Chief Results Officer',
-    photo: '/cbteam/Blain.png',
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
-  },
+  
 ];
 
 export type SpotlightItem = {
