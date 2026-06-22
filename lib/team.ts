@@ -95,7 +95,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     name: 'Gisselle',
-    role: 'Underwriting',
+    role: 'Underwriting Specialist',
     photo: '/cbteam/Gisselle.png',
     socials: [
       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
@@ -103,8 +103,32 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     name: 'Yai',
-    role: 'Underwriting',
+    role: 'Underwriting Specialist',
     photo: '/cbteam/Yai.png',
+    socials: [
+      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+    ],
+  },
+  {
+    name: 'Jorge',
+    role: 'Lead Software Engineer',
+    photo: '/cbteam/Jorge.png',
+    socials: [
+      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+    ],
+  },
+  {
+    name: 'Jesus',
+    role: 'Tech & CRM Specialist',
+    photo: '/cbteam/Jesus.png',
+    socials: [
+      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+    ],
+  },
+  {
+    name: 'Blaine',
+    role: 'Chief Results Officer',
+    photo: '/cbteam/Blain.png',
     socials: [
       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
     ],

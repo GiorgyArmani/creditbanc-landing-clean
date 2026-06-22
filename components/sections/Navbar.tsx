@@ -54,8 +54,7 @@ const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: 'Our Process', href: '/#process' },
-  // About page not ready yet — re-enable once /about is finished.
-  // { label: 'About', href: '/about' },
+  //  { label: 'About', href: '/about' },
   { label: 'Blog', href: ROUTES.blog },
 ];
 
