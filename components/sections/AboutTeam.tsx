@@ -155,10 +155,10 @@ function TeamCard({
   featured?: boolean;
   onOpen: (m: TeamMember) => void;
 }) {
-  const hasBio = !!member.bio?.length;
-  const bookable = canBook(member);
-  // Interactive when there's a bio to read or a call to book — opens the popup.
-  const interactive = hasBio || bookable;
+  // Every team member is interactive: hovering highlights the card and clicking
+  // opens the popup. The popup only shows "Schedule a call" for bookable
+  // founders/advisors (canBook), so the rest just get their photo + LinkedIn.
+  const interactive = true;
   const sizes = featured
     ? '(max-width: 640px) 100vw, 320px'
     : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px';
