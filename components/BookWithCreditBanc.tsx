@@ -130,11 +130,13 @@ export default function BookWithCreditBanc() {
           <div className="flex-1 h-px bg-outline-variant/50" />
         </div>
 
-        {/* Calendar — full width across the container. */}
+        {/* Calendar — full width across the container. Opacity-only fade (no
+            transform) so the GHL iframe isn't resizing inside a moving,
+            transformed container while it loads. */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE, delay: 0.2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
           className="w-full overflow-hidden rounded-2xl"
         >
           <iframe
@@ -169,10 +171,12 @@ export default function BookWithCreditBanc() {
         </motion.p>
       </div>
 
-      {/* GHL resize script — auto-fits the booking iframe height. */}
+      {/* GHL resize script — auto-fits the booking iframe height. Load it
+          afterInteractive (not lazyOnload) so the resize listener is attached
+          before the iframe posts its first height message. */}
       <Script
         src="https://link.msgsndr.com/js/form_embed.js"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
       />
     </section>
   );

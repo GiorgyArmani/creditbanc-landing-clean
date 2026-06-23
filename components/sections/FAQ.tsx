@@ -98,15 +98,31 @@ const FAQ_LD = {
   })),
 };
 
-export default function FAQ() {
+export default function FAQ({
+  variant = 'surface',
+}: {
+  /** 'surface' = cream landing section; 'green' = emerald gradient (calendar pages). */
+  variant?: 'surface' | 'green';
+} = {}) {
   const [sectionOpen, setSectionOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const green = variant === 'green';
 
   return (
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="py-20 sm:py-28 md:py-32 px-6 sm:px-8 bg-surface"
+      className={`py-20 sm:py-28 md:py-32 px-6 sm:px-8 ${
+        green ? 'text-white' : 'bg-surface'
+      }`}
+      style={
+        green
+          ? {
+              background:
+                'linear-gradient(135deg, #1f6b4e 0%, #2ea878 50%, #34b07d 100%)',
+            }
+          : undefined
+      }
     >
       <Script
         id="ld-faq"
@@ -122,19 +138,35 @@ export default function FAQ() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
+          <p
+            className={`font-label text-xs font-bold uppercase tracking-[0.2em] mb-4 ${
+              green ? 'text-white/80' : 'text-primary'
+            }`}
+          >
             Frequently Asked Questions
           </p>
           <h2
             id="faq-heading"
-            className="font-headline text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-on-secondary-fixed mb-4 leading-[1.02]"
+            className={`font-headline text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter mb-4 leading-[1.02] ${
+              green ? 'text-white' : 'text-on-secondary-fixed'
+            }`}
           >
             <span className="md:whitespace-nowrap">Questions Worth Asking</span>{' '}
-            <span className="block md:inline text-primary md:text-on-secondary-fixed mt-1 md:mt-0">
+            <span
+              className={`block md:inline mt-1 md:mt-0 ${
+                green
+                  ? 'text-primary-fixed md:text-white'
+                  : 'text-primary md:text-on-secondary-fixed'
+              }`}
+            >
               Before You Borrow
             </span>
           </h2>
-          <p className="text-on-surface-variant leading-relaxed max-w-2xl mx-auto">
+          <p
+            className={`leading-relaxed max-w-2xl mx-auto ${
+              green ? 'text-white/85' : 'text-on-surface-variant'
+            }`}
+          >
             Call us old-fashioned, but you should know who you're getting into bed with before the fine print takes its pants off.
           </p>
         </motion.div>
@@ -151,13 +183,17 @@ export default function FAQ() {
             onClick={() => setSectionOpen((v) => !v)}
             aria-expanded={sectionOpen}
             aria-controls="faq-list"
-            className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-surface-container-lowest border border-outline-variant/30 shadow-sm font-bold text-sm uppercase tracking-widest text-on-secondary-fixed transition-all hover:border-primary/60 hover:shadow-md"
+            className={`inline-flex items-center gap-3 px-7 py-3 rounded-full border shadow-sm font-bold text-sm uppercase tracking-widest transition-all ${
+              green
+                ? 'bg-white/10 border-white/25 text-white hover:bg-white/15 hover:border-white/45'
+                : 'bg-surface-container-lowest border-outline-variant/30 text-on-secondary-fixed hover:border-primary/60 hover:shadow-md'
+            }`}
           >
             {sectionOpen ? 'Hide Questions' : 'Show All Questions'}
             <motion.span
               animate={{ rotate: sectionOpen ? 180 : 0 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="text-primary"
+              className={green ? 'text-white' : 'text-primary'}
             >
               <ChevronDown className="h-5 w-5" />
             </motion.span>
@@ -181,22 +217,32 @@ export default function FAQ() {
                   return (
                     <div
                       key={item.q}
-                      className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest overflow-hidden"
+                      className={`rounded-xl border overflow-hidden ${
+                        green
+                          ? 'border-white/15 bg-white/5'
+                          : 'border-outline-variant/20 bg-surface-container-lowest'
+                      }`}
                     >
                       <button
                         type="button"
                         onClick={() => setOpenIndex(isOpen ? null : i)}
                         aria-expanded={isOpen}
                         aria-controls={`faq-panel-${i}`}
-                        className="w-full flex items-center justify-between gap-6 px-6 py-5 text-left transition-colors hover:bg-surface-container-low"
+                        className={`w-full flex items-center justify-between gap-6 px-6 py-5 text-left transition-colors ${
+                          green ? 'hover:bg-white/10' : 'hover:bg-surface-container-low'
+                        }`}
                       >
-                        <span className="font-headline text-lg font-bold tracking-tight text-on-secondary-fixed">
+                        <span
+                          className={`font-headline text-lg font-bold tracking-tight ${
+                            green ? 'text-white' : 'text-on-secondary-fixed'
+                          }`}
+                        >
                           {item.q}
                         </span>
                         <motion.span
                           animate={{ rotate: isOpen ? 180 : 0 }}
                           transition={{ duration: 0.25, ease: 'easeOut' }}
-                          className="shrink-0 text-primary"
+                          className={`shrink-0 ${green ? 'text-white' : 'text-primary'}`}
                         >
                           <ChevronDown className="h-5 w-5" />
                         </motion.span>
@@ -215,7 +261,11 @@ export default function FAQ() {
                             }}
                             className="overflow-hidden"
                           >
-                            <div className="px-6 pb-5 text-on-surface-variant leading-relaxed space-y-3">
+                            <div
+                              className={`px-6 pb-5 leading-relaxed space-y-3 ${
+                                green ? 'text-white/85' : 'text-on-surface-variant'
+                              }`}
+                            >
                               {item.a.map((p, j) => (
                                 <p key={j}>{p}</p>
                               ))}

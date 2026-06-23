@@ -1,10 +1,22 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { SPOTLIGHT_ITEMS } from '@/lib/team';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import { SPOTLIGHT_ITEMS, FORBES_AUTHOR_URL } from '@/lib/team';
+
+// How many items show before the "Show all" toggle reveals the rest.
+const PREVIEW_COUNT = 4;
 
 export default function Spotlight() {
+  const [showAll, setShowAll] = useState(false);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const visibleItems = showAll
+    ? SPOTLIGHT_ITEMS
+    : SPOTLIGHT_ITEMS.slice(0, PREVIEW_COUNT);
+  const hiddenCount = SPOTLIGHT_ITEMS.length - PREVIEW_COUNT;
+
   return (
     <section
       id="spotlight"
@@ -40,51 +52,131 @@ export default function Spotlight() {
           </p>
         </motion.div>
 
-        <div className="mt-12 divide-y divide-white/15 border-t border-white/15">
-          {SPOTLIGHT_ITEMS.map((item, i) => (
-            <motion.a
-              key={item.title + i}
-              href={item.href}
-              target={item.href.startsWith('#') ? undefined : '_blank'}
-              rel={
-                item.href.startsWith('#') ? undefined : 'noopener noreferrer'
-              }
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.6 }}
-              transition={{
-                duration: 0.5,
-                delay: i * 0.06,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group flex items-center gap-5 sm:gap-8 py-6 transition-colors"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="inline-block bg-white/15 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
-                    {item.outlet}
-                  </span>
-                  {item.date && (
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
-                      {item.date}
-                    </span>
+        <div className="mt-12 space-y-3">
+          {visibleItems.map((item, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <motion.div
+                key={item.title + i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{
+                  duration: 0.5,
+                  delay: Math.min(i, PREVIEW_COUNT) * 0.05,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="rounded-xl border border-white/15 bg-white/5 overflow-hidden backdrop-blur-sm"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  aria-controls={`spotlight-panel-${i}`}
+                  className="w-full flex items-center gap-5 px-5 sm:px-6 py-5 text-left transition-colors hover:bg-white/5"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="inline-block bg-white/15 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
+                        {item.outlet}
+                      </span>
+                      {item.date && (
+                        <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
+                          {item.date}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-headline text-lg sm:text-xl font-bold tracking-tight leading-snug">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="shrink-0 text-white/80"
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`spotlight-panel-${i}`}
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 sm:px-6 pb-5">
+                        {item.excerpt && (
+                          <p className="text-sm sm:text-base text-white/80 leading-relaxed">
+                            {item.excerpt}
+                          </p>
+                        )}
+                        <a
+                          href={item.href}
+                          target={item.href.startsWith('#') ? undefined : '_blank'}
+                          rel={
+                            item.href.startsWith('#')
+                              ? undefined
+                              : 'noopener noreferrer'
+                          }
+                          className="group mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold uppercase tracking-widest text-on-secondary-fixed transition-all hover:shadow-lg"
+                        >
+                          {item.outlet === 'Press Release'
+                            ? 'Read the release'
+                            : 'Read on Forbes'}
+                          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </a>
+                      </div>
+                    </motion.div>
                   )}
-                </div>
-                <h3 className="font-headline text-xl sm:text-2xl font-bold tracking-tight leading-snug group-hover:text-primary-fixed transition-colors">
-                  {item.title}
-                </h3>
-                {item.excerpt && (
-                  <p className="text-sm sm:text-base text-white/75 mt-1.5 leading-relaxed">
-                    {item.excerpt}
-                  </p>
-                )}
-              </div>
-              <span className="shrink-0 w-11 h-11 rounded-full bg-white/10 group-hover:bg-white group-hover:text-on-secondary-fixed text-white flex items-center justify-center transition-all group-hover:rotate-0">
-                <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </span>
-            </motion.a>
-          ))}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {hiddenCount > 0 && (
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              aria-expanded={showAll}
+              className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-white/10 border border-white/25 font-bold text-sm uppercase tracking-widest text-white transition-all hover:bg-white/15 hover:border-white/40"
+            >
+              {showAll ? 'Show less' : `See More`}
+              <motion.span
+                animate={{ rotate: showAll ? 180 : 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+              >
+                <ChevronDown className="h-5 w-5" />
+              </motion.span>
+            </button>
+          </div>
+        )}
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-10 text-center text-base sm:text-lg text-white/85"
+        >
+          Want more?{' '}
+          <a
+            href={FORBES_AUTHOR_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+          >
+            Check out the full list over on Forbes
+            <ArrowUpRight className="inline h-4 w-4 ml-0.5 -translate-y-0.5" />
+          </a>
+        </motion.p>
       </div>
     </section>
   );

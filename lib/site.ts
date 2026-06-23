@@ -13,6 +13,7 @@ export const ROUTES = {
   realEstate: 'https://creditbanc.io/real-estate-financing',
   smallBusiness: 'https://creditbanc.io/small-business-funding',
   apply: '/apply-now',
+  schedule: '/schedule-a-call',
   blog: '/blog',
   team: 'https://creditbanc.io/meet-the-team',
   privacy: '/privacypolicy',

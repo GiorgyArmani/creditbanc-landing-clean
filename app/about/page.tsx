@@ -4,6 +4,7 @@ import Footer from '@/components/sections/Footer';
 // Team layout variants — swap which one renders below to compare:
 //   AboutTeam        → featured bento (founders large, rest in a gallery)
 //   AboutTeamChroma  → React Bits spotlight gallery (cursor reveals color)
+import AboutHero from '@/components/sections/AboutHero';
 import AboutTeam from '@/components/sections/AboutTeam';
 import AboutTeamChroma from '@/components/sections/AboutTeamChroma';
 import Spotlight from '@/components/sections/Spotlight';
@@ -25,13 +26,14 @@ export const metadata: Metadata = {
 
 // Flip this to compare the two team layouts. 'chroma' = React Bits spotlight
 // gallery, 'bento' = featured bento.
-const TEAM_VARIANT: 'chroma' | 'bento' = 'chroma';
+const TEAM_VARIANT: 'chroma' | 'bento' = 'bento';
 
 export default function AboutPage() {
   return (
     <>
       <Navbar />
       <main className="pt-24">
+        <AboutHero />
         {TEAM_VARIANT === 'chroma' ? <AboutTeamChroma /> : <AboutTeam />}
         <Spotlight />
         <CTA />

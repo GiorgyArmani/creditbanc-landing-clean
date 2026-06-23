@@ -3,9 +3,22 @@
 import Image from 'next/image';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Linkedin, Instagram, Mail, Globe, X } from 'lucide-react';
+import { Linkedin, Instagram, Mail, Globe, X, CalendarDays } from 'lucide-react';
 import TextType from '../ui/TextType';
 import { TEAM_MEMBERS, type Social, type TeamMember } from '@/lib/team';
+import { ROUTES } from '@/lib/site';
+
+// Founders & advisors get a "Schedule a call" CTA inside the bio reveal.
+function canBook(member: TeamMember): boolean {
+  return /founder|advisor/i.test(member.role);
+}
+
+function bookingHref(member: TeamMember): string {
+  // Precedence: explicit external URL → the advisor's own slug page → generic.
+  if (member.bookingUrl) return member.bookingUrl;
+  if (member.slug) return `/schedule/${member.slug}`;
+  return ROUTES.schedule;
+}
 
 // On-brand accent gradients for the photo blocks. Cycled by card index so the
 // grid gets the colorful Atlassian pop while staying inside the brand palette
@@ -126,8 +139,9 @@ const gridItem: Variants = {
 };
 
 // Single team card. `featured` = larger founder tile (bigger type, taller
-// frame). Renders the portrait photo, name/role, socials, and the bio hover
-// affordance when the member has a bio.
+// frame). Renders the portrait photo, name/role, socials. Hovering highlights
+// the card; clicking opens the bio/schedule popup (the only bio viewer, so the
+// grid never shifts).
 function TeamCard({
   member,
   accent,
@@ -142,6 +156,9 @@ function TeamCard({
   onOpen: (m: TeamMember) => void;
 }) {
   const hasBio = !!member.bio?.length;
+  const bookable = canBook(member);
+  // Interactive when there's a bio to read or a call to book — opens the popup.
+  const interactive = hasBio || bookable;
   const sizes = featured
     ? '(max-width: 640px) 100vw, 320px'
     : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px';
@@ -154,41 +171,36 @@ function TeamCard({
       viewport={{ once: true, amount: 0.3 }}
     >
       <motion.div
-        whileHover={{ y: -6 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-        className={`group relative ${hasBio ? 'cursor-pointer' : ''}`}
-        onClick={() => hasBio && onOpen(member)}
-        role={hasBio ? 'button' : undefined}
-        tabIndex={hasBio ? 0 : undefined}
+        whileHover={interactive ? { y: -4 } : undefined}
+        transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+        className={`group relative ${interactive ? 'cursor-pointer' : ''}`}
+        onClick={() => interactive && onOpen(member)}
+        role={interactive ? 'button' : undefined}
+        tabIndex={interactive ? 0 : undefined}
         onKeyDown={(e) => {
-          if (hasBio && (e.key === 'Enter' || e.key === ' ')) {
+          if (interactive && (e.key === 'Enter' || e.key === ' ')) {
             e.preventDefault();
             onOpen(member);
           }
         }}
-        aria-label={hasBio ? `Read ${member.name}’s bio` : undefined}
+        aria-label={interactive ? `More about ${member.name}` : undefined}
       >
-        <div className="relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-20px_rgba(32,37,54,0.35)] ring-1 ring-on-secondary-fixed/5">
-          <motion.div
-            className="will-change-transform"
-            whileHover={{ scale: 1.04 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <PhotoBlock
-              member={member}
-              accent={accent}
-              rounded="rounded-none"
-              aspect="aspect-[4/5]"
-              sizes={sizes}
-            />
-          </motion.div>
-          {hasBio && (
-            <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-              <span className="bg-white/95 backdrop-blur text-on-secondary-fixed text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">
-                Read bio
-              </span>
-            </div>
-          )}
+        {/* Hover just highlights the card (ring + soft glow); the popup carries
+            the bio + schedule, so nothing here changes the grid layout. */}
+        <div
+          className={`relative overflow-hidden rounded-2xl shadow-[0_10px_30px_-20px_rgba(32,37,54,0.22)] ring-1 ring-on-secondary-fixed/5 transition-all duration-300 ${
+            interactive
+              ? 'group-hover:ring-2 group-hover:ring-primary group-hover:shadow-[0_18px_44px_-22px_rgba(32,37,54,0.4)]'
+              : ''
+          }`}
+        >
+          <PhotoBlock
+            member={member}
+            accent={accent}
+            rounded="rounded-none"
+            aspect="aspect-[4/5]"
+            sizes={sizes}
+          />
         </div>
 
         <div className="mt-5">
@@ -232,7 +244,10 @@ export default function AboutTeam() {
   }, [active]);
 
   return (
-    <section id="team" className="relative px-6 sm:px-8 py-20 sm:py-28 bg-surface">
+    <section
+      id="team"
+      className="relative px-6 sm:px-8 py-20 sm:py-28 bg-surface"
+    >
       <div
         aria-hidden
         className="absolute -left-40 top-32 w-96 h-96 rounded-full bg-primary-container/15 blur-3xl pointer-events-none"
@@ -246,22 +261,27 @@ export default function AboutTeam() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h1 className="font-headline text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-secondary-fixed leading-[1.02] mb-6">
-            Meet the People
+          <h2 className="font-headline text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-secondary-fixed leading-[1.02] mb-6">
+            Meet the{' '}
+            <span className="relative inline-block px-3 text-white">
+              <motion.span
+                aria-hidden
+                className="absolute inset-y-1 left-0 right-0 bg-primary-container rounded-sm z-0"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.3,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{ originX: 0 }}
+              />
+              <span className="relative z-10">People</span>
+            </span>
             <br />
             Behind the Funding!
-          </h1>
-          <div className="space-y-4 text-lg sm:text-xl text-on-surface-variant leading-relaxed">
-            <p>
-              Business funding can get complicated fast. Terms, timing,
-              repayment, cash flow, use of funds, fine print…you get the picture.
-            </p>
-            <p>
-              That&rsquo;s why Credit Banc is built around real Advisors who help
-              business owners compare options, understand the structure, and
-              choose capital that actually fits the move they are trying to make.
-            </p>
-          </div>
+          </h2>
           {/* One-time writing effect on load. Two sequenced TextType spans so
               "Smart is better." keeps the mint highlight; the second starts as
               the first finishes (initialDelay ≈ first's char count × speed). */}
@@ -374,6 +394,15 @@ export default function AboutTeam() {
                       <p key={idx}>{p}</p>
                     ))}
                   </div>
+                  {canBook(active) && (
+                    <a
+                      href={bookingHref(active)}
+                      className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold uppercase tracking-widest text-on-secondary-fixed transition-colors hover:bg-primary-fixed"
+                    >
+                      <CalendarDays className="h-5 w-5" />
+                      Schedule a call
+                    </a>
+                  )}
                   {active.socials?.length ? (
                     <div className="mt-6">
                       <SocialRow socials={active.socials} size="lg" />
