@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
@@ -56,10 +57,7 @@ export default function ScheduleACall({
 }: {
   advisor?: ScheduleAdvisor;
 }) {
-  const params = useSearchParams();
-
   const bookingId = advisor?.calendarId || DEFAULT_BOOKING_ID;
-  const bookingBase = `https://api.leadconnectorhq.com/widget/booking/${bookingId}`;
   // Stable, unique id per calendar (default page keeps its original GHL id).
   const iframeId = advisor ? `cb_booking_${bookingId}` : DEFAULT_IFRAME_ID;
   const callPhone = advisor?.phone || SITE.phone;
@@ -67,40 +65,6 @@ export default function ScheduleACall({
     ? `tel:${advisor.phone.replace(/[^\d+]/g, '')}`
     : SITE.phoneTel;
   const callEmail = advisor?.email || SITE.email;
-
-  // This page is usually reached cold (nav / direct link), but if a campaign
-  // link carries contact details we still prefill the GHL booking form so the
-  // visitor never re-types what we already know. Read both name shapes.
-  const rawFirst = params.get('firstName') || params.get('first_name') || '';
-  const rawLast = params.get('lastName') || params.get('last_name') || '';
-  const rawFull = params.get('full_name') || params.get('name') || '';
-  const email = params.get('email') || '';
-  const phone = params.get('phone') || '';
-
-  const fullName =
-    rawFull.trim() ||
-    [rawFirst, rawLast]
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .join(' ');
-  const firstSpace = fullName.indexOf(' ');
-  const firstName = (
-    rawFirst.trim() ||
-    (firstSpace === -1 ? fullName : fullName.slice(0, firstSpace))
-  ).trim();
-  const lastName = (
-    rawLast.trim() || (firstSpace === -1 ? '' : fullName.slice(firstSpace + 1))
-  ).trim();
-
-  // GHL calendar widgets prefill the booking contact form from these URL params.
-  const bookingSrc = (() => {
-    const url = new URL(bookingBase);
-    if (firstName) url.searchParams.set('first_name', firstName);
-    if (lastName) url.searchParams.set('last_name', lastName);
-    if (email) url.searchParams.set('email', email);
-    if (phone) url.searchParams.set('phone', phone);
-    return url.toString();
-  })();
 
   return (
     <div className="bg-surface">
@@ -412,33 +376,29 @@ export default function ScheduleACall({
           )}
         </motion.div>
 
-        {/* Right column — calendar (takes the wider track). Opacity-only fade
-            (no transform) so the GHL iframe isn't resizing inside a moving,
-            transformed container while it loads — that's what made it jump. */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
-          className="w-full overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)]"
+        {/* Right column — calendar. The booking iframe reads URL params for
+            prefill (useSearchParams), so it lives in its own Suspense child.
+            That keeps all the copy above it prerendered as static HTML (for
+            SEO / AI crawlers) while only the calendar hydrates on the client. */}
+        <Suspense
+          fallback={
+            <div className="w-full min-h-[700px] rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)] flex items-center justify-center">
+              <span className="text-on-surface-variant text-sm">
+                Loading your calendar…
+              </span>
+            </div>
+          }
         >
-          <iframe
-            key={bookingSrc}
-            src={bookingSrc}
-            id={iframeId}
+          <BookingCalendar
+            bookingId={bookingId}
+            iframeId={iframeId}
             title={
               advisor
                 ? `Schedule a call with ${advisor.name}`
                 : 'Schedule a call with Credit Banc'
             }
-            scrolling="no"
-            style={{
-              width: '100%',
-              minHeight: '700px',
-              border: 'none',
-              overflow: 'hidden',
-            }}
           />
-        </motion.div>
+        </Suspense>
       </div>
 
       </section>
@@ -452,5 +412,75 @@ export default function ScheduleACall({
         strategy="afterInteractive"
       />
     </div>
+  );
+}
+
+// Isolated so its useSearchParams() only pushes the iframe (not the whole page)
+// behind a Suspense boundary at build time — all surrounding copy stays in the
+// prerendered HTML. Reads campaign URL params to prefill the GHL booking form.
+function BookingCalendar({
+  bookingId,
+  iframeId,
+  title,
+}: {
+  bookingId: string;
+  iframeId: string;
+  title: string;
+}) {
+  const params = useSearchParams();
+
+  const rawFirst = params.get('firstName') || params.get('first_name') || '';
+  const rawLast = params.get('lastName') || params.get('last_name') || '';
+  const rawFull = params.get('full_name') || params.get('name') || '';
+  const email = params.get('email') || '';
+  const phone = params.get('phone') || '';
+
+  const fullName =
+    rawFull.trim() ||
+    [rawFirst, rawLast]
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(' ');
+  const firstSpace = fullName.indexOf(' ');
+  const firstName = (
+    rawFirst.trim() ||
+    (firstSpace === -1 ? fullName : fullName.slice(0, firstSpace))
+  ).trim();
+  const lastName = (
+    rawLast.trim() || (firstSpace === -1 ? '' : fullName.slice(firstSpace + 1))
+  ).trim();
+
+  const bookingSrc = (() => {
+    const url = new URL(
+      `https://api.leadconnectorhq.com/widget/booking/${bookingId}`
+    );
+    if (firstName) url.searchParams.set('first_name', firstName);
+    if (lastName) url.searchParams.set('last_name', lastName);
+    if (email) url.searchParams.set('email', email);
+    if (phone) url.searchParams.set('phone', phone);
+    return url.toString();
+  })();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
+      className="w-full overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)]"
+    >
+      <iframe
+        key={bookingSrc}
+        src={bookingSrc}
+        id={iframeId}
+        title={title}
+        scrolling="no"
+        style={{
+          width: '100%',
+          minHeight: '700px',
+          border: 'none',
+          overflow: 'hidden',
+        }}
+      />
+    </motion.div>
   );
 }

@@ -89,7 +89,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     name: 'Matt',
     role: 'Founder & CEO',
-    photo: '/cbteam/Matt.png',
+    photo: '/cbteam/Matt2.png',
     slug: 'matthew-meehan',
     calendarId: 'zGKSE1WcbBMaMosaorSB',
     fullName: 'Matthew R. Meehan',
@@ -201,14 +201,14 @@ export const TEAM_MEMBERS: TeamMember[] = [
       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
     ],
   },
-  // {
-  //   name: 'Blaine',
-  //   role: 'Chief Results Officer',
-  //   photo: '/cbteam/Blain.png',
-  //   socials: [
-  //     { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-  //   ],
-  // },
+   {
+     name: 'Blaine',
+     role: 'Chief Results Officer',
+    photo: '/cbteam/Blain.png',
+     socials: [
+       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+     ],
+   },
   {
     name: 'Jorge',
     role: 'Lead Software Engineer',
