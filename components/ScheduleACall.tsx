@@ -207,9 +207,9 @@ export default function ScheduleACall({
           className="max-w-xl lg:pt-4"
         >
           {advisor && (
-            <motion.div variants={fadeUp} className="mb-6 flex items-center gap-4">
+            <motion.div variants={fadeUp} className="mb-6 flex items-center gap-5">
               <div
-                className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden ring-1 ring-on-secondary-fixed/5 shadow-[0_12px_30px_-18px_rgba(32,37,54,0.4)]"
+                className="relative w-52 h-52 sm:w-64 sm:h-64 shrink-0 rounded-2xl overflow-hidden ring-1 ring-on-secondary-fixed/5 shadow-[0_12px_30px_-18px_rgba(32,37,54,0.4)]"
                 style={{ background: AVATAR_ACCENT }}
               >
                 {advisor.photo ? (
@@ -217,24 +217,16 @@ export default function ScheduleACall({
                     src={advisor.photo}
                     alt={advisor.name}
                     fill
-                    sizes="96px"
+                    sizes="256px"
                     className="object-cover object-top"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-headline text-2xl font-black text-white/90 tracking-tight select-none">
+                    <span className="font-headline text-5xl font-black text-white/90 tracking-tight select-none">
                       {initials(advisor.name)}
                     </span>
                   </div>
                 )}
-              </div>
-              <div>
-                <p className="font-headline text-xl sm:text-2xl font-extrabold tracking-tight text-on-secondary-fixed">
-                  {advisor.name}
-                </p>
-                <p className="font-label text-xs font-bold uppercase tracking-widest text-primary mt-1">
-                  {advisor.role || 'Credit Banc Advisor'}
-                </p>
               </div>
             </motion.div>
           )}

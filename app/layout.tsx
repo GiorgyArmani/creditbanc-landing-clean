@@ -60,20 +60,13 @@ export const metadata: Metadata = {
     siteName: 'Credit Banc',
     title: TITLE,
     description: DESCRIPTION,
-    images: [
-      {
-        url: '/dark%20logo.svg',
-        width: 400,
-        height: 100,
-        alt: 'Credit Banc — Credit & capital to grow',
-      },
-    ],
+    // og:image comes from app/opengraph-image.tsx (a real 1200×630 PNG).
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: ['/dark%20logo.svg'],
+    // twitter:image comes from app/twitter-image.tsx.
   },
   robots: {
     index: true,
@@ -170,35 +163,38 @@ const SERVICE_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    '@id': `${SITE.baseUrl}${ROUTES.sba}#service`,
     name: 'SBA Financing',
     serviceType: 'SBA loan',
     provider: { '@id': `${SITE.baseUrl}#organization` },
     areaServed: 'US',
     description:
       'Government-backed financing for working capital, acquisitions, real estate, refinancing, startup costs, and larger growth plans. Terms up to 25 years.',
-    url: ROUTES.sba,
+    url: `${SITE.baseUrl}${ROUTES.sba}`,
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    '@id': `${SITE.baseUrl}${ROUTES.realEstate}#service`,
     name: 'Real Estate Financing',
     serviceType: 'Commercial real estate loan',
     provider: { '@id': `${SITE.baseUrl}#organization` },
     areaServed: 'US',
     description:
       'Property financing options for investors and business owners, including rentals, flips, construction, commercial mortgages, and owner-occupied real estate.',
-    url: ROUTES.realEstate,
+    url: `${SITE.baseUrl}${ROUTES.realEstate}`,
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    '@id': `${SITE.baseUrl}${ROUTES.smallBusiness}#service`,
     name: 'Small Business Funding',
     serviceType: 'Small business loan',
     provider: { '@id': `${SITE.baseUrl}#organization` },
     areaServed: 'US',
     description:
       'Working capital, equipment financing, lines of credit, term loans, and other funding options for everyday business needs and growth. Up to $250K with instant decisions.',
-    url: ROUTES.smallBusiness,
+    url: `${SITE.baseUrl}${ROUTES.smallBusiness}`,
   },
 ];
 

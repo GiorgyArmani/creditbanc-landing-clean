@@ -89,7 +89,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     name: 'Matt',
     role: 'Founder & CEO',
-    photo: '/cbteam/Matt2.png',
+    photo: '/cbteam/Matt.png',
     slug: 'matthew-meehan',
     calendarId: 'zGKSE1WcbBMaMosaorSB',
     fullName: 'Matthew R. Meehan',
@@ -135,15 +135,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
       { type: 'linkedin', href: 'https://www.linkedin.com/in/t-grant-dearborn-90b40011/' },
     ],
   },
-  //  {
-  //   name: 'Grant',
-  //   role: 'Business Advisor',
-  //   photo: '/cbteam/Grant.png',
-  //   // bio: ['Add this Advisor’s bio here.'],
-  //   socials: [
-  //     { type: 'linkedin', href: 'https://www.linkedin.com/in/t-grant-dearborn-90b40011/' },
-  //   ],
-  // },
    {
     name: 'Manny',
     role: 'Business Advisor',
@@ -173,8 +164,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     name: 'Amit',
     role: 'Business Advisor',
-    // No photo yet — drop /public/cbteam/Amit.png and set `photo` to show it;
-    // until then the card shows his initials.
+    photo: '/cbteam/Amit.png',
     slug: 'amit-imrit',
     calendarId: 'dmjEd6wYrXssp73tBn30',
     fullName: 'Amit Imrit',
@@ -205,6 +195,14 @@ export const TEAM_MEMBERS: TeamMember[] = [
      name: 'Blaine',
      role: 'Chief Results Officer',
     photo: '/cbteam/Blain.png',
+     socials: [
+       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
+     ],
+   },
+    {
+     name: 'Jenny',
+     role: 'Marketing Director',
+    photo: '/cbteam/Jenny.png',
      socials: [
        { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
      ],

@@ -1,13 +1,24 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, Variants } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
-// The two founders, alternated across the bento collage so the grid reads as a
-// photo wall of Matt & Lou rather than a roster.
-const FOUNDERS = [
-  { name: 'Matthew R. Meehan', photo: '/cbteam/Matt.png' },
-  { name: 'Luigi Rosabianca', photo: '/cbteam/Lou.png' },
+// All the candid photos of Matt & Lou (from /public/bento). Every tile cycles
+// through its own slice of these, so the whole set gets used over time.
+const PHOTOS = [
+  '/bento/LuigiandMatthew_BriarRosePhotoCo_050423_KAT_1128.jpg',
+  '/bento/20220908-IMG_5124.jpg',
+  '/bento/LuigiandMatthew_BriarRosePhotoCo_050423_KAT_1155.jpg',
+  '/bento/20220908-IMG_4996.jpg',
+  '/bento/DSC_9252.jpg',
+  '/bento/20220908-IMG_5163.jpg',
+  '/bento/20220908-IMG_5076.jpg',
+  '/bento/20220908-IMG_5142.jpg',
+  '/bento/DSC_9331.jpg',
+  '/bento/DSC00545.jpg',
+  '/bento/DSC00551.jpg',
+  '/bento/DSC00553.jpg',
 ];
 
 // On-brand accent gradients behind each tile (shown until/if a photo loads).
@@ -19,14 +30,57 @@ const ACCENTS = [
 
 // Tiles laid out to match the bento: a 3-column grid over 6 rows.
 //   col 1 → two stacked tiles · col 2 → one tall tile · col 3 → three tiles
+// `photos` lists the indices (into PHOTOS) this tile rotates through; spread so
+// adjacent tiles never show the same shot at the same time.
 const TILES = [
-  { className: 'col-start-1 row-start-1 row-span-3', founder: 0 },
-  { className: 'col-start-1 row-start-4 row-span-3', founder: 1 },
-  { className: 'col-start-2 row-start-1 row-span-6', founder: 0 },
-  { className: 'col-start-3 row-start-1 row-span-2', founder: 1 },
-  { className: 'col-start-3 row-start-3 row-span-2', founder: 0 },
-  { className: 'col-start-3 row-start-5 row-span-2', founder: 1 },
+  { className: 'col-start-1 row-start-1 row-span-3', photos: [0, 6] },
+  { className: 'col-start-1 row-start-4 row-span-3', photos: [1, 7] },
+  { className: 'col-start-2 row-start-1 row-span-6', photos: [2, 8] },
+  { className: 'col-start-3 row-start-1 row-span-2', photos: [3, 9] },
+  { className: 'col-start-3 row-start-3 row-span-2', photos: [4, 10] },
+  { className: 'col-start-3 row-start-5 row-span-2', photos: [5, 11] },
 ];
+
+// Crossfade through a tile's photos, advancing every few seconds. The stagger
+// (delay) keeps the tiles from all flipping in unison.
+function RotatingTile({ photos, delay }: { photos: number[]; delay: number }) {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    const start = setTimeout(() => {
+      interval = setInterval(
+        () => setIdx((i) => (i + 1) % photos.length),
+        6000,
+      );
+    }, delay);
+    return () => {
+      clearTimeout(start);
+      clearInterval(interval);
+    };
+  }, [photos.length, delay]);
+
+  return (
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={photos[idx]}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1.1, ease: 'easeInOut' }}
+        className="absolute inset-0"
+      >
+        <Image
+          src={PHOTOS[photos[idx]]}
+          alt="Matthew R. Meehan and Luigi Rosabianca"
+          fill
+          sizes="(max-width: 1024px) 50vw, 25vw"
+          className="object-cover object-center"
+        />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 const tileVariant: Variants = {
   hidden: { opacity: 0, scale: 0.94 },
@@ -55,26 +109,17 @@ export default function AboutHero() {
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-3 grid-rows-6 gap-3 sm:gap-4 h-[420px] sm:h-[500px] lg:h-[560px]"
         >
-          {TILES.map((tile, i) => {
-            const founder = FOUNDERS[tile.founder];
-            return (
-              <motion.div
-                key={i}
-                custom={i}
-                variants={tileVariant}
-                className={`relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-22px_rgba(32,37,54,0.45)] ${tile.className}`}
-                style={{ background: ACCENTS[i % ACCENTS.length] }}
-              >
-                <Image
-                  src={founder.photo}
-                  alt={founder.name}
-                  fill
-                  sizes="(max-width: 1024px) 50vw, 25vw"
-                  className="object-cover object-top"
-                />
-              </motion.div>
-            );
-          })}
+          {TILES.map((tile, i) => (
+            <motion.div
+              key={i}
+              custom={i}
+              variants={tileVariant}
+              className={`relative overflow-hidden rounded-2xl shadow-[0_18px_40px_-22px_rgba(32,37,54,0.45)] ${tile.className}`}
+              style={{ background: ACCENTS[i % ACCENTS.length] }}
+            >
+              <RotatingTile photos={tile.photos} delay={i * 1000} />
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Copy */}

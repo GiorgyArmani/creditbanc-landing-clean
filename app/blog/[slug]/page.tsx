@@ -5,6 +5,7 @@ import Navbar from "@/components/sections/Navbar";
 import Footer from "@/components/sections/Footer";
 import { FloatingSupport } from "@/components/floating-support";
 import { getPosts, getPost } from "@/lib/blog";
+import { blogPostingLd } from "@/lib/schema";
 
 export const revalidate = 3600;
 
@@ -46,6 +47,14 @@ export default async function BlogPost({
 
   return (
     <>
+      {/* Article schema so AI engines / Google can cite this post with a
+          headline, date, and publisher tied to the Credit Banc org node. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostingLd(post, slug)),
+        }}
+      />
       <Navbar />
       <main className="bg-surface pt-24">
         <article className="mx-auto max-w-3xl px-6 sm:px-8 py-16">

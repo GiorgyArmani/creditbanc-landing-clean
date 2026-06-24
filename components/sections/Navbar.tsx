@@ -12,13 +12,13 @@ type NavLink = {
   programs?: Program[];
 };
 
-// Program ids MUST match the ids in components/sections/Products.tsx
-// PROGRAMS — clicking a dropdown item navigates to /#<id>, which fires
-// the hashchange handler in Products.tsx and opens that program's modal.
+// Program ids MUST match the ids in lib/programs.ts PROGRAMS. Top-level links go
+// to the dedicated category page; dropdown items deep-link to that program's
+// section on the page (e.g. /sba-loans#sba-startup).
 const NAV_LINKS: NavLink[] = [
   {
     label: 'SBA Financing',
-    href: '/#sba',
+    href: '/sba-loans',
     programs: [
       { id: 'sba-flexfund', label: 'FlexFund Program' },
       { id: 'sba-refinance', label: 'SBA Loan Refinance' },
@@ -30,7 +30,7 @@ const NAV_LINKS: NavLink[] = [
   },
   {
     label: 'Real Estate Financing',
-    href: '/#real-estate',
+    href: '/real-estate-financing',
     programs: [
       { id: 'rental-property', label: 'Rental Property Loans' },
       { id: 'commercial-mortgage', label: 'Commercial Mortgage Loans' },
@@ -41,7 +41,7 @@ const NAV_LINKS: NavLink[] = [
   },
   {
     label: 'Small Business Funding',
-    href: '/#small-business',
+    href: '/small-business-funding',
     programs: [
       { id: 'term-loans', label: 'Term Loans' },
       { id: 'equipment', label: 'Equipment Financing' },
@@ -58,7 +58,10 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Blog', href: ROUTES.blog },
 ];
 
-export default function Navbar() {
+// `solid` forces an opaque white bar even at the top of the page — use it on
+// pages whose hero starts dark right under the navbar (e.g. the category pages),
+// where the default translucent top state would wash out over the color.
+export default function Navbar({ solid = false }: { solid?: boolean } = {}) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -99,7 +102,7 @@ export default function Navbar() {
   return (
     <motion.nav
       className={`fixed top-0 w-full z-50 backdrop-blur-2xl transition-shadow duration-300 ${
-        scrolled
+        scrolled || solid
           ? 'bg-white/95 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.12)]'
           : 'bg-white/70 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.04)]'
       }`}
@@ -118,13 +121,13 @@ export default function Navbar() {
           aria-label="Credit Banc home"
         >
           <Image
-            src="/dark%20logo.svg"
-            alt="Credit Banc — Credit & capital to grow"
-            width={400}
-            height={100}
+            src="/powered-by-shield.png"
+            alt="Credit Banc, Powered by Shield Advisory Group"
+            width={1128}
+            height={191}
             priority
             unoptimized
-            className="h-10 sm:h-12"
+            className="h-9 sm:h-11"
             style={{ width: 'auto' }}
           />
         </a>
@@ -197,7 +200,7 @@ export default function Navbar() {
                             <li key={p.id} role="none">
                               <a
                                 role="menuitem"
-                                href={`/#${p.id}`}
+                                href={`${link.href}#${p.id}`}
                                 onClick={() => setHovered(null)}
                                 className="block px-5 py-2.5 font-headline tracking-tight text-sm font-bold text-slate-700 hover:text-primary hover:bg-primary-container/20 transition-colors"
                               >
@@ -356,7 +359,7 @@ export default function Navbar() {
                                   {link.programs!.map((p) => (
                                     <li key={p.id}>
                                       <a
-                                        href={`/#${p.id}`}
+                                        href={`${link.href}#${p.id}`}
                                         onClick={() => setMenuOpen(false)}
                                         className="block pl-12 pr-8 py-2.5 font-headline tracking-tight text-sm font-bold text-slate-600 hover:text-primary hover:bg-primary-container/20 transition-colors"
                                       >

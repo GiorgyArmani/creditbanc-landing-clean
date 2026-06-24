@@ -10,6 +10,8 @@ import AboutTeamChroma from '@/components/sections/AboutTeamChroma';
 import Spotlight from '@/components/sections/Spotlight';
 import CTA from '@/components/sections/CTA';
 import { FloatingSupport } from '@/components/floating-support';
+import { TEAM_MEMBERS } from '@/lib/team';
+import { personLd } from '@/lib/schema';
 
 export const metadata: Metadata = {
   title: 'About Credit Banc — Meet the People Behind the Funding',
@@ -28,9 +30,17 @@ export const metadata: Metadata = {
 // gallery, 'bento' = featured bento.
 const TEAM_VARIANT: 'chroma' | 'bento' = 'bento';
 
+// One Person node per team member — ties real, named experts (with their
+// LinkedIn / Forbes profiles) to the Credit Banc org for E-E-A-T.
+const TEAM_LD = TEAM_MEMBERS.map(personLd);
+
 export default function AboutPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(TEAM_LD) }}
+      />
       <Navbar />
       <main className="pt-24">
         <AboutHero />

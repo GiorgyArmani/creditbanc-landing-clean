@@ -5,6 +5,7 @@ import Footer from '@/components/sections/Footer';
 import FAQ from '@/components/sections/FAQ';
 import ScheduleACall from '@/components/ScheduleACall';
 import { getAdvisorBySlug, bookingSlugs } from '@/lib/team';
+import { personLd } from '@/lib/schema';
 
 // One dynamic route serves every advisor's booking page. Add an advisor (with a
 // `slug`) in lib/team.ts and their /schedule/[slug] page exists automatically —
@@ -47,6 +48,12 @@ export default async function AdvisorSchedulePage({
 
   return (
     <>
+      {/* Person schema for this advisor — name, role, direct line, and their
+          public profiles, linked to the Credit Banc org node. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd(advisor)) }}
+      />
       <main className="bg-surface">
         <Suspense fallback={<ScheduleFallback />}>
           <ScheduleACall

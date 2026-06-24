@@ -3,21 +3,26 @@
 import Image from 'next/image';
 import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Linkedin, Instagram, Mail, Globe, X, CalendarDays } from 'lucide-react';
+import { Linkedin, Instagram, Mail, Globe, X, Phone } from 'lucide-react';
 import TextType from '../ui/TextType';
 import { TEAM_MEMBERS, type Social, type TeamMember } from '@/lib/team';
-import { ROUTES } from '@/lib/site';
+import { SITE } from '@/lib/site';
 
-// Founders & advisors get a "Schedule a call" CTA inside the bio reveal.
+// Founders & advisors get a "Call" CTA inside the bio reveal. (The per-advisor
+// /schedule pages still exist, we just no longer link to them from here.)
 function canBook(member: TeamMember): boolean {
   return /founder|advisor/i.test(member.role);
 }
 
-function bookingHref(member: TeamMember): string {
-  // Precedence: explicit external URL → the advisor's own slug page → generic.
-  if (member.bookingUrl) return member.bookingUrl;
-  if (member.slug) return `/schedule/${member.slug}`;
-  return ROUTES.schedule;
+// Display number → falls back to the main line for advisors without a direct one.
+function phoneLabel(member: TeamMember): string {
+  return member.phone ?? SITE.phone;
+}
+
+// `tel:` href — strip everything but digits/+ so formatted numbers still dial.
+function telHref(member: TeamMember): string {
+  const raw = member.phone ?? SITE.phoneTel.replace(/^tel:/, '');
+  return `tel:${raw.replace(/[^\d+]/g, '')}`;
 }
 
 // On-brand accent gradients for the photo blocks. Cycled by card index so the
@@ -26,7 +31,7 @@ function bookingHref(member: TeamMember): string {
 const ACCENTS = [
   'linear-gradient(135deg, #1f6b4e 0%, #2ea878 55%, #55cf9e 100%)',
   'linear-gradient(135deg, #2ea878 0%, #55cf9e 100%)',
-  'linear-gradient(135deg, #4a5650 0%, #6d7a72 60%, #939598 100%)',
+  'linear-gradient(135deg, #178060 0%, #2ea878 60%, #7bdcb0 100%)',
 ];
 
 function initials(name: string): string {
@@ -285,25 +290,7 @@ export default function AboutTeam() {
           {/* One-time writing effect on load. Two sequenced TextType spans so
               "Smart is better." keeps the mint highlight; the second starts as
               the first finishes (initialDelay ≈ first's char count × speed). */}
-          <p className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-on-secondary-fixed mt-8 min-h-[2.25rem]">
-            <TextType
-              as="span"
-              text="Fast is nice."
-              typingSpeed={45}
-              initialDelay={300}
-              loop={false}
-              showCursor={false}
-            />{' '}
-            <TextType
-              as="span"
-              className="text-primary"
-              text="Smart is better."
-              typingSpeed={45}
-              initialDelay={920}
-              loop={false}
-              cursorClassName="text-primary font-normal"
-            />
-          </p>
+         
         </motion.div>
 
         {/* Team — featured bento. Founders (first two) get large portrait
@@ -324,16 +311,22 @@ export default function AboutTeam() {
             ))}
           </div>
 
-          {/* Gallery: everyone else */}
-          <div className="mt-8 sm:mt-10 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Gallery: everyone else. flex-wrap + justify-center so the rows read
+              4 · 4 · 2 (the trailing row stays centered under the grid above),
+              giving the section a balanced 2 · 4 · 4 · 2 bento. */}
+          <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-6">
             {TEAM_MEMBERS.slice(2).map((member, i) => (
-              <TeamCard
+              <div
                 key={member.name + (i + 2)}
-                member={member}
-                accent={ACCENTS[(i + 2) % ACCENTS.length]}
-                index={i}
-                onOpen={setActive}
-              />
+                className="basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)]"
+              >
+                <TeamCard
+                  member={member}
+                  accent={ACCENTS[(i + 2) % ACCENTS.length]}
+                  index={i}
+                  onOpen={setActive}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -396,11 +389,11 @@ export default function AboutTeam() {
                   </div>
                   {canBook(active) && (
                     <a
-                      href={bookingHref(active)}
+                      href={telHref(active)}
                       className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold uppercase tracking-widest text-on-secondary-fixed transition-colors hover:bg-primary-fixed"
                     >
-                      <CalendarDays className="h-5 w-5" />
-                      Schedule a call
+                      <Phone className="h-5 w-5" />
+                      Call {phoneLabel(active)}
                     </a>
                   )}
                   {active.socials?.length ? (

@@ -7,15 +7,18 @@ export const SITE = {
   phoneTel: 'tel:+13213345099',
 } as const;
 
+// All in-app routes (the GHL apex marketing pages have been replaced by native
+// Next pages). Relative paths — prefix SITE.baseUrl when an absolute URL is
+// needed (sitemap, JSON-LD).
 export const ROUTES = {
-  home: 'https://creditbanc.io/home',
-  sba: 'https://creditbanc.io/sba-loans',
-  realEstate: 'https://creditbanc.io/real-estate-financing',
-  smallBusiness: 'https://creditbanc.io/small-business-funding',
+  home: '/',
+  sba: '/sba-loans',
+  realEstate: '/real-estate-financing',
+  smallBusiness: '/small-business-funding',
   apply: '/apply-now',
   schedule: '/schedule-a-call',
   blog: '/blog',
-  team: 'https://creditbanc.io/meet-the-team',
+  team: '/about',
   privacy: '/privacypolicy',
 } as const;
 
