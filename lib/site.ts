@@ -16,7 +16,6 @@ export const ROUTES = {
   realEstate: '/real-estate-financing',
   smallBusiness: '/small-business-funding',
   apply: '/apply-now',
-  schedule: '/schedule-a-call',
   blog: '/blog',
   team: '/about',
   privacy: '/privacypolicy',

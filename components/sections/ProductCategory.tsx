@@ -6,6 +6,7 @@ import {
   programCardImage,
   applyHref,
 } from '@/lib/programs';
+import { SITE } from '@/lib/site';
 
 // Faint grid texture used on the dark hero (matches the cash-flow-gap page).
 const GRID_OVERLAY: React.CSSProperties = {
@@ -60,10 +61,10 @@ export default function ProductCategory({
               <Icon name="arrow_forward" className="text-base" />
             </a>
             <a
-              href="/schedule-a-call"
+              href={SITE.phoneTel}
               className="inline-flex items-center gap-2 rounded-lg border border-white/25 px-7 py-3.5 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-white/10"
             >
-              Talk to an Advisor
+              Talk to an Advisor: {SITE.phone}
             </a>
           </div>
         </div>

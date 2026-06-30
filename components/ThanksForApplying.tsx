@@ -148,28 +148,38 @@ export default function ThanksForApplying() {
 
           <motion.p
             variants={fadeUp}
-            className="mt-2 text-sm italic text-on-surface-variant"
-          >
-            (Take a breath — this is the good kind of email.)
-          </motion.p>
-
-          <motion.p
-            variants={fadeUp}
             className="mt-6 text-base sm:text-lg leading-relaxed text-on-surface-variant"
           >
-            Based on what you shared, your business isn&rsquo;t <em>quite</em>{' '}
-            at our minimums yet. We usually need about{' '}
-            <strong className="text-on-surface">$25K/month in revenue</strong>{' '}
-            and{' '}
-            <strong className="text-on-surface">6+ months in business</strong>{' '}
-            to open up real funding options.
+            Based on what you shared, your business isn&rsquo;t{' '}
+            <em>quite</em> at our minimums right now. In most cases, we need to
+            see:
           </motion.p>
+
+          <motion.ul
+            variants={fadeUp}
+            className="mx-auto mt-6 max-w-md space-y-3 text-left"
+          >
+            {[
+              'At least $25K/month in revenue',
+              '6+ months in business',
+              'A minimum FICO score of 620',
+            ].map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 text-base sm:text-lg text-on-surface"
+              >
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </motion.ul>
 
           <motion.p
             variants={fadeUp}
             className="mt-8 text-lg sm:text-xl text-on-surface"
           >
-            This isn&rsquo;t a no. This is a{' '}
+            You may be close on one of these. You may need a little more time on
+            all three. Either way, this is not a no forever. It&rsquo;s a{' '}
             {/* "not yet" stamps onto the page like a rubber stamp hitting paper */}
             <motion.span
               className="inline-block rounded-md border-2 border-primary px-2.5 py-0.5 font-extrabold text-primary"
@@ -192,11 +202,15 @@ export default function ThanksForApplying() {
             className="mt-8 text-base sm:text-lg leading-relaxed text-on-surface-variant"
           >
             A lot of our strongest clients were once exactly where you are right
-            now. Keep building revenue toward $25k/month, let a little more time
-            stack up, and come back and talk to us when you&rsquo;re there.{' '}
-            <strong className="text-on-surface">
-              We&rsquo;ll be happy to take another look.
-            </strong>
+            now. Keep building revenue, let a little more time stack up, work on
+            keeping credit in range, and come back when you&rsquo;re there.
+          </motion.p>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-6 font-headline text-lg sm:text-xl font-bold text-on-secondary-fixed"
+          >
+            We&rsquo;ll be happy to take another look.
           </motion.p>
 
           {/* Bouncing cue that connects to the freebie below */}
@@ -248,7 +262,7 @@ export default function ThanksForApplying() {
               variants={fadeUp}
               className="font-headline text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight"
             >
-              But before you go&hellip;
+              Before you go&hellip;
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -260,13 +274,7 @@ export default function ThanksForApplying() {
                 our Cash Flow Gap Calculator.
               </strong>
             </motion.p>
-            <motion.p
-              variants={fadeUp}
-              className="mt-2 text-sm italic text-white/60"
-            >
-              (No email-gate, no catch — just math that makes you look sharp on
-              your next lender call.)
-            </motion.p>
+           
           </motion.div>
 
           <motion.div

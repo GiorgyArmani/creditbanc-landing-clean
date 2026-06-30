@@ -42,8 +42,8 @@ export type TeamMember = {
   socials?: Social[];
   /**
    * URL-safe slug for this advisor's own booking page at /schedule/[slug]
-   * (e.g. 'amit-imrit'). When set, their "Schedule a call" button points here
-   * instead of the generic /schedule-a-call page.
+   * (e.g. 'amit-imrit'). Used for direct ad/sales links and the advisor's
+   * Person JSON-LD URL; the site no longer links to a generic booking page.
    */
   slug?: string;
   /**
