@@ -14,9 +14,8 @@ const PROGRAMS = [
 ];
 
 const COMPANY = [
-  // About page not ready yet — re-enable once /about is finished.
-  // { label: 'About Us', href: '/about' },
-  // { label: 'In the Spotlight', href: '/about#spotlight' },
+  { label: 'About Us', href: '/about' },
+  { label: 'In the Spotlight', href: '/about#spotlight' },
   { label: `Call Us — ${SITE.phone}`, href: SITE.phoneTel },
 ];
 

@@ -151,17 +151,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ],
   },
   {
-    name: 'Will',
-    role: 'Business Advisor',
-    photo: '/cbteam/Will.png',
-    slug: 'will',
-    calendarId: 'e6sndsbJfGjHw0OcewrF',
-    // bio: ['Add this Advisor’s bio here.'],
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
-  },
-  {
     name: 'Amit',
     role: 'Business Advisor',
     photo: '/cbteam/Amit.png',
@@ -179,49 +168,32 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Gisselle',
     role: 'Underwriting Specialist',
     photo: '/cbteam/Gisselle.png',
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
+    
   },
   {
     name: 'Yai',
     role: 'Underwriting Specialist',
     photo: '/cbteam/Yai.png',
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
   },
    {
      name: 'Blaine',
      role: 'Chief Results Officer',
     photo: '/cbteam/Blain.png',
-     socials: [
-       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-     ],
    },
     {
      name: 'Jenny',
      role: 'Marketing Director',
     photo: '/cbteam/Jenny.png',
-     socials: [
-       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-     ],
    },
   {
     name: 'Jorge',
     role: 'Lead Software Engineer',
     photo: '/cbteam/Jorge.png',
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
   },
   {
     name: 'Jesus',
     role: 'Tech & CRM Specialist',
     photo: '/cbteam/Jesus.png',
-    socials: [
-      { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
-    ],
   },
   
 ];

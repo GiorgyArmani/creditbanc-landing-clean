@@ -3,6 +3,7 @@ import Icon from '../ui/Icon';
 import {
   type ProgramCategory,
   programsForCategory,
+  programCardImage,
   applyHref,
 } from '@/lib/programs';
 
@@ -79,23 +80,26 @@ export default function ProductCategory({
                 id={p.id}
                 className="scroll-mt-28 overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,3,33,0.04)]"
               >
-                {/* Popup-style layout: a fixed-width image column that fills the
-                    full card height (object-cover, so the art takes the whole
-                    space), with the copy taking the wider remaining column. */}
+                {/* The program-page card art is a tall 2:5 design, so we frame it
+                    at its native ratio as an inset card (its own rounded corners
+                    + soft shadow) and center it in the column, instead of letting
+                    object-cover crop the top third. */}
                 <div className="flex flex-col lg:flex-row">
                   <div
-                    className={`relative shrink-0 aspect-[4/5] lg:aspect-auto lg:w-[360px] bg-[#e9e5dc] ${
+                    className={`shrink-0 flex items-center justify-center p-6 sm:p-8 lg:w-[380px] ${
                       flip ? 'lg:order-2' : ''
                     }`}
                   >
-                    <Image
-                      src={p.popupImage ?? p.image}
-                      alt={p.imageAlt}
-                      fill
-                      unoptimized
-                      sizes="(max-width: 1024px) 100vw, 360px"
-                      className="object-cover"
-                    />
+                    <div className="relative w-full max-w-[280px] aspect-[2/5] overflow-hidden rounded-2xl shadow-[0_18px_44px_-22px_rgba(32,37,54,0.45)]">
+                      <Image
+                        src={programCardImage(p)}
+                        alt={p.imageAlt}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 1024px) 280px, 300px"
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
 
                   {/* Content */}

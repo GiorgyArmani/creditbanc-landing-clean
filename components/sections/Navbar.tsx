@@ -54,7 +54,7 @@ const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: 'Our Process', href: '/#process' },
-  //  { label: 'About', href: '/about' },
+  { label: 'About', href: '/about' },
   { label: 'Blog', href: ROUTES.blog },
 ];
 

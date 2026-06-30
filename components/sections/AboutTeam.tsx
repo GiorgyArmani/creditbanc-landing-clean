@@ -312,13 +312,12 @@ export default function AboutTeam() {
           </div>
 
           {/* Gallery: everyone else. flex-wrap + justify-center so the rows read
-              4 · 4 · 2 (the trailing row stays centered under the grid above),
-              giving the section a balanced 2 · 4 · 4 · 2 bento. */}
+              3 · 3 · 3, giving the section a balanced 2 · 3 · 3 · 3 bento. */}
           <div className="mt-8 sm:mt-10 flex flex-wrap justify-center gap-6">
             {TEAM_MEMBERS.slice(2).map((member, i) => (
               <div
                 key={member.name + (i + 2)}
-                className="basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)]"
+                className="basis-[calc(50%-0.75rem)] lg:basis-[calc(33.333%-1rem)]"
               >
                 <TeamCard
                   member={member}

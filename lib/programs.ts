@@ -509,36 +509,47 @@ export const PROGRAM_INTEREST_TAG: Record<string, string> = {
 
 const BY_ID = new Map(PROGRAMS.map((p) => [p.id, p]));
 
-// Higher-resolution 1080x1350 (4:5) program art for the category pages. The
-// homepage gallery keeps the smaller `image` cards. Keyed by program id; any
-// program without an entry (e.g. sba-business-acquisition) falls back to its
-// `image`. Filenames are URL-encoded to survive the spaces.
-const HIRES_CARD: Record<string, string> = {
-  'term-loans': '/program%20images/Term%20Loan.png',
-  equipment: '/program%20images/equipment%20financing.png',
-  'lines-of-credit': '/program%20images/LOC.png',
-  'accounts-receivable': '/program%20images/AR%20Factoring.png',
-  'ecommerce-funding': '/program%20images/ecommerce%20funding.png',
-  'inventory-financing': '/program%20images/inventory%20financing.png',
-  'merchant-cash-advance': '/program%20images/MCA.png',
-  'rental-property': '/program%20images/Rental%20Property.png',
-  'commercial-mortgage': '/program%20images/commercial%20mortgage.png',
-  'hard-money': '/program%20images/Hard%20Money.png',
-  'fix-and-flip': '/program%20images/fix%20and%20flip.png',
-  'ground-up-construction': '/program%20images/Ground%20Up%20Construction.png',
-  'project-financing': '/program%20images/project%20financing.png',
-  'sba-flexfund': '/program%20images/FlexFund.png',
-  'sba-refinance': '/program%20images/SBA%20Refinancing.png',
+// Tall portrait "program cards pages" art — the dedicated card design for the
+// category/program pages (heading + tagline + visual baked in). Distinct from
+// the homepage gallery cards (`image`). Keyed by program id; any program without
+// an entry falls back to its gallery `image`. Filenames are URL-encoded to
+// survive the spaces (and a couple of quirks: double spaces, a trailing space,
+// and the "cdommercial" typo in the source asset).
+const CARD_PAGE_IMAGE: Record<string, string> = {
+  'term-loans': '/program%20cards/program%20cards%20pages/term%20loans.png',
+  equipment:
+    '/program%20cards/program%20cards%20pages/equipment%20financing.png',
+  'lines-of-credit': '/program%20cards/program%20cards%20pages/loc.png',
+  'accounts-receivable': '/program%20cards/program%20cards%20pages/AR.png',
+  'ecommerce-funding': '/program%20cards/program%20cards%20pages/ecommerce.png',
+  'inventory-financing':
+    '/program%20cards/program%20cards%20pages/inventory%20%20financing.png',
+  'merchant-cash-advance': '/program%20cards/program%20cards%20pages/MCA.png',
+  'rental-property':
+    '/program%20cards/program%20cards%20pages/rental%20property.png',
+  'commercial-mortgage':
+    '/program%20cards/program%20cards%20pages/commercial%20%20mortgage%20.png',
+  'hard-money':
+    '/program%20cards/program%20cards%20pages/hard%20%20money%20loans.png',
+  'fix-and-flip':
+    '/program%20cards/program%20cards%20pages/fix%20%20and%20flip.png',
+  'ground-up-construction':
+    '/program%20cards/program%20cards%20pages/ground%20up%20construction.png',
+  'project-financing':
+    '/program%20cards/program%20cards%20pages/project%20financing.png',
+  'sba-flexfund': '/program%20cards/program%20cards%20pages/flex%20fund.png',
+  'sba-refinance':
+    '/program%20cards/program%20cards%20pages/sba%20loan%20refinance.png',
   'sba-commercial-real-estate':
-    '/program%20images/SBA%20Commerical%20Real%20Estate.png',
+    '/program%20cards/program%20cards%20pages/sba%20cdommercial%20%20real%20estate.png',
   'sba-business-acquisition':
-    '/program%20images/SBA%20Business%20Acquisition.png',
-  'sba-startup': '/program%20images/SBA%20Startup.png',
+    '/program%20cards/program%20cards%20pages/sba%20acquisition.png',
+  'sba-startup': '/program%20cards/program%20cards%20pages/sba%20startup.png',
 };
 
-/** Hi-res 4:5 card art for the category pages; falls back to the gallery card. */
+/** Tall program-page card art; falls back to the gallery card. */
 export function programCardImage(p: Program): string {
-  return HIRES_CARD[p.id] ?? p.image;
+  return CARD_PAGE_IMAGE[p.id] ?? p.image;
 }
 
 /** "Check Eligibility" link for a program — carries the interest tag to GHL. */

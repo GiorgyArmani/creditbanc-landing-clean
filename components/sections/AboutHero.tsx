@@ -138,27 +138,48 @@ export default function AboutHero() {
           </h1>
           <div className="space-y-4 text-base sm:text-lg text-on-secondary-fixed/80 leading-relaxed">
             <p>
-              Credit Banc didn&rsquo;t come out of nowhere. It came from years of
-              sitting across from business owners who had big plans, real
-              opportunities, and funding options that somehow made everything
-              more confusing.
+              <strong className="font-semibold text-on-secondary-fixed">
+                Credit Banc
+              </strong>{' '}
+              was built from the work{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Shield Advisory Group
+              </strong>{' '}
+              was already doing with business owners.
             </p>
             <p>
-              Matthew R. Meehan and Luigi Rosabianca are two former Wall Street
-              guys who built Shield Advisory Group around a simple idea: bring
-              Wall Street-level strategy to Main Street business owners without
-              burying them in gatekeeping, financial theater, or unnecessary
-              complexity.
+              After years of helping companies think through growth, strategy,
+              acquisitions, real estate, cash flow, and expansion,{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Matthew R. Meehan
+              </strong>{' '}
+              and{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Luigi Rosabianca
+              </strong>{' '}
+              kept seeing the same problem: business owners didn&rsquo;t just
+              need funding. They needed a better way to understand their options
+              and choose capital that actually fit their business.
             </p>
             <p>
-              Through that work, they saw the same gap again and again. Business
-              owners did not just need access to capital. They needed a better
-              way to understand their options, compare structures, and choose
-              funding that actually fit the business.
+              So they created{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Credit Banc
+              </strong>{' '}
+              as the funding arm of{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Shield Advisory Group
+              </strong>
+              , giving Main Street business owners access to smarter funding
+              options with a Wall Street-level approach, without the financial
+              theater no one asked for.
             </p>
             <p>
-              So they created Credit Banc as the funding arm of Shield Advisory
-              Group. And the rest, as they say, is history.
+              That is the point of{' '}
+              <strong className="font-semibold text-on-secondary-fixed">
+                Credit Banc
+              </strong>
+              : capital with context, structure, and a little less nonsense.
             </p>
           </div>
         </motion.div>
