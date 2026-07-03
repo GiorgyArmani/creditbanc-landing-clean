@@ -164,6 +164,18 @@ export const TEAM_MEMBERS: TeamMember[] = [
       { type: 'linkedin', href: 'https://www.linkedin.com/company/credit-banc' },
     ],
   },
+   {
+    name: 'Will Hyder',
+    role: 'Business Advisor',
+    photo: '/cbteam/Will.png',
+    slug: 'will-hyder',
+    calendarId: '5wnm8tdsCtP8k3xJEkoV',
+    fullName: 'Will Hyder',
+    phone: '+1 (818) 305-4870',
+    email: 'will@shieldadvisorsllc.com',
+    ghlUserId: 'BEjlNTQcnaawcHrRRsPi',
+  },
+  
   {
     name: 'Gisselle',
     role: 'Underwriting Specialist',
