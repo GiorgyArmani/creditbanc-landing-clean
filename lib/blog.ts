@@ -110,13 +110,31 @@ function cleanContent(html: string): string {
   });
 }
 
+// Fetch the RSS feed, retrying transient failures (429 rate-limits and 5xx)
+// with exponential backoff. During `next build`, many blog pages prerender in
+// parallel and GHL rate-limits the burst with a 429 — without this retry a
+// single transient 429 aborts the whole build.
+async function fetchFeed(): Promise<Response> {
+  let lastStatus = 0;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(FEED_URL, {
+      // ISR: Next refetches the feed at most once an hour. New GHL posts appear
+      // automatically with no redeploy.
+      next: { revalidate: 3600 },
+    });
+    if (res.ok) return res;
+    lastStatus = res.status;
+    // Only retry transient conditions; a 404/permanent error should fail fast.
+    if (res.status !== 429 && res.status < 500) break;
+    if (attempt < 3) {
+      await new Promise((r) => setTimeout(r, 500 * 2 ** attempt));
+    }
+  }
+  throw new Error(`RSS fetch failed: ${lastStatus}`);
+}
+
 export async function getPosts(): Promise<BlogPost[]> {
-  const res = await fetch(FEED_URL, {
-    // ISR: Next refetches the feed at most once an hour. New GHL posts appear
-    // automatically with no redeploy.
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`);
+  const res = await fetchFeed();
 
   const xml = await res.text();
   const parsed = parser.parse(xml);
