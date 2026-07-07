@@ -169,7 +169,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Business Advisor',
     photo: '/cbteam/Will.png',
     slug: 'will-hyder',
-    calendarId: '5wnm8tdsCtP8k3xJEkoV',
+    calendarId: 'e6sndsbJfGjHw0OcewrF',
     fullName: 'Will Hyder',
     phone: '+1 (818) 305-4870',
     email: 'will@shieldadvisorsllc.com',

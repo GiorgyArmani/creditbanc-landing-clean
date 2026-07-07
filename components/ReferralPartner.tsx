@@ -29,9 +29,9 @@ const fadeUp: Variants = {
 const HELP_ITEMS = [
   'Access working capital',
   'Improve cash flow',
-  'Explore financing options that fit the business',
-  'Consolidate existing debt',
-  'Compare SBA, term loans, lines of credit, and more',
+  'Finance equipment, inventory, real estate, and growth',
+  'Consolidate expensive debt',
+  'Compare SBA loans, term loans, lines of credit, and more',
 ];
 
 const STEPS = [
@@ -56,7 +56,7 @@ export default function ReferralPartner() {
   return (
     <div className="bg-surface">
       {/* ---------- Dark hero ---------- */}
-      <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 pt-8 sm:pt-10 pb-16 sm:pb-20">
+      <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 pt-8 sm:pt-10 pb-16 sm:pb-20 lg:pb-0">
         <motion.div
           aria-hidden
           className="absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none"
@@ -102,38 +102,60 @@ export default function ReferralPartner() {
           variants={stagger}
           initial="hidden"
           animate="visible"
-          className="relative max-w-4xl mx-auto text-center pt-10 sm:pt-14"
+          className="relative max-w-6xl mx-auto pt-8 sm:pt-12 grid lg:grid-cols-[minmax(0,420px)_1fr] gap-6 lg:gap-14 items-center"
         >
-          <motion.p
+          {/* Image — left */}
+          <motion.div
             variants={fadeUp}
-            className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
+            className="relative flex justify-center lg:justify-start lg:self-end"
           >
-            Referral Partner Portal
-          </motion.p>
-          <motion.h1
-            variants={fadeUp}
-            className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.95]"
+            <Image
+              src="/referral-partner.png"
+              alt="A business owner reviewing funding options on their phone"
+              width={560}
+              height={840}
+              priority
+              className="w-44 sm:w-56 lg:w-full max-w-[420px] h-auto block align-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.45)]"
+            />
+          </motion.div>
+
+          {/* Copy — right */}
+          <motion.div
+            variants={stagger}
+            className="text-center lg:text-left"
           >
-            You Were Sent Here for a{' '}
-            <span className="text-primary">Reason.</span>
-          </motion.h1>
-          <motion.p
-            variants={fadeUp}
-            className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
-          >
-            If a CPA, banker, consultant, or another trusted contact sent you our
-            way, you&rsquo;re in the right place. Credit Banc helps business
-            owners sort through funding options, cut through the noise, and
-            figure out what actually makes sense.
-          </motion.p>
-          <motion.div variants={fadeUp} className="mt-8">
-            <a
-              href="#get-started"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_12px_30px_-10px_rgba(85,207,158,0.6)] transition-transform hover:scale-[1.03]"
+            <motion.h1
+              variants={fadeUp}
+              className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.95]"
             >
-              Show Me My Options
-              <ArrowRight className="h-5 w-5" />
-            </a>
+              You Were Sent Here for a{' '}
+              <span className="text-primary">Reason.</span>
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mx-auto lg:mx-0 mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
+            >
+              Someone you trust knows Credit Banc and thought we were worth the
+              introduction. (Honestly, we&rsquo;re flattered.)
+            </motion.p>
+            <motion.p
+              variants={fadeUp}
+              className="mx-auto lg:mx-0 mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
+            >
+              Why? Because business funding comes with a lot of options,
+              opinions, and people very eager to sell you something. We help
+              business owners sort through it all and figure out what actually
+              makes sense for the business.
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-8">
+              <a
+                href="#get-started"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_12px_30px_-10px_rgba(85,207,158,0.6)] transition-transform hover:scale-[1.03]"
+              >
+                Show Me My Options
+                <ArrowRight className="h-5 w-5" />
+              </a>
+            </motion.div>
           </motion.div>
         </motion.div>
       </section>
@@ -156,7 +178,7 @@ export default function ReferralPartner() {
               variants={fadeUp}
               className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-on-secondary-fixed"
             >
-              Here&rsquo;s How We Can Help
+              Here&rsquo;s What We Can Help With
             </motion.h2>
 
             <motion.ul variants={fadeUp} className="mt-6 space-y-3">
@@ -184,9 +206,10 @@ export default function ReferralPartner() {
               variants={fadeUp}
               className="mt-8 text-base sm:text-lg leading-relaxed text-on-surface-variant"
             >
-              Start by sharing a little information about your business and what
-              you need. From there, you can schedule a call with a Credit Banc
-              Advisor.
+              Tell us a little about your business and what you&rsquo;re trying
+              to accomplish. From there, your Credit Banc Advisor will pick up
+              the introduction, walk you through your options, and help you
+              figure out what actually fits.
             </motion.p>
           </motion.div>
 
@@ -308,7 +331,7 @@ function ReferralForm() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
-      className="w-full overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)]"
+      className="w-full overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-[0_24px_60px_-25px_rgba(0,3,33,0.18)] pt-6 sm:pt-8"
     >
       <iframe
         key={formSrc}
