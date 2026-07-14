@@ -266,7 +266,7 @@ export default function Hero() {
   }, [heroAssets.length]);
 
   return (
-    <section className="relative min-h-[640px] sm:min-h-[760px] xl:h-[calc(100vh-6rem)] xl:max-h-[860px] flex items-center px-6 sm:px-8 pt-8 pb-16 overflow-clip bg-surface">
+    <section className="relative min-h-[640px] sm:min-h-[760px] xl:h-[calc(100vh-4rem)] xl:max-h-[860px] flex items-center px-6 sm:px-8 pt-8 pb-16 overflow-clip bg-surface">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 xl:grid-cols-12 gap-10 xl:gap-12 items-center">
         <motion.div
           className="xl:col-span-6 z-10"
