@@ -10,7 +10,7 @@ import { Check, ArrowRight } from 'lucide-react';
 // GHL / LeadConnector opt-in form for the free Business Credit Builder 101
 // course. Same embed pattern as the referral-partner page: the iframe reads
 // incoming URL params (utm/campaign) so GHL can attribute the lead.
-const FORM_ID = 'AT5ZqbMvaRSJDU0yHWsb';
+const FORM_ID = 'wFKzbMgstCN3eeYgEQPY';
 const FORM_IFRAME_ID = `inline-${FORM_ID}`;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -485,8 +485,8 @@ function OptInForm() {
       title="Business Credit Builder 101 Opt-In Form"
       data-layout="{'id':'INLINE'}"
       data-form-id={FORM_ID}
-      data-form-name="Credit Builder Course - NEW FORM"
-      data-height="555"
+      data-form-name="Business Credit Builder Course Opt-in"
+      data-height="666"
       data-layout-iframe-id={FORM_IFRAME_ID}
       data-trigger-type="alwaysShow"
       data-activation-type="alwaysActivated"
@@ -494,7 +494,7 @@ function OptInForm() {
       scrolling="no"
       style={{
         width: '100%',
-        minHeight: '555px',
+        minHeight: '666px',
         border: 'none',
         overflow: 'hidden',
       }}
