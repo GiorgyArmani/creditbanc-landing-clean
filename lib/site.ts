@@ -17,6 +17,7 @@ export const ROUTES = {
   smallBusiness: '/small-business-funding',
   apply: '/apply-now',
   blog: '/blog',
+  resources: '/resources',
   team: '/about',
   privacy: '/privacypolicy',
 } as const;

@@ -14,6 +14,10 @@ const nextConfig = {
     ];
   },
   images: {
+    // Serve AVIF first (smallest), then WebP, then fall back to the source
+    // format. next/image negotiates per-request from the browser's Accept
+    // header, so each browser gets the best format it supports.
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',

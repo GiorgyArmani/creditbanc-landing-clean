@@ -5,18 +5,12 @@ import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import {
-  Check,
-  ArrowRight,
-  PlayCircle,
-  ClipboardCheck,
-  Headset,
-} from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 
 // GHL / LeadConnector opt-in form for the free Business Credit Builder 101
 // course. Same embed pattern as the referral-partner page: the iframe reads
 // incoming URL params (utm/campaign) so GHL can attribute the lead.
-const FORM_ID = 'wFKzbMgstCN3eeYgEQPY';
+const FORM_ID = 'AT5ZqbMvaRSJDU0yHWsb';
 const FORM_IFRAME_ID = `inline-${FORM_ID}`;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -36,24 +30,6 @@ const LEARN_ITEMS = [
   'Build credit profiles that matter',
   'Fix errors holding you back',
   'Grow your score and get approved',
-];
-
-const DIFFERENTIATORS = [
-  {
-    icon: PlayCircle,
-    title: '4 short, easy-to-follow videos',
-    body: 'No jargon, no robotic narration, no fluff. Just the steps that actually move the needle.',
-  },
-  {
-    icon: ClipboardCheck,
-    title: 'Checklists, downloads, and tools',
-    body: 'Everything you need to take action as you go, not just watch and forget.',
-  },
-  {
-    icon: Headset,
-    title: 'Real advisors when you need them',
-    body: 'Stuck on something? Book a free 15-minute call with a Credit Banc advisor anytime.',
-  },
 ];
 
 const TESTIMONIALS = [
@@ -150,63 +126,77 @@ export default function BusinessCreditBuilder() {
           </a>
         </header>
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="relative max-w-4xl mx-auto text-center pt-10 sm:pt-14"
-        >
-          <motion.p
-            variants={fadeUp}
-            className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
-          >
-            Free Business Credit Builder 101 Course
-          </motion.p>
-          <motion.h1
-            variants={fadeUp}
-            className="font-headline text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.95]"
-          >
-            You Built the Business.
-            <br />
-            <span className="text-primary">We&rsquo;ll Help You Build the Credit.</span>
-          </motion.h1>
-          <motion.p
-            variants={fadeUp}
-            className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
-          >
-            Want bigger approvals, better terms, and no personal guarantees? Our
-            free course shows you how to fix it, build it, and get approved,
-            fast. And if you need extra help, our team is ready with expert
-            support and credit repair when you need it most.
-          </motion.p>
-
+        <div className="relative max-w-6xl mx-auto pt-10 sm:pt-14">
+          {/* Full-width headline above the columns */}
           <motion.div
-            variants={fadeUp}
-            className="mt-7 flex flex-wrap justify-center gap-2.5"
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="text-center lg:text-left"
           >
-            {['Bigger approvals', 'Better terms', 'No personal guarantees'].map(
-              (chip) => (
-                <span
-                  key={chip}
-                  className="inline-flex items-center gap-2 rounded-full bg-white/[0.08] ring-1 ring-white/15 px-4 py-1.5 text-sm font-medium text-white/90"
-                >
-                  <Check className="h-4 w-4 text-primary" />
-                  {chip}
-                </span>
-              )
-            )}
+            <motion.p
+              variants={fadeUp}
+              className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
+            >
+              Free Business Credit Builder 101 Course
+            </motion.p>
+            <motion.h1
+              variants={fadeUp}
+              className="font-headline text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tighter text-white leading-[0.98]"
+            >
+              You Built the Business.{' '}
+              <span className="text-primary">
+                We&rsquo;ll Help You Build the Credit.
+              </span>
+            </motion.h1>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="mt-8">
-            <a
-              href="#get-started"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_12px_30px_-10px_rgba(85,207,158,0.6)] transition-transform hover:scale-[1.03]"
+          {/* Columns: copy + button (left), image (right) */}
+          <div className="grid lg:grid-cols-[1fr_1.3fr] gap-10 lg:gap-8 items-start mt-8 lg:mt-10">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              animate="visible"
+              className="text-center lg:text-left"
             >
-              Get Instant Access
-              <ArrowRight className="h-5 w-5" />
-            </a>
-          </motion.div>
-        </motion.div>
+              <motion.p
+                variants={fadeUp}
+                className="mx-auto lg:mx-0 max-w-2xl text-lg sm:text-xl leading-relaxed text-white/80"
+              >
+                Want bigger approvals, better terms, and no personal guarantees?
+                Our free course shows you how to fix it, build it, and get
+                approved, fast. And if you need extra help, our team is ready
+                with expert support and credit repair when you need it most.
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="mt-8">
+                <a
+                  href="#get-started"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_12px_30px_-10px_rgba(85,207,158,0.6)] transition-transform hover:scale-[1.03]"
+                >
+                  Get Instant Access
+                  <ArrowRight className="h-5 w-5" />
+                </a>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+              className="relative flex items-center justify-center lg:justify-start lg:self-end lg:-mb-24 lg:overflow-visible"
+            >
+              <Image
+                src="/no%20circle.png"
+                alt="Credit Banc FICO Gym — flexing your business credit score"
+                width={830}
+                height={555}
+                priority
+                className="w-full max-w-sm sm:max-w-md lg:max-w-none lg:w-[130%] xl:w-[148%] h-auto"
+              />
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* ---------- What makes it different (left) beside the form (right) ---------- */}
@@ -227,29 +217,29 @@ export default function BusinessCreditBuilder() {
               variants={fadeUp}
               className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-on-secondary-fixed"
             >
-              A million credit courses exist. Here&rsquo;s what makes this one
-              different.
+              There are a million credit building courses out there. What makes
+              this one different?
             </motion.h2>
 
-            <motion.div variants={fadeUp} className="mt-8 space-y-6">
-              {DIFFERENTIATORS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.title} className="flex items-start gap-4">
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h3 className="font-headline text-lg font-bold text-on-secondary-fixed">
-                        {item.title}
-                      </h3>
-                      <p className="mt-1 text-base text-on-surface-variant leading-relaxed">
-                        {item.body}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+            <motion.div
+              variants={fadeUp}
+              className="mt-8 space-y-5 text-base text-on-surface-variant leading-relaxed"
+            >
+              <p>
+                Glad you asked! We took all the complicated, jargon-filled crap
+                about business credit and broke it down into 4 short,
+                easy-to-follow videos. No MBA required. No robot narrators. Just
+                straight talk, real steps, and the occasional dad joke.
+              </p>
+              <p>
+                You&rsquo;ll also get checklists, downloads, and tools to keep
+                you on track, because building business credit shouldn&rsquo;t
+                feel like a guessing game.
+              </p>
+              <p>
+                And if you need help along the way, our advisors (and credit
+                repair team) are ready when you are.
+              </p>
             </motion.div>
 
             <motion.div
@@ -495,8 +485,8 @@ function OptInForm() {
       title="Business Credit Builder 101 Opt-In Form"
       data-layout="{'id':'INLINE'}"
       data-form-id={FORM_ID}
-      data-form-name="Business Credit Builder Course Opt-in"
-      data-height="666"
+      data-form-name="Credit Builder Course - NEW FORM"
+      data-height="555"
       data-layout-iframe-id={FORM_IFRAME_ID}
       data-trigger-type="alwaysShow"
       data-activation-type="alwaysActivated"
@@ -504,7 +494,7 @@ function OptInForm() {
       scrolling="no"
       style={{
         width: '100%',
-        minHeight: '666px',
+        minHeight: '555px',
         border: 'none',
         overflow: 'hidden',
       }}

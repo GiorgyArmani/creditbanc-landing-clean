@@ -55,7 +55,9 @@ const NAV_LINKS: NavLink[] = [
   },
   { label: 'Our Process', href: '/#process' },
   { label: 'About', href: '/about' },
-  { label: 'Blog', href: ROUTES.blog },
+  // Resources hub, which now folds in the blog. Keep the blog reachable at
+  // /blog, but it no longer gets its own top-level slot.
+  { label: 'Resources', href: ROUTES.resources },
 ];
 
 // `solid` forces an opaque white bar even at the top of the page — use it on

@@ -7,6 +7,7 @@
 // plus a per-card sheen — interactive and fresh, never grey.
 
 import { useRef, type CSSProperties } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 
 export type ChromaItem = {
@@ -169,13 +170,16 @@ function renderCard(
     >
       <div className="relative z-10 p-2.5 sm:p-3">
         <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-[#e9e7e0]">
-          {/* Black-and-white at rest; full color on hover — the reveal. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          {/* Black-and-white at rest; full color on hover — the reveal.
+             next/image routes these through the optimizer so each browser
+             gets AVIF/WebP instead of the source PNG. */}
+          <Image
             src={c.image}
             alt={c.title}
+            fill
             loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover object-top grayscale transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:scale-[1.04]"
+            sizes="(max-width: 640px) 45vw, 300px"
+            className="object-cover object-top grayscale transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:scale-[1.04]"
           />
         </div>
       </div>
