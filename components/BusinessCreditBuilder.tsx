@@ -132,7 +132,7 @@ export default function BusinessCreditBuilder() {
             variants={stagger}
             initial="hidden"
             animate="visible"
-            className="text-center lg:text-left"
+            className="text-center"
           >
             <motion.p
               variants={fadeUp}
@@ -152,7 +152,7 @@ export default function BusinessCreditBuilder() {
           </motion.div>
 
           {/* Columns: copy + button (left), image (right) */}
-          <div className="grid lg:grid-cols-[1fr_1.3fr] gap-10 lg:gap-8 items-start mt-8 lg:mt-10">
+          <div className="grid lg:grid-cols-[1fr_1.3fr] gap-10 lg:gap-8 items-center mt-8 lg:mt-10">
             <motion.div
               variants={stagger}
               initial="hidden"
@@ -161,7 +161,7 @@ export default function BusinessCreditBuilder() {
             >
               <motion.p
                 variants={fadeUp}
-                className="mx-auto lg:mx-0 max-w-2xl text-lg sm:text-xl leading-relaxed text-white/80"
+                className="mx-auto lg:mx-0 max-w-2xl text-xl sm:text-2xl leading-relaxed text-white/80"
               >
                 Want bigger approvals, better terms, and no personal guarantees?
                 Our free course shows you how to fix it, build it, and get
