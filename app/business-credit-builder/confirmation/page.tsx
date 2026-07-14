@@ -17,12 +17,12 @@ const STEPS = [
   {
     icon: Mail,
     title: 'Check your email',
-    body: 'Your instant access to the course is waiting in your inbox right now.',
+    body: 'Your course access is on its way to your inbox.',
   },
   {
     icon: Search,
-    title: 'Don’t see it? Check spam & promotions',
-    body: 'If it’s not there in a few minutes, dig through your spam or promotions folder. Trust us, it’s worth digging for.',
+    title: 'Don’t see it?',
+    body: 'Check your spam or promotions folder. Trust us, it’s worth digging for.',
   },
 ];
 
@@ -69,12 +69,11 @@ export default function BusinessCreditBuilderConfirmationPage() {
             <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary text-on-secondary-fixed shadow-[0_12px_30px_-8px_rgba(85,207,158,0.7)]">
               <Check className="h-8 w-8" strokeWidth={3} />
             </span>
-            <p className="mt-6 font-label text-xs font-bold uppercase tracking-[0.2em] text-primary">
-              You’re In
-            </p>
             <h1 className="mt-3 font-headline text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tighter text-white leading-[0.98]">
-              Congrats! You’re officially on your way to{' '}
-              <span className="text-primary">rock-solid business credit.</span>
+              You’re In. Let’s Build Some{' '}
+              <span className="text-primary whitespace-nowrap">
+                Business Credit.
+              </span>
             </h1>
           </div>
         </section>
@@ -109,12 +108,14 @@ export default function BusinessCreditBuilderConfirmationPage() {
                 <div className="inline-flex items-center gap-2 text-on-secondary-fixed">
                   <Rocket className="h-5 w-5 text-primary" />
                   <span className="font-headline text-base font-bold">
-                    Already ready to grow?
+                    Ready to Put That Credit to Work?
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                  If you need capital now, skip the wait and start your
-                  application. It only takes a few minutes.
+                  If you need funding now, and your personal FICO is 600+, you
+                  don’t have to wait until you finish the course. Start your
+                  application and see which Credit Banc programs may fit your
+                  business.
                 </p>
                 <Link
                   href="/apply-now"
