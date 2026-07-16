@@ -2,6 +2,8 @@ export const SITE = {
   baseUrl: 'https://creditbanc.io',
   vaultUrl: 'https://vault.creditbanc.io',
   loginUrl: 'https://vault.creditbanc.io/auth/login',
+  // "I Know Someone" Club affiliate signup — marketing funnels land here.
+  affiliateUrl: 'https://vault.creditbanc.io/affiliate',
   email: 'support@creditbanc.io',
   phone: '321-334-5099',
   phoneTel: 'tel:+13213345099',
