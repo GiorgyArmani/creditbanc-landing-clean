@@ -3,7 +3,6 @@ import Hero from '@/components/sections/Hero';
 import TrustMetrics from '@/components/sections/TrustMetrics';
 import Products from '@/components/sections/Products';
 import ValueProp from '@/components/sections/ValueProp';
-import Process from '@/components/sections/Process';
 import FAQ from '@/components/sections/FAQ';
 import CTA from '@/components/sections/CTA';
 import Footer from '@/components/sections/Footer';
@@ -13,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="pt-16">
+      <main>
         <Hero />
         <TrustMetrics />
         <Products />

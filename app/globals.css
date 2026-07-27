@@ -34,6 +34,13 @@
     overflow: hidden;
   }
 
+  html {
+    /* The navbar is `position: fixed`, so an anchor jump would otherwise park
+       the target section underneath it. Clears the scrolled bar (68px) plus
+       breathing room. */
+    scroll-padding-top: 6rem;
+  }
+
   body {
     @apply bg-surface text-on-surface font-body;
     /* Safety net against horizontal scroll from full-bleed `w-screen`

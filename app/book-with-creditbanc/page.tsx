@@ -18,7 +18,7 @@ export default function BookWithCreditBancPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24 bg-surface">
+      <main className="bg-surface">
         <Suspense fallback={<BookFallback />}>
           <BookWithCreditBanc />
         </Suspense>

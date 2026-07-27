@@ -20,15 +20,11 @@ export default function Spotlight() {
   return (
     <section
       id="spotlight"
-      className="relative overflow-hidden px-6 sm:px-8 py-20 sm:py-28 text-white"
-      style={{
-        background:
-          'linear-gradient(135deg, #1f6b4e 0%, #2ea878 50%, #34b07d 100%)',
-      }}
+      className="relative overflow-hidden bg-surface px-6 sm:px-8 py-20 sm:py-28"
     >
       <motion.div
         aria-hidden
-        className="absolute -top-40 -right-40 w-[30rem] h-[30rem] rounded-full bg-white/10 blur-3xl pointer-events-none"
+        className="absolute -top-40 -right-40 w-[30rem] h-[30rem] rounded-full bg-primary/15 blur-3xl pointer-events-none"
         animate={{ scale: [1, 1.12, 1] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -40,13 +36,13 @@ export default function Spotlight() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-2xl"
         >
-          <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-white/80 mb-4">
+          <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-[#1f6b4e] mb-4">
             Press &amp; Features
           </p>
-          <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+          <h2 className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tight text-on-secondary-fixed mb-4">
             In the Spotlight
           </h2>
-          <p className="text-lg sm:text-xl text-white/85 leading-relaxed">
+          <p className="text-lg sm:text-xl text-on-surface-variant leading-relaxed">
             Press releases, Forbes articles, and the occasional moment in the
             limelight. Here&rsquo;s where Credit Banc shows up in the wild.
           </p>
@@ -66,7 +62,11 @@ export default function Spotlight() {
                   delay: Math.min(i, PREVIEW_COUNT) * 0.05,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="rounded-xl border border-white/15 bg-white/5 overflow-hidden backdrop-blur-sm"
+                className="rounded-xl border border-white/15 overflow-hidden text-white shadow-[0_18px_38px_-22px_rgba(16,64,44,0.7)]"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #1f6b4e 0%, #2ea878 50%, #34b07d 100%)',
+                }}
               >
                 <button
                   type="button"
@@ -146,7 +146,7 @@ export default function Spotlight() {
               type="button"
               onClick={() => setShowAll((v) => !v)}
               aria-expanded={showAll}
-              className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-white/10 border border-white/25 font-bold text-sm uppercase tracking-widest text-white transition-all hover:bg-white/15 hover:border-white/40"
+              className="inline-flex items-center gap-3 px-7 py-3 rounded-full bg-[#1f6b4e] border border-transparent font-bold text-sm uppercase tracking-widest text-white transition-all hover:bg-[#17563e]"
             >
               {showAll ? 'Show less' : `See More`}
               <motion.span
@@ -164,14 +164,14 @@ export default function Spotlight() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 text-center text-base sm:text-lg text-white/85"
+          className="mt-10 text-center text-base sm:text-lg text-on-surface-variant"
         >
           Want more?{' '}
           <a
             href={FORBES_AUTHOR_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+            className="font-bold text-[#1f6b4e] underline decoration-[#1f6b4e]/40 underline-offset-4 transition-colors hover:decoration-[#1f6b4e]"
           >
             Check out the full list over on Forbes
             <ArrowUpRight className="inline h-4 w-4 ml-0.5 -translate-y-0.5" />

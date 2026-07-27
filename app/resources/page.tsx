@@ -49,7 +49,7 @@ export default function ResourcesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(RESOURCES_LD) }}
       />
       <Navbar />
-      <main className="pt-24">
+      <main>
         {/* Green block: the headline + subhead on one emerald surface, opening
             the page in the site's cream↔green rhythm. */}
         <section

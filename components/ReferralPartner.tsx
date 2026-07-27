@@ -83,21 +83,6 @@ export default function ReferralPartner() {
           }}
         />
 
-        <header className="relative max-w-5xl mx-auto flex items-center justify-center sm:justify-start py-2 sm:py-3">
-          <a href="/" aria-label="Credit Banc home" className="inline-flex">
-            <Image
-              src="/cb%20logo%20white.svg"
-              alt="Credit Banc — Credit & capital to grow"
-              width={400}
-              height={100}
-              priority
-              unoptimized
-              className="h-10 sm:h-12"
-              style={{ width: 'auto' }}
-            />
-          </a>
-        </header>
-
         <motion.div
           variants={stagger}
           initial="hidden"

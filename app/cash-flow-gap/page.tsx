@@ -21,7 +21,7 @@ export default function CashFlowGapPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24">
+      <main>
         <CashFlowGapCalculator />
       </main>
       <Footer />

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
 import AffiliateClub from '@/components/AffiliateClub';
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 export default function AffiliatePage() {
   return (
     <>
+      <Navbar />
       <main className="bg-surface">
         <AffiliateClub />
       </main>

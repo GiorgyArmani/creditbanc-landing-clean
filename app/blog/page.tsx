@@ -25,7 +25,7 @@ export default async function BlogIndex() {
   return (
     <>
       <Navbar />
-      <main className="pt-24">
+      <main>
         {/* Green block: header + featured post share one emerald surface so the
             page opens with the cream↔green rhythm instead of a flat header. */}
         <section

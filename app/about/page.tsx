@@ -7,6 +7,7 @@ import Footer from '@/components/sections/Footer';
 import AboutHero from '@/components/sections/AboutHero';
 import AboutTeam from '@/components/sections/AboutTeam';
 import AboutTeamChroma from '@/components/sections/AboutTeamChroma';
+import ValueProp from '@/components/sections/ValueProp';
 import Spotlight from '@/components/sections/Spotlight';
 import CTA from '@/components/sections/CTA';
 import { FloatingSupport } from '@/components/floating-support';
@@ -42,9 +43,12 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(TEAM_LD) }}
       />
       <Navbar />
-      <main className="pt-24">
+      <main>
         <AboutHero />
         {TEAM_VARIANT === 'chroma' ? <AboutTeamChroma /> : <AboutTeam />}
+        {/* Carries the #process anchor the About dropdown links to. Also
+            renders on the home page. */}
+        <ValueProp />
         <Spotlight />
         <CTA />
       </main>

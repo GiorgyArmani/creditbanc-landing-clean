@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { SITE, ROUTES } from '@/lib/site';
 
-type Program = { id: string; label: string };
+// `href` overrides the default `${parent.href}#${id}` target — used when a
+// dropdown item lives on a different page than its parent link.
+type Program = { id: string; label: string; href?: string };
 type NavLink = {
   label: string;
   href: string;
@@ -53,12 +55,29 @@ const NAV_LINKS: NavLink[] = [
       { id: 'inventory-financing', label: 'Inventory Financing' }
     ],
   },
-  { label: 'Our Process', href: '/#process' },
-  { label: 'About', href: '/about' },
+  {
+    label: 'About',
+    href: '/about',
+    programs: [
+      { id: 'origin', label: 'Our Story' },
+      { id: 'team', label: 'Meet the Team' },
+      { id: 'process', label: 'Our Process' },
+      { id: 'spotlight', label: 'In the Spotlight' },
+    ],
+  },
   // Resources hub, which now folds in the blog. Keep the blog reachable at
   // /blog, but it no longer gets its own top-level slot.
   { label: 'Resources', href: ROUTES.resources },
 ];
+
+// The bar is `fixed`, so it takes no layout space — Navbar renders its own
+// spacer below it instead. These two values are the single source of truth for
+// that spacer's height, which is why pages must NOT add their own `pt-*` offset:
+// a hand-picked padding that doesn't match NAV_HEIGHT is what produced the
+// stray gap (pt-24 = 96px against an 84px bar) or the content tucking under it
+// (pt-16 = 64px).
+const NAV_HEIGHT = 84;
+const NAV_HEIGHT_SCROLLED = 68;
 
 // `solid` forces an opaque white bar even at the top of the page — use it on
 // pages whose hero starts dark right under the navbar (e.g. the category pages),
@@ -102,20 +121,19 @@ export default function Navbar({ solid = false }: { solid?: boolean } = {}) {
   }, [menuOpen]);
 
   return (
-    <motion.nav
+    <>
+    {/* No entry animation: the bar is persistent chrome, and sliding it in on
+        every navigation read as a second white box dropping over the spacer. */}
+    <nav
       className={`fixed top-0 w-full z-50 backdrop-blur-2xl transition-shadow duration-300 ${
         scrolled || solid
           ? 'bg-white/95 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.12)]'
           : 'bg-white/70 shadow-[0_20px_50px_-10px_rgba(0,3,33,0.04)]'
       }`}
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
       <div
-        className={`flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8 transition-[padding] duration-300 ${
-          scrolled ? 'py-3' : 'py-5'
-        }`}
+        className="flex justify-between items-center max-w-screen-2xl mx-auto px-6 sm:px-8 transition-[height] duration-300"
+        style={{ height: scrolled ? NAV_HEIGHT_SCROLLED : NAV_HEIGHT }}
       >
         <a
           href="/"
@@ -202,7 +220,7 @@ export default function Navbar({ solid = false }: { solid?: boolean } = {}) {
                             <li key={p.id} role="none">
                               <a
                                 role="menuitem"
-                                href={`${link.href}#${p.id}`}
+                                href={p.href ?? `${link.href}#${p.id}`}
                                 onClick={() => setHovered(null)}
                                 className="block px-5 py-2.5 font-headline tracking-tight text-sm font-bold text-slate-700 hover:text-primary hover:bg-primary-container/20 transition-colors"
                               >
@@ -361,7 +379,7 @@ export default function Navbar({ solid = false }: { solid?: boolean } = {}) {
                                   {link.programs!.map((p) => (
                                     <li key={p.id}>
                                       <a
-                                        href={`${link.href}#${p.id}`}
+                                        href={p.href ?? `${link.href}#${p.id}`}
                                         onClick={() => setMenuOpen(false)}
                                         className="block pl-12 pr-8 py-2.5 font-headline tracking-tight text-sm font-bold text-slate-600 hover:text-primary hover:bg-primary-container/20 transition-colors"
                                       >
@@ -427,6 +445,11 @@ export default function Navbar({ solid = false }: { solid?: boolean } = {}) {
           </>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
+
+    {/* Occupies the space the fixed bar would have taken. Sized to the bar's
+        resting height so content starts exactly at its bottom edge. */}
+    <div aria-hidden style={{ height: NAV_HEIGHT }} />
+    </>
   );
 }

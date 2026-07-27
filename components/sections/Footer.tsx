@@ -6,11 +6,13 @@ import { Facebook, Instagram, Linkedin, Star, Youtube } from 'lucide-react';
 import Icon from '../ui/Icon';
 import { ROUTES, SITE, SOCIAL } from '@/lib/site';
 
+// Absolute paths, not bare fragments: the footer renders on every page, so a
+// page-relative `#anchor` only resolves on whichever page happens to define it.
 const PROGRAMS = [
-  { label: 'SBA Loans', href: '#sba' },
-  { label: 'Real Estate Loans', href: '#real-estate' },
-  { label: 'Small Business Funding', href: '#small-business' },
-  { label: 'Our Process', href: '#process' },
+  { label: 'SBA Loans', href: '/sba-loans' },
+  { label: 'Real Estate Loans', href: '/real-estate-financing' },
+  { label: 'Small Business Funding', href: '/small-business-funding' },
+  { label: 'Our Process', href: '/about#process' },
 ];
 
 const COMPANY = [

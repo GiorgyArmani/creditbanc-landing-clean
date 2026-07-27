@@ -56,7 +56,7 @@ export default async function BlogPost({
         }}
       />
       <Navbar />
-      <main className="bg-surface pt-24">
+      <main className="bg-surface">
         <article className="mx-auto max-w-3xl px-6 sm:px-8 py-16">
           <Link
             href="/blog"

@@ -28,7 +28,7 @@ export default function GetHelpPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24 bg-surface">
+      <main className="bg-surface">
         <GetHelpBooking />
       </main>
       <Footer />

@@ -6,9 +6,8 @@ import {
   Share2,
   Handshake,
   Gift,
-  Check,
   ArrowRight,
-  Infinity as InfinityIcon,
+  UserPlus,
 } from 'lucide-react';
 import { SITE } from '@/lib/site';
 
@@ -26,244 +25,144 @@ const fadeUp: Variants = {
 
 const STEPS = [
   {
+    icon: UserPlus,
+    title: 'Join the Affiliate Program',
+    body: 'Sign up for the “I Know Someone” Club. It’s free, simple, and you don’t need to know anything about business funding. You just need to know people who own businesses. Convenient.',
+  },
+  {
     icon: Share2,
-    title: 'Share Your Link',
-    body: 'Send your personal link to any small business owner you know. You don’t need their revenue, credit score, or cash flow. (Please don’t interrogate your dentist about repayment terms mid-cleaning.) You just need to know they own a business.',
+    title: 'Share Your Personal Link',
+    body: 'We’ll give you a unique affiliate link to share with business owners you know. Text it. Email it. Post it on social media. Drop it into the group chat where your cousin keeps promoting his landscaping company.',
   },
   {
     icon: Handshake,
-    title: 'We Take It From There',
-    body: 'If they want to take a look, we’ll talk with them, learn what’s going on, and see if Credit Banc can help with the money side of running and growing a business. Real people. Yes, actual humans.',
+    title: 'We Handle the Rest',
+    body: 'When someone uses your link, the Credit Banc team will talk with them, learn what they need, and see whether we can help them find funding. You make the connection. We sort through the money stuff.',
   },
   {
     icon: Gift,
-    title: 'You Get $500',
-    body: 'If their deal funds, you get a $500 gift card of your choice. They get the money they need. You get a thank-you. (Just try not to let the hero thing go to your head.)',
+    title: 'You Get Rewarded',
+    body: 'If we can help them get the money they need through Credit Banc, you’ll get a $500 gift card of your choice. You made the connection. We’ll send the thank-you.',
   },
 ];
 
-const KNOW_SOMEONE = [
-  'A friend',
-  'A cousin',
-  'A neighbor',
-  'The guy who fixed your roof',
-  'Your kid’s martial arts instructor',
-  'The woman who runs your favorite coffee shop',
-  'Your dentist',
-];
 
-const FINE_PRINT = [
-  'To receive a $500 gift card, the business owner you refer must apply through your personal “I Know Someone” Club link, and their deal must be successfully funded through Credit Banc. A tiny but very important little detail.',
-  'Rewards are issued after the referred deal funds and all required closing conditions are complete. One reward is available per funded referred business, unless otherwise approved by Credit Banc.',
-  'There is no limit to the number of business owners you can refer. One link. As many eligible introductions as you can make. Your contact list finally has a job.',
-  'Self-referrals, duplicate referrals, fake applications, incomplete applications, or referrals already in Credit Banc’s system may not qualify. Credit Banc reserves the right to determine referral eligibility, because someone, somewhere, will absolutely try to get creative and ruin a nice thing.',
-  'Gift cards are subject to availability and may be selected from approved options provided by Credit Banc. Rewards may be subject to tax reporting requirements, and recipients are responsible for any applicable taxes. The IRS, as usual, has entered the chat.',
-  'Funding is not guaranteed. All funding requests are subject to review, approval, underwriting, and program availability. We would love to help everyone, but underwriting does occasionally insist on being involved.',
-  'Please do not represent yourself as an employee, lender, broker, or advisor of Credit Banc unless you have a separate written agreement with us. Your job is simple: share your link with business owners who may want to talk with Credit Banc. We’ll handle the money side.',
-];
 
 export default function AffiliateClub() {
   return (
     <div className="bg-surface">
-      {/* ---------- Dark hero ---------- */}
-      <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 pt-8 sm:pt-10 pb-20 sm:pb-28">
-        <motion.div
-          aria-hidden
-          className="absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-3xl pointer-events-none"
-          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          aria-hidden
-          className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"
-          animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-            backgroundSize: '56px 56px',
-            maskImage:
-              'radial-gradient(ellipse at center, black 30%, transparent 75%)',
-            WebkitMaskImage:
-              'radial-gradient(ellipse at center, black 30%, transparent 75%)',
-          }}
-        />
-
-        <header className="relative max-w-6xl mx-auto flex items-center justify-center sm:justify-start py-2 sm:py-3">
-          <a href="/" aria-label="Credit Banc home" className="inline-flex">
-            <Image
-              src="/cb%20logo%20white.svg"
-              alt="Credit Banc — Credit & capital to grow"
-              width={400}
-              height={100}
-              priority
-              unoptimized
-              className="h-10 sm:h-12"
-              style={{ width: 'auto' }}
-            />
-          </a>
-        </header>
-
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="relative max-w-6xl mx-auto pt-10 sm:pt-14 grid lg:grid-cols-[1fr_minmax(0,360px)] gap-12 lg:gap-10 items-center"
-        >
-          {/* Copy — center-aligned */}
-          <motion.div
-            variants={stagger}
-            className="flex flex-col items-center text-center"
-          >
-            <motion.span
-              variants={fadeUp}
-              className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary ring-1 ring-primary/25"
-            >
-              <Gift className="h-3.5 w-3.5" />
-              Affiliate Program
-            </motion.span>
-
-            <motion.h1
-              variants={fadeUp}
-              className="mt-6 font-headline text-4xl sm:text-5xl xl:text-[4rem] font-extrabold tracking-tighter text-white leading-[0.95]"
-            >
-              <span className="block">Join the</span>
-              {/* Keep the quoted phrase + "Club." unbroken on one line at desktop
-                  widths; on small screens it wraps naturally to avoid overflow. */}
-              <span className="block sm:whitespace-nowrap">
-                &ldquo;I Know Someone&rdquo;{' '}
-                <span className="text-primary">Club.</span>
-              </span>
-            </motion.h1>
-
-            <motion.p
-              variants={fadeUp}
-              className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-white/80"
-            >
-              Everyone knows a small business owner. Share your link, and if we
-              can help them out, we&rsquo;ll send you a{' '}
-              <span className="font-bold text-white">
-                $500 gift card of your choice.
-              </span>{' '}
-              They get the money they need. You get a thank-you.
-            </motion.p>
-
-            <motion.div
-              variants={fadeUp}
-              className="mt-8 flex flex-col items-center gap-3"
-            >
-              <a
-                href={SITE.affiliateUrl}
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_12px_30px_-10px_rgba(85,207,158,0.6)] transition-transform hover:scale-[1.03]"
-              >
-                Get My Link
-                <ArrowRight className="h-5 w-5" />
-              </a>
-              <p className="text-sm text-white/60">
-                Free to join. No limit on referrals.
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* $500 gift card — side */}
-          <motion.div
-            variants={fadeUp}
-            className="relative flex justify-center lg:justify-end"
-          >
-            <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-full max-w-[360px] aspect-[16/10] rounded-2xl p-6 flex flex-col justify-between shadow-[0_35px_60px_-20px_rgba(0,0,0,0.55)] ring-1 ring-white/15"
-              style={{
-                background:
-                  'linear-gradient(135deg, #10402c 0%, #1f6b4e 55%, #2ea878 100%)',
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-headline text-sm font-bold uppercase tracking-widest text-white/80">
-                  Thank-You Reward
-                </span>
-                <Gift className="h-6 w-6 text-white/90" />
-              </div>
-              <div>
-                <p className="font-headline text-6xl font-extrabold tracking-tighter text-white">
-                  $500
-                </p>
-                <p className="mt-1 text-sm font-semibold text-white/80">
-                  Gift card of your choice
-                </p>
-              </div>
-              <p className="text-xs font-medium uppercase tracking-widest text-white/60">
-                Per funded referral
-              </p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ---------- Who do you know? (cream) ---------- */}
-      <section className="relative px-6 sm:px-8 py-16 sm:py-24">
-        <div className="max-w-5xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="font-headline text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-on-secondary-fixed"
-          >
-            You Definitely Know Someone
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.08 }}
-            className="mx-auto mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-on-surface-variant"
-          >
-            A friend. A cousin. A neighbor. That&rsquo;s all it takes. Connect
-            the business owners you know with a team of real, actual humans who
-            help them sort through the money side of running and growing a
-            business.
-          </motion.p>
-
-          <motion.ul
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="mt-10 flex flex-wrap justify-center gap-3"
-          >
-            {KNOW_SOMEONE.map((person) => (
-              <motion.li
-                key={person}
-                variants={fadeUp}
-                className="rounded-full bg-surface-container px-5 py-2.5 text-sm sm:text-base font-semibold text-on-surface ring-1 ring-outline-variant/50"
-              >
-                {person}
-              </motion.li>
-            ))}
-          </motion.ul>
-        </div>
-      </section>
-
-      {/* ---------- How it works — deep emerald band ---------- */}
+      {/* ---------- Hero — full-bleed yellow ---------- */}
       <section
-        className="relative overflow-hidden px-6 sm:px-8 py-16 sm:py-24"
+        className="relative overflow-hidden"
         style={{
           background:
-            'linear-gradient(135deg, #10402c 0%, #1f6b4e 55%, #2ea878 100%)',
+            'linear-gradient(135deg, #ffc257 0%, #ffaf26 48%, #f79f12 100%)',
         }}
       >
         <div
           aria-hidden
-          className="absolute inset-0 opacity-[0.07]"
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+              'linear-gradient(rgba(32,37,54,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(32,37,54,0.6) 1px, transparent 1px)',
+            backgroundSize: '56px 56px',
+            maskImage:
+              'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse at center, black 35%, transparent 85%)',
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-white/25 blur-3xl pointer-events-none"
+        />
+
+        <div className="relative max-w-[100rem] mx-auto px-6 sm:px-8 lg:px-12">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col gap-8 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-8 lg:items-start pt-14 sm:pt-20 lg:pt-24"
+          >
+            <motion.h1
+              variants={fadeUp}
+              className="order-1 lg:order-none lg:col-start-1 lg:row-start-1 text-center lg:text-left font-headline text-[2.75rem] sm:text-6xl lg:text-[3.25rem] xl:text-[4.25rem] 2xl:text-[5rem] font-extrabold tracking-tighter text-on-secondary-fixed leading-[0.95]"
+            >
+              {/* Keep the opening sentence unbroken from lg up; it wraps
+                  naturally on narrow screens. */}
+              <span className="block lg:whitespace-nowrap">
+                You Know Someone.
+              </span>
+              <span className="block text-white">
+                Probably Several Someones.
+              </span>
+            </motion.h1>
+
+            {/* Member card photo. On mobile it sits between the headline and
+                the copy card (order-2); from lg it moves to its own column,
+                spanning both rows and flush on the bottom edge of the band. */}
+            <motion.div
+              variants={fadeUp}
+              className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-2 relative z-10 flex justify-center lg:justify-end self-center lg:self-end min-w-0 lg:-mr-12"
+            >
+              <div
+                aria-hidden
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-72 w-72 sm:h-96 sm:w-96 lg:h-[34rem] lg:w-[34rem] rounded-full bg-white/30 blur-3xl pointer-events-none"
+              />
+              <Image
+                src="/hero%20image.png"
+                alt="Credit Banc member holding an “I Know Someone” Club card"
+                width={600}
+                height={800}
+                priority
+                sizes="(max-width: 1024px) 92vw, 750px"
+                className="relative block w-full max-w-[460px] sm:max-w-[560px] h-auto lg:w-auto lg:max-w-none lg:h-[38rem] lg:-mt-28 xl:h-[46rem] xl:-mt-36 2xl:h-[62rem] 2xl:-mt-52 object-contain object-bottom drop-shadow-[0_25px_35px_rgba(32,37,54,0.28)]"
+              />
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:self-start -mt-20 sm:-mt-32 lg:mt-0 mb-8 lg:mb-16 max-w-2xl rounded-2xl border-l-4 border-on-secondary-fixed bg-white/85 backdrop-blur-sm p-5 sm:p-6 pt-7 sm:pt-8 lg:pt-6 shadow-[0_14px_34px_-18px_rgba(32,37,54,0.55)]"
+            >
+                <p className="text-base sm:text-lg leading-relaxed text-on-secondary-fixed/80">
+                  A friend. A cousin. A neighbor. The guy who fixed your roof.
+                  Your kid&rsquo;s martial arts instructor. The woman who runs
+                  your favorite coffee shop. Your dentist. And chances are, one
+                  of them could use a little more money to run, fix, or grow
+                  their business.
+                </p>
+
+                <p className="mt-5 text-base sm:text-lg leading-relaxed text-on-secondary-fixed">
+                  Join the &ldquo;I Know Someone&rdquo; Club and turn the
+                  business owners in your contact list into rewards.
+                </p>
+
+                <div className="mt-5 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="font-headline text-lg sm:text-xl font-bold tracking-tight text-on-secondary-fixed">
+                    Finally, knowing everybody pays off.
+                  </p>
+
+                  <a
+                    href={SITE.affiliateUrl}
+                    className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-on-secondary-fixed px-7 py-3.5 font-headline text-base font-bold text-white shadow-[0_16px_34px_-14px_rgba(32,37,54,0.8)] transition-transform hover:scale-[1.03]"
+                  >
+                    Join the Club
+                    <ArrowRight className="h-5 w-5" />
+                  </a>
+                </div>
+              </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ---------- How it works — light band, emerald cards ---------- */}
+      <section className="relative overflow-hidden bg-surface px-6 sm:px-8 lg:px-12 py-16 sm:py-24">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(32,37,54,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(32,37,54,0.6) 1px, transparent 1px)',
             backgroundSize: '56px 56px',
             maskImage:
               'radial-gradient(ellipse at center, black 30%, transparent 80%)',
@@ -271,13 +170,13 @@ export default function AffiliateClub() {
               'radial-gradient(ellipse at center, black 30%, transparent 80%)',
           }}
         />
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-[100rem] mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: EASE }}
-            className="text-center font-headline text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white"
+            className="text-center font-headline text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-on-secondary-fixed"
           >
             Here&rsquo;s How It Works
           </motion.h2>
@@ -287,7 +186,7 @@ export default function AffiliateClub() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            className="mt-12 grid gap-6 md:grid-cols-3"
+            className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4"
           >
             {STEPS.map((step, i) => {
               const Icon = step.icon;
@@ -295,20 +194,24 @@ export default function AffiliateClub() {
                 <motion.div
                   key={step.title}
                   variants={fadeUp}
-                  className="relative rounded-2xl bg-white/[0.07] backdrop-blur-sm ring-1 ring-white/15 p-7"
+                  className="relative rounded-2xl ring-1 ring-white/15 shadow-[0_24px_45px_-25px_rgba(16,64,44,0.75)] p-6 xl:p-7"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #10402c 0%, #1f6b4e 55%, #2ea878 100%)',
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-on-secondary-fixed">
                       <Icon className="h-5 w-5" />
                     </span>
-                    <span className="font-headline text-sm font-black text-primary tracking-wider">
+                    <span className="font-headline text-sm font-black tracking-wider text-primary">
                       STEP {i + 1}
                     </span>
                   </div>
-                  <h3 className="mt-5 font-headline text-xl font-bold text-white">
+                  <h3 className="mt-5 font-headline text-lg xl:text-xl font-bold text-white">
                     {step.title}
                   </h3>
-                  <p className="mt-3 text-base leading-relaxed text-white/80">
+                  <p className="mt-3 text-[0.95rem] xl:text-base leading-relaxed text-white/85">
                     {step.body}
                   </p>
                 </motion.div>
@@ -318,91 +221,9 @@ export default function AffiliateClub() {
         </div>
       </section>
 
-      {/* ---------- Why we created it (cream) ---------- */}
-      <section className="relative px-6 sm:px-8 py-16 sm:py-24">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 lg:gap-16 items-start">
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <motion.h2
-              variants={fadeUp}
-              className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-on-secondary-fixed"
-            >
-              Why We Created the Club
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              className="mt-6 text-base sm:text-lg leading-relaxed text-on-surface-variant"
-            >
-              Credit Banc was built because small business owners deserve better
-              than confusing loan offers, mystery terms, one-size-fits-all
-              funding, and financial advice that sounds like it was written by a
-              printer jam.
-            </motion.p>
-            <motion.p
-              variants={fadeUp}
-              className="mt-4 text-base sm:text-lg leading-relaxed text-on-surface-variant"
-            >
-              Most business owners aren&rsquo;t studying loan structures for fun.
-              They&rsquo;re trying to make payroll, buy equipment, cover
-              inventory, deal with slow-paying customers, and keep the business
-              moving without guessing their way through every financial
-              decision. We help them look at the money side in a way that is
-              clear, practical, and actually tied to what they&rsquo;re trying to
-              do. What a concept.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            className="rounded-2xl bg-surface-container p-8 ring-1 ring-outline-variant/40"
-          >
-            <motion.h3
-              variants={fadeUp}
-              className="font-headline text-xl font-bold text-on-secondary-fixed"
-            >
-              You just need to know they own a business.
-            </motion.h3>
-            <motion.p
-              variants={fadeUp}
-              className="mt-4 text-base leading-relaxed text-on-surface-variant"
-            >
-              No, you don&rsquo;t need their revenue, credit score, or cash flow.
-              Share your link. If they want to take a look, we&rsquo;ll learn
-              what&rsquo;s going on and see if Credit Banc can help. If their deal
-              funds, you get $500. Not a bad thank-you for knowing a person.
-            </motion.p>
-
-            <motion.div
-              variants={fadeUp}
-              className="mt-6 flex items-start gap-4 rounded-xl bg-primary/10 p-5 ring-1 ring-primary/20"
-            >
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-on-secondary-fixed">
-                <InfinityIcon className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-headline text-base font-bold text-on-secondary-fixed">
-                  There&rsquo;s no limit.
-                </p>
-                <p className="mt-1 text-sm leading-relaxed text-on-surface-variant">
-                  Know one business owner? Great. Know ten? Even better. Know
-                  half the town? Excellent. Share the link.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ---------- CTA band (emerald) ---------- */}
+      {/* ---------- Why we created it + CTA — one emerald band ---------- */}
       <section
-        className="relative overflow-hidden px-6 sm:px-8 py-20 sm:py-28"
+        className="relative overflow-hidden"
         style={{
           background:
             'linear-gradient(135deg, #10402c 0%, #1f6b4e 55%, #2ea878 100%)',
@@ -410,95 +231,150 @@ export default function AffiliateClub() {
       >
         <motion.div
           aria-hidden
-          className="absolute -top-40 -left-40 w-[32rem] h-[32rem] rounded-full bg-white/10 blur-3xl"
+          className="absolute -top-40 -left-40 w-[32rem] h-[32rem] rounded-full bg-white/10 blur-3xl pointer-events-none"
           animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
           transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <div className="relative max-w-3xl mx-auto text-center">
+
+        {/* Why — full-width split: photo panel left, copy right */}
+        <div className="relative grid lg:grid-cols-2 items-stretch">
+          <div className="relative overflow-hidden bg-[#ffaf26] lg:min-h-[34rem]">
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-[0.07] pointer-events-none"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(32,37,54,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(32,37,54,0.6) 1px, transparent 1px)',
+                backgroundSize: '56px 56px',
+              }}
+            />
+            {/* In flow on mobile so the panel takes the photo's height; pinned
+                on lg so the photo fills whatever the copy column dictates. */}
+            <div className="relative flex items-end justify-center pt-12 lg:absolute lg:inset-0 lg:pt-0">
+              <Image
+                src="/Why%20section.png"
+                alt="Two customers talking with a small business owner"
+                width={1000}
+                height={1000}
+                sizes="(max-width: 1024px) 85vw, 50vw"
+                className="w-[85%] max-w-[440px] h-auto lg:h-full lg:w-auto lg:max-w-[92%] object-contain object-bottom drop-shadow-[0_25px_35px_rgba(32,37,54,0.25)]"
+              />
+            </div>
+          </div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.25 }}
+            className="relative flex flex-col justify-center px-6 sm:px-10 lg:px-14 xl:px-20 py-16 sm:py-20 lg:py-24"
+          >
+            <motion.span
+              variants={fadeUp}
+              className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white ring-1 ring-white/20"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Why We Created the Club
+            </motion.span>
+
+            <motion.h2
+              variants={fadeUp}
+              className="mt-6 font-headline text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-white leading-[1.05]"
+            >
+              Small Business Owners Deserve Better.{' '}
+              <span className="text-primary">So We Built a Shortcut.</span>
+            </motion.h2>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 text-base sm:text-lg leading-relaxed text-white/85"
+            >
+              Why did we create a whole program around knowing a business owner?
+              Fair question. Simple answer.
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-4 text-base sm:text-lg leading-relaxed text-white/85"
+            >
+              American small business owners create jobs, support families, and
+              keep Main Street moving. Then, when they need some financial help,
+              they&rsquo;re handed confusing options, bad advice, and deals that
+              seem to work out beautifully for everyone except them.
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-5 font-headline text-xl sm:text-2xl font-bold tracking-tight text-primary"
+            >
+              Not on our watch, dammit.
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-5 text-base sm:text-lg leading-relaxed text-white/85"
+            >
+              The &ldquo;I Know Someone&rdquo; Club helps us reach more of them
+              through the people already in their corner. People like you.
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-4 text-base sm:text-lg leading-relaxed text-white/85"
+            >
+              And no, you don&rsquo;t need to understand business funding
+              (it&rsquo;s a boring industry anyway), inspect anyone&rsquo;s bank
+              account (as if they&rsquo;d let you), or interrogate your dentist
+              while their hands are in your mouth (enough said).
+            </motion.p>
+
+            <motion.p
+              variants={fadeUp}
+              className="mt-4 text-base sm:text-lg leading-relaxed text-white"
+            >
+              You make the intro. We make some calls. One more small business
+              owner gets help without getting worked over. We&rsquo;ll drink to
+              that.
+            </motion.p>
+          </motion.div>
+        </div>
+
+      </section>
+
+      {/* ---------- Closing CTA — white band ---------- */}
+      <section className="relative bg-white px-6 sm:px-8 lg:px-12 py-28 sm:py-36 lg:py-44">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="relative max-w-[100rem] mx-auto text-center"
+        >
+          {/* Sized per breakpoint to hold the headline on one line from lg up;
+              it wraps naturally below that, where one line won't fit. */}
           <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="font-headline text-4xl sm:text-5xl font-extrabold tracking-tighter text-white"
+            variants={fadeUp}
+            className="font-headline text-[2.25rem] sm:text-5xl lg:text-5xl lg:whitespace-nowrap xl:text-[3.75rem] 2xl:text-[5rem] font-extrabold tracking-tighter leading-[1.1] text-on-surface"
           >
             Your contact list finally has a job.
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.08 }}
-            className="mx-auto mt-5 max-w-xl text-lg sm:text-xl leading-relaxed text-white/85"
+            variants={fadeUp}
+            className="mx-auto mt-8 max-w-3xl text-xl sm:text-2xl xl:text-3xl leading-relaxed text-on-surface"
           >
             Grab your personal link, share it with the business owners you know,
             and let us handle the money side.
           </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.16 }}
-            className="mt-9"
-          >
+          <motion.div variants={fadeUp} className="mt-11">
             <a
               href={SITE.affiliateUrl}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-9 py-4 font-headline text-base font-bold text-on-secondary-fixed shadow-[0_18px_40px_-12px_rgba(0,0,0,0.4)] transition-transform hover:scale-[1.03]"
+              className="inline-flex items-center gap-2 rounded-full bg-on-secondary-fixed px-10 py-5 font-headline text-lg font-bold text-white shadow-[0_18px_40px_-14px_rgba(32,37,54,0.8)] transition-transform hover:scale-[1.03]"
             >
               Join the Club
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-6 w-6" />
             </a>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ---------- Fine print (cream) ---------- */}
-      <section className="relative px-6 sm:px-8 py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-on-secondary-fixed"
-          >
-            Fine Print, Because Apparently We Need Some
-          </motion.h2>
-
-          <motion.ol
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            className="mt-8 space-y-4"
-          >
-            {FINE_PRINT.map((item, i) => (
-              <motion.li
-                key={i}
-                variants={fadeUp}
-                className="flex items-start gap-4 rounded-xl bg-surface-container-lowest p-5 ring-1 ring-outline-variant/40"
-              >
-                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 font-headline text-sm font-bold text-on-primary-container">
-                  {i + 1}
-                </span>
-                <p className="text-sm sm:text-base leading-relaxed text-on-surface-variant">
-                  {item}
-                </p>
-              </motion.li>
-            ))}
-          </motion.ol>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6, ease: EASE }}
-            className="mt-8 flex items-center gap-2 text-sm text-on-surface-variant"
-          >
-            <Check className="h-4 w-4 shrink-0 text-primary" />
-            One link. As many eligible introductions as you can make.
-          </motion.p>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

@@ -202,11 +202,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Lead Software Engineer',
     photo: '/cbteam/Jorge.png',
   },
-  {
-    name: 'Jesus',
-    role: 'Tech & CRM Specialist',
-    photo: '/cbteam/Jesus.png',
-  },
+ 
   
 ];
 

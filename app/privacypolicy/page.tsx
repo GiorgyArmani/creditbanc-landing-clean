@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24 bg-surface text-on-surface">
+      <main className="bg-surface text-on-surface">
         {/* Hero */}
         <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 pt-12 sm:pt-16 md:pt-20 pb-12 sm:pb-16">
           <div

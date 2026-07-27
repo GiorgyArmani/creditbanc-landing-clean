@@ -21,7 +21,7 @@ export default function ApplyNowPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-24 bg-surface">
+      <main className="bg-surface">
         <Suspense fallback={<ApplyFallback />}>
           <ApplyNowFunnel />
         </Suspense>
