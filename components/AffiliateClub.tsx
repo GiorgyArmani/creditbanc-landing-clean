@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import Image, { getImageProps } from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import {
   Share2,
@@ -48,7 +48,48 @@ const STEPS = [
 
 
 
+/* Art-directed hero portrait: a near-square crop from lg up, a tighter
+   landscape crop below it. Built with getImageProps + <picture> so the
+   browser downloads exactly one of the two files. */
+function getHeroPortraitProps() {
+  const common = {
+    alt: 'Credit Banc member holding a $500 “I Know Someone” Club gift card',
+    priority: true,
+  } as const;
+
+  const desktopSizes = '(min-width: 1536px) 40rem, (min-width: 1280px) 32rem, 25rem';
+  const mobileSizes = '(min-width: 640px) 560px, 92vw';
+
+  const {
+    props: { srcSet: desktopSrcSet },
+  } = getImageProps({
+    ...common,
+    src: '/hero-affiliate-desktop.png',
+    width: 1650,
+    height: 1600,
+    sizes: desktopSizes,
+  });
+
+  const {
+    props: { srcSet: mobileSrcSet, ...rest },
+  } = getImageProps({
+    ...common,
+    src: '/hero-affiliate-mobile.png',
+    width: 800,
+    height: 600,
+    sizes: mobileSizes,
+  });
+
+  return {
+    desktop: { srcSet: desktopSrcSet, sizes: desktopSizes },
+    mobile: { srcSet: mobileSrcSet, sizes: mobileSizes },
+    imgProps: rest,
+  };
+}
+
 export default function AffiliateClub() {
+  const { desktop, mobile, imgProps } = getHeroPortraitProps();
+
   return (
     <div className="bg-surface">
       {/* ---------- Hero — full-bleed yellow ---------- */}
@@ -109,20 +150,33 @@ export default function AffiliateClub() {
                 aria-hidden
                 className="absolute bottom-0 left-1/2 -translate-x-1/2 h-72 w-72 sm:h-96 sm:w-96 lg:h-[34rem] lg:w-[34rem] rounded-full bg-white/30 blur-3xl pointer-events-none"
               />
-              <Image
-                src="/hero%20image.png"
-                alt="Credit Banc member holding an “I Know Someone” Club card"
-                width={600}
-                height={800}
-                priority
-                sizes="(max-width: 1024px) 92vw, 750px"
-                className="relative block w-full max-w-[460px] sm:max-w-[560px] h-auto lg:w-auto lg:max-w-none lg:h-[38rem] lg:-mt-28 xl:h-[46rem] xl:-mt-36 2xl:h-[62rem] 2xl:-mt-52 object-contain object-bottom drop-shadow-[0_25px_35px_rgba(32,37,54,0.28)]"
-              />
+              <picture className="relative block w-full lg:w-auto">
+                <source
+                  media="(min-width: 1024px)"
+                  srcSet={desktop.srcSet}
+                  sizes={desktop.sizes}
+                />
+                <source
+                  media="(max-width: 1023px)"
+                  srcSet={mobile.srcSet}
+                  sizes={mobile.sizes}
+                />
+                {/* eslint-disable-next-line jsx-a11y/alt-text -- alt comes from imgProps */}
+                <img
+                  {...imgProps}
+                  fetchPriority="high"
+                  className="relative block h-auto w-full max-w-[460px] aspect-[800/600] sm:max-w-[560px] lg:aspect-[1650/1600] lg:w-[25rem] lg:max-w-none lg:-mt-16 xl:w-[32rem] xl:-mt-20 2xl:w-[40rem] 2xl:-mt-28 object-contain object-bottom drop-shadow-[0_25px_35px_rgba(32,37,54,0.28)]"
+                />
+              </picture>
             </motion.div>
 
+            {/* Below lg the copy card sits in front of the photo (z-20) and
+                cancels the flex gap plus 4px (-mt-9 vs gap-8), so the figure —
+                whose crop runs flush to the image's bottom edge — reads as
+                rising out of the card instead of ending above it. */}
             <motion.div
               variants={fadeUp}
-              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:self-start -mt-20 sm:-mt-32 lg:mt-0 mb-8 lg:mb-16 max-w-2xl rounded-2xl border-l-4 border-on-secondary-fixed bg-white/85 backdrop-blur-sm p-5 sm:p-6 pt-7 sm:pt-8 lg:pt-6 shadow-[0_14px_34px_-18px_rgba(32,37,54,0.55)]"
+              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:self-start relative z-20 lg:z-auto -mt-9 lg:mt-0 mb-8 lg:mb-16 max-w-2xl rounded-2xl border-l-4 border-on-secondary-fixed bg-white/85 backdrop-blur-sm p-5 sm:p-6 pt-7 sm:pt-8 lg:pt-6 shadow-[0_14px_34px_-18px_rgba(32,37,54,0.55)]"
             >
                 <p className="text-base sm:text-lg leading-relaxed text-on-secondary-fixed/80">
                   A friend. A cousin. A neighbor. The guy who fixed your roof.
