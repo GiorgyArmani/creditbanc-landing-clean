@@ -13,6 +13,9 @@ const config: Config = {
         'cb-mint': '#55cf9e',
         'cb-gray': '#939598',
         'cb-white': '#ffffff',
+        // Partner accent — sampled from public/samson-logo.png. Used ONLY on the
+        // co-branded /samson-funding referral page, never on Credit Banc pages.
+        'samson-amber': '#fca702',
         'on-tertiary-fixed-variant': '#42465a',
         'on-surface-variant': '#3d4a42',
         'on-primary': '#ffffff',
