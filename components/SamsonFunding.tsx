@@ -253,16 +253,6 @@ export default function SamsonFunding() {
                 A fast yes is great. A smart yes is better.
               </p>
             </motion.blockquote>
-
-            <motion.p
-              variants={fadeUp}
-              className="mt-8 text-base sm:text-lg leading-relaxed text-on-surface-variant"
-            >
-              Tell us a little about your business and what you&rsquo;re trying
-              to accomplish. From there, a Credit Banc Advisor will pick up the
-              introduction from Samson, walk you through your options, and help
-              you figure out what actually fits.
-            </motion.p>
           </motion.div>
 
           {/* Right column — GHL referral form. It reads URL params (referral
