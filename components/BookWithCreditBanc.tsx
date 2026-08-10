@@ -3,8 +3,10 @@
 import { motion, type Variants } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
+import { useEffect, useState } from 'react';
 import { CalendarCheck, CheckCircle2 } from 'lucide-react';
 import { SITE } from '@/lib/site';
+import { readStickyContact, type StickyContact } from '@/lib/sticky-contact';
 
 // The GHL / LeadConnector calendar this funnel books into. Keep the iframe id
 // exactly as GHL generated it so its resize script (form_embed.js) keeps
@@ -28,14 +30,28 @@ const fadeUp: Variants = {
 export default function BookWithCreditBanc() {
   const params = useSearchParams();
 
+  // Contact stashed when the apply form was submitted (lib/sticky-contact.ts).
+  // Read after mount — sessionStorage doesn't exist during SSR — and hold the
+  // iframe until it's read so the calendar isn't fetched twice with different
+  // srcs. Only used where the redirect URL didn't carry the field itself.
+  const [stored, setStored] = useState<StickyContact | null>(null);
+  useEffect(() => {
+    setStored(readStickyContact());
+  }, []);
+
   // The GHL Master Form redirect can hand us the contact either as split
   // fields or a single name. Read both shapes so prefill works no matter how
   // the redirect URL is configured in GHL.
-  const rawFirst = params.get('firstName') || params.get('first_name') || '';
-  const rawLast = params.get('lastName') || params.get('last_name') || '';
+  const rawFirst =
+    params.get('firstName') ||
+    params.get('first_name') ||
+    stored?.firstName ||
+    '';
+  const rawLast =
+    params.get('lastName') || params.get('last_name') || stored?.lastName || '';
   const rawFull = params.get('full_name') || params.get('name') || '';
-  const email = params.get('email') || '';
-  const phone = params.get('phone') || '';
+  const email = params.get('email') || stored?.email || '';
+  const phone = params.get('phone') || stored?.phone || '';
 
   // Normalize to first/last. If only a full name came through, split on the
   // first space; if only split fields came through, join them.
@@ -139,19 +155,23 @@ export default function BookWithCreditBanc() {
           transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
           className="w-full overflow-hidden rounded-2xl"
         >
-          <iframe
-            key={bookingSrc}
-            src={bookingSrc}
-            id={IFRAME_ID}
-            title="Book with Credit Banc"
-            scrolling="no"
-            style={{
-              width: '100%',
-              minHeight: '700px',
-              border: 'none',
-              overflow: 'hidden',
-            }}
-          />
+          {stored === null ? (
+            <div aria-hidden style={{ width: '100%', minHeight: '700px' }} />
+          ) : (
+            <iframe
+              key={bookingSrc}
+              src={bookingSrc}
+              id={IFRAME_ID}
+              title="Book with Credit Banc"
+              scrolling="no"
+              style={{
+                width: '100%',
+                minHeight: '700px',
+                border: 'none',
+                overflow: 'hidden',
+              }}
+            />
+          )}
         </motion.div>
 
         <motion.p

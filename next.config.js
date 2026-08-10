@@ -11,6 +11,17 @@ const nextConfig = {
         destination: '/apply-now',
         permanent: true,
       },
+      // The GHL booking calendar's "thank you page" has been configured with
+      // both of these paths over time. Alias the short one onto the real
+      // confirmation page so either calendar setting lands the client on the
+      // confirmation instead of falling through to the catch-all (which sends
+      // unknown paths to the home page). Temporary so the mapping stays
+      // changeable if GHL's redirect URL is edited again.
+      {
+        source: '/appointment-confirmation',
+        destination: '/appointment-confirmation-received',
+        permanent: false,
+      },
     ];
   },
   images: {

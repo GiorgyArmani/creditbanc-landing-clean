@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import { readAttribution } from '@/lib/attribution';
+import { captureStickyContact } from '@/lib/sticky-contact';
 
 const FORM_ID = 'n4aCgud8X9ItLI36ZRch';
 const FORM_BASE = `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`;
@@ -63,6 +64,10 @@ export default function ApplyNowFunnel() {
   useEffect(() => {
     setStoredAttribution(readAttribution());
   }, []);
+  // Catch the contact the GHL form iframe broadcasts on submit so the booking
+  // calendar can prefill from it (lib/sticky-contact.ts). Attached on mount,
+  // well before anyone finishes the form.
+  useEffect(() => captureStickyContact(), []);
   const firstName = params.get('firstName') || '';
   const lastName = params.get('lastName') || '';
   const email = params.get('email') || '';

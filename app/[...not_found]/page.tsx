@@ -1,8 +1,13 @@
-import { permanentRedirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 // Catch-all for any URL that doesn't match a real page (old site links,
 // typos, dead bookmarks). Sends visitors to the landing page instead of a
 // 404, keeping query params (utm_source etc.) intact for marketing tracking.
+//
+// Deliberately a TEMPORARY redirect. A permanent one gets cached by browsers
+// and the CDN, so any funnel URL that briefly 404s here (e.g. a GHL redirect
+// pointing at a page we hadn't built yet) would keep bouncing to the home page
+// for that visitor even after the real page ships.
 export default async function NotFoundRedirect({
   searchParams,
 }: {
@@ -14,5 +19,5 @@ export default async function NotFoundRedirect({
     else if (Array.isArray(value)) value.forEach((v) => params.append(key, v));
   }
   const qs = params.toString();
-  permanentRedirect(qs ? `/?${qs}` : '/');
+  redirect(qs ? `/?${qs}` : '/');
 }
