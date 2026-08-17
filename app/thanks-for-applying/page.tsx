@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import Footer from '@/components/sections/Footer';
 import ThanksForApplying from '@/components/ThanksForApplying';
 import { FloatingSupport } from '@/components/floating-support';
@@ -12,11 +13,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// The disqualification reason arrives as a search param on GHL's redirect, and
+// the copy below reads it. Render per request so the server and the client
+// agree on which minimums the applicant missed.
+export const dynamic = 'force-dynamic';
+
 export default function ThanksForApplyingPage() {
   return (
     <>
       <main className="bg-surface">
-        <ThanksForApplying />
+        {/* Reads the disqualification reason off the GHL redirect's params. */}
+        <Suspense fallback={<div className="min-h-[60vh]" />}>
+          <ThanksForApplying />
+        </Suspense>
       </main>
       <Footer />
       <FloatingSupport />

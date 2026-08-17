@@ -8,11 +8,10 @@ import {
   CalendarCheck,
   CalendarClock,
   Check,
+  CheckCircle2,
   Mail,
-  PhoneCall,
-  FileText,
+  MessageSquare,
 } from 'lucide-react';
-import { SITE } from '@/lib/site';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -29,18 +28,18 @@ const fadeUp: Variants = {
 const STEPS = [
   {
     icon: Mail,
-    title: 'Check your email',
-    body: 'Your calendar invite and call link are already on the way. If it is not in the inbox, check spam or promotions.',
+    title: 'Check your inbox + texts',
+    body: 'We sent your appointment confirmation by email and text with the details. Don’t see the email? Check spam or promotions. Sometimes the internet likes to make things difficult for sport.',
   },
   {
-    icon: PhoneCall,
-    title: 'Answer when we ring',
-    body: `Your Advisor calls from ${SITE.phone}. Save it now so it does not land in the "unknown number, ignore it" pile.`,
+    icon: MessageSquare,
+    title: 'Your Advisor will text you too',
+    body: 'Your Advisor is going to reach out shortly to introduce themselves and let you know the number they’ll be calling from. Save it. That way, when the phone rings, you don’t send us straight to voicemail with every warranty scammer in America.',
   },
   {
-    icon: FileText,
-    title: 'Have your numbers handy',
-    body: 'Rough monthly revenue, time in business, and what you want the capital to do. Nothing formal, just honest.',
+    icon: CheckCircle2,
+    title: 'That’s pretty much it',
+    body: 'You already gave us the basics, so there’s no homework assignment waiting for you. Just show up ready to talk about what you’re trying to do, and we’ll take it from there.',
   },
 ];
 
@@ -153,8 +152,7 @@ export default function AppointmentConfirmation({
             className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
           >
             Your 15-minute call with a Credit Banc Advisor is on the calendar.
-            No pitch deck, no script, just an honest read on your numbers and
-            the capital that actually fits.
+            Now we get to talk about our favorite F word: funding.
           </motion.p>
 
           {startLabel && (
@@ -175,9 +173,9 @@ export default function AppointmentConfirmation({
       <section className="relative px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="relative max-w-2xl mx-auto -mt-16 sm:-mt-20">
           <div className="rounded-2xl bg-surface-container-lowest ring-1 ring-outline-variant/40 shadow-[0_24px_60px_-25px_rgba(0,3,33,0.25)] p-6 sm:p-9">
-            <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
-              Before we talk
-            </p>
+            <h2 className="font-headline text-xl sm:text-2xl font-extrabold tracking-tight text-on-secondary-fixed">
+              A couple quick things before we talk:
+            </h2>
 
             <ul className="mt-6 space-y-6">
               {STEPS.map((step) => {
@@ -188,9 +186,9 @@ export default function AppointmentConfirmation({
                       <Icon className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <h2 className="font-headline text-lg font-bold text-on-secondary-fixed">
+                      <h3 className="font-headline text-lg font-bold text-on-secondary-fixed">
                         {step.title}
-                      </h2>
+                      </h3>
                       <p className="mt-1 text-base leading-relaxed text-on-surface-variant">
                         {step.body}
                       </p>
@@ -208,15 +206,9 @@ export default function AppointmentConfirmation({
                 </span>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
-                Use the reschedule link in your confirmation email, or call an
-                Advisor at{' '}
-                <a
-                  href={SITE.phoneTel}
-                  className="font-semibold text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
-                >
-                  {SITE.phone}
-                </a>{' '}
-                and we&rsquo;ll move it by hand. Life happens, we get it.
+                Use the reschedule link in your confirmation email. Just give us
+                as much notice as you can so we can free up the spot for someone
+                else.
               </p>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { upsertContact, createAppointment, GhlError } from '@/lib/ghl';
+import { evaluateQualification } from '@/lib/qualification';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -106,6 +107,16 @@ export async function POST(req: Request) {
   if (payload.monthlyRevenue)
     qualTags.push(`revenue: ${payload.monthlyRevenue}`);
   if (payload.timeInBusiness) qualTags.push(`tib: ${payload.timeInBusiness}`);
+
+  // Under the minimums? Tag the reason so the nurture workflow picks them up
+  // (lib/qualification.ts). Same tags the /thanks-for-applying branch writes.
+  qualTags.push(
+    ...evaluateQualification({
+      fico: payload.fico,
+      monthlyRevenue: payload.monthlyRevenue,
+      timeInBusiness: payload.timeInBusiness,
+    }).tags
+  );
 
   try {
     const { contactId } = await upsertContact({
