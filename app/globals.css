@@ -54,6 +54,9 @@
     @apply bg-primary-container;
   }
 
+  /* Blanket kill-switch for decorative motion. NOTE: it is `!important` on the
+     universal selector, so anything that must keep animating has to opt back
+     out by name below -- see .gift-marquee-track. */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -84,4 +87,78 @@
     background-color: var(--color-deep-navy);
   }
 }
+
+
+/* ---------- Gift-card marquee (/affiliate) ----------
+   Each track holds two identical copies of the row, so translating it by
+   exactly -50% lands copy #2 where copy #1 started and the loop is seamless.
+   The spacing lives on each card's margin-right (not a flex `gap`), because a
+   flex gap adds one extra half-gap to the track width and makes -50% land
+   slightly off, which shows up as a hiccup on every lap. */
+.gift-marquee {
+  overflow: hidden;
+  /* Bleed room for the tiles' drop shadow and hover lift: `overflow: hidden`
+     clips at the padding box, so this padding IS the row gap. The wrapper
+     stacks the rows flush (gap-0) and lets these paddings space them. */
+  padding-block: 0.875rem;
+}
+
+.gift-marquee-track {
+  animation: gift-marquee-scroll var(--gift-marquee-duration, 45s) linear
+    infinite;
+  animation-direction: var(--gift-marquee-direction, normal);
+  animation-delay: var(--gift-marquee-delay, 0s);
+  will-change: transform;
+}
+
+/* Deliberately NOT gated on prefers-reduced-motion: a reader with Windows
+   "animation effects" off was getting two static, edge-sliced strips instead
+   of a carousel. Hover is the only way to park it -- which means there is no
+   pause affordance at all on touch or for keyboard users. That is a known,
+   accepted gap here (WCAG 2.2.2), not an oversight. */
+.gift-marquee:hover .gift-marquee-track {
+  animation-play-state: paused;
+}
+
+.gift-card {
+  position: relative;
+}
+
+/* Tiles lift toward the reader on hover, which is the only affordance telling
+   them the strip is worth stopping. Transform only, so it never reflows. */
+.gift-card > div {
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gift-marquee:hover .gift-card:hover {
+  z-index: 1;
+}
+
+.gift-marquee:hover .gift-card:hover > div {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow:
+    0 26px 48px -22px rgba(32, 37, 54, 0.6),
+    0 4px 10px -3px rgba(32, 37, 54, 0.2);
+}
+
+/* Win back the universal reduced-motion reset above. Named selector beats `*`
+   on specificity, so this holds regardless of source order. */
+@media (prefers-reduced-motion: reduce) {
+  .gift-marquee-track {
+    animation-duration: var(--gift-marquee-duration, 45s) !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+@keyframes gift-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 

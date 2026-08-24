@@ -64,7 +64,7 @@ const NAV_LINKS: NavLink[] = [
       { id: 'process', label: 'Our Process' },
       { id: 'spotlight', label: 'In the Spotlight' },
       // Own page, not an /about anchor — hence the explicit href.
-      // { id: 'affiliate', label: 'Want to earn $500?', href: '/affiliate' },
+      { id: 'affiliate', label: 'Want to earn $500?', href: '/affiliate' },
     ],
   },
   // Resources hub, which now folds in the blog. Keep the blog reachable at

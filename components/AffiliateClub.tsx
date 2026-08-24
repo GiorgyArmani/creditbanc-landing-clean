@@ -8,6 +8,7 @@ import {
   Gift,
   ArrowRight,
   UserPlus,
+  Rocket,
 } from 'lucide-react';
 import { SITE } from '@/lib/site';
 
@@ -47,6 +48,97 @@ const STEPS = [
 ];
 
 
+
+/* The 18 cards in /public/giftcards, split into two marquee rows that travel
+   in opposite directions. Files are numbered, so the brand name lives here. */
+const GIFT_CARD_ROWS = [
+  [
+    { src: '/giftcards/2.jpg', brand: 'Amazon' },
+    { src: '/giftcards/5.jpg', brand: 'Target' },
+    { src: '/giftcards/18.jpg', brand: 'Starbucks' },
+    { src: '/giftcards/11.jpg', brand: 'Airbnb' },
+    { src: '/giftcards/15.jpg', brand: 'DoorDash' },
+    { src: '/giftcards/9.jpg', brand: 'Apple' },
+    { src: '/giftcards/3.jpg', brand: 'Walmart' },
+    { src: '/giftcards/14.jpg', brand: 'Netflix' },
+    { src: '/giftcards/8.jpg', brand: 'Uber' },
+  ],
+  [
+    { src: '/giftcards/17.jpg', brand: 'Visa Reward' },
+    { src: '/giftcards/12.jpg', brand: 'Disney' },
+    { src: '/giftcards/16.jpg', brand: 'Sephora' },
+    { src: '/giftcards/4.jpg', brand: 'Grubhub' },
+    { src: '/giftcards/10.jpg', brand: 'IKEA' },
+    { src: '/giftcards/7.jpg', brand: "Macy's" },
+    { src: '/giftcards/13.jpg', brand: 'CVS Pharmacy' },
+    { src: '/giftcards/6.jpg', brand: 'Hotels.com' },
+    { src: '/giftcards/1.jpg', brand: 'Google Play' },
+  ],
+] as const;
+
+/* Rewards are fulfilled on Giftronaut's platform. Set to null to fall back to
+   the Rocket + type lockup if the artwork is ever pulled. The wordmark is dark
+   glyphs on transparency, so it needs the light badge behind it. */
+const GIFTRONAUT_LOGO: string | null = '/giftcards/giftronaut-logo.webp';
+
+function GiftCardMarquee({
+  row,
+  duration,
+  delay = '0s',
+  reverse = false,
+}: {
+  row: readonly { src: string; brand: string }[];
+  duration: string;
+  /* Negative delay starts the row mid-loop, so the two rows don't line their
+     card edges up like a grid. */
+  delay?: string;
+  reverse?: boolean;
+}) {
+  return (
+    <div className="gift-marquee relative w-full">
+      <ul
+        className="gift-marquee-track flex w-max items-center"
+        style={
+          {
+            '--gift-marquee-duration': duration,
+            '--gift-marquee-delay': delay,
+            '--gift-marquee-direction': reverse ? 'reverse' : 'normal',
+          } as React.CSSProperties
+        }
+      >
+        {[0, 1].map((copy) =>
+          row.map((card) => (
+            <li
+              key={`${copy}-${card.src}`}
+              /* Spacing is margin, not gap. See the note in globals.css. */
+              className="gift-card mr-5 shrink-0 sm:mr-6"
+              aria-hidden={copy === 1 || undefined}
+            >
+              <div className="relative w-[184px] overflow-hidden rounded-2xl shadow-[0_18px_36px_-20px_rgba(32,37,54,0.55),0_2px_6px_-2px_rgba(32,37,54,0.18)] ring-1 ring-on-secondary-fixed/10 sm:w-[216px] lg:w-[248px]">
+                <Image
+                  src={card.src}
+                  alt={copy === 1 ? '' : `${card.brand} gift card`}
+                  /* Sized to the widest rendered card (248px) rather than the
+                     source's 640x400, so next/image emits a short 1x/2x srcset
+                     instead of the full breakpoint ladder for all 36 tiles. */
+                  width={248}
+                  height={155}
+                  className="block h-auto w-full object-cover"
+                />
+                {/* Glass sheen: sells the tiles as physical cards instead of
+                    flat logo crops sitting on the cream. */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/25 via-transparent to-on-secondary-fixed/10"
+                />
+              </div>
+            </li>
+          )),
+        )}
+      </ul>
+    </div>
+  );
+}
 
 /* Art-directed hero portrait: a near-square crop from lg up, a tighter
    landscape crop below it. Built with getImageProps + <picture> so the
@@ -92,9 +184,13 @@ export default function AffiliateClub() {
 
   return (
     <div className="bg-surface">
-      {/* ---------- Hero — full-bleed yellow ---------- */}
+      {/* ---------- Hero — full-bleed yellow, owns the first screen -------- */}
+      {/* 84px is Navbar's NAV_HEIGHT, the height of the spacer it renders under
+          its fixed bar. Subtracting it makes the orange run from the bar's
+          bottom edge to the fold with no cream showing through. `svh` not `vh`
+          so the mobile URL bar collapsing does not overshoot. */}
       <section
-        className="relative overflow-hidden"
+        className="relative flex min-h-[calc(100svh-84px)] items-center overflow-hidden"
         style={{
           background:
             'linear-gradient(135deg, #ffc257 0%, #ffaf26 48%, #f79f12 100%)',
@@ -118,12 +214,15 @@ export default function AffiliateClub() {
           className="absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-white/25 blur-3xl pointer-events-none"
         />
 
-        <div className="relative max-w-[100rem] mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="relative w-full max-w-[100rem] mx-auto px-6 sm:px-8 lg:px-12">
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="visible"
-            className="flex flex-col gap-8 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-8 lg:items-start pt-14 sm:pt-20 lg:pt-24"
+            /* The section centers this block, so the old top padding is gone --
+               it would now push the composition off-centre rather than clear
+               the navbar. */
+            className="flex flex-col gap-8 py-10 lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-8 lg:items-start lg:py-12"
           >
             <motion.h1
               variants={fadeUp}
@@ -176,7 +275,7 @@ export default function AffiliateClub() {
                 rising out of the card instead of ending above it. */}
             <motion.div
               variants={fadeUp}
-              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:self-start relative z-20 lg:z-auto -mt-9 lg:mt-0 mb-8 lg:mb-16 max-w-2xl rounded-2xl border-l-4 border-on-secondary-fixed bg-white/85 backdrop-blur-sm p-5 sm:p-6 pt-7 sm:pt-8 lg:pt-6 shadow-[0_14px_34px_-18px_rgba(32,37,54,0.55)]"
+              className="order-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:self-start relative z-20 lg:z-auto -mt-9 lg:mt-0 mb-8 lg:mb-0 max-w-2xl rounded-2xl border-l-4 border-on-secondary-fixed bg-white/85 backdrop-blur-sm p-5 sm:p-6 pt-7 sm:pt-8 lg:pt-6 shadow-[0_14px_34px_-18px_rgba(32,37,54,0.55)]"
             >
                 <p className="text-base sm:text-lg leading-relaxed text-on-secondary-fixed/80">
                   A friend. A cousin. A neighbor. The guy who fixed your roof.
@@ -395,8 +494,110 @@ export default function AffiliateClub() {
 
       </section>
 
-      {/* ---------- Closing CTA — white band ---------- */}
-      <section className="relative bg-white px-6 sm:px-8 lg:px-12 py-28 sm:py-36 lg:py-44">
+
+      {/* ---------- The reward — gift-card marquee, same cream band as
+           "How It Works" below so the two read as one section ---------- */}
+      <section
+        id="rewards"
+        className="relative overflow-hidden bg-surface pt-16 pb-12 sm:pt-24 sm:pb-16"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="relative mx-auto mb-9 max-w-3xl px-6 text-center sm:px-8"
+        >
+          <span className="font-headline text-xs font-black tracking-[0.2em] text-on-primary-fixed-variant">
+            THE REWARD
+          </span>
+          <h2 className="mt-3 font-headline text-3xl font-extrabold tracking-tight text-on-secondary-fixed sm:text-4xl xl:text-5xl">
+            $500. Your Card. Your Call.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-on-secondary-fixed/75 sm:text-lg">
+            Amazon. Target. Starbucks. Airbnb. Or a Visa reward card you can
+            spend anywhere, because nobody tells you how to enjoy your own
+            money. Make one introduction that turns into funding, then pick
+            whichever card you want.
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <span className="text-sm text-on-secondary-fixed/60">
+              Rewards powered by
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_10px_24px_-16px_rgba(32,37,54,0.6)] ring-1 ring-on-secondary-fixed/10">
+              {GIFTRONAUT_LOGO ? (
+                <Image
+                  src={GIFTRONAUT_LOGO}
+                  alt="Giftronaut"
+                  width={3132}
+                  height={332}
+                  /* `unoptimized` on purpose. The wordmark is dark glyphs on
+                     transparency, and next/image's JPEG fallback (served to any
+                     client that does not advertise webp/avif) flattens that alpha
+                     to BLACK -- a black slab on the white badge. The source is a
+                     13KB webp, smaller than the optimizer's own output, so there
+                     is nothing to gain by routing it through /_next/image. */
+                  unoptimized
+                  className="h-5 w-auto"
+                />
+              ) : (
+                <>
+                  <Rocket className="h-5 w-5 text-on-primary-fixed-variant" />
+                  <span className="font-headline text-base font-extrabold tracking-tight text-on-secondary-fixed">
+                    Giftronaut
+                  </span>
+                </>
+              )}
+            </span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="relative"
+          role="region"
+          aria-label="Gift cards you can choose from"
+        >
+          {/* Stage: a soft light shelf under the rows so the cards read as one
+              carousel band instead of two loose strips floating on the cream. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-1/2 h-[118%] -translate-y-1/2 bg-[radial-gradient(60%_100%_at_50%_50%,rgba(255,255,255,0.9),rgba(255,255,255,0)_72%)]"
+          />
+          <div className="relative flex flex-col py-2">
+            <GiftCardMarquee row={GIFT_CARD_ROWS[0]} duration="52s" />
+            <GiftCardMarquee
+              row={GIFT_CARD_ROWS[1]}
+              duration="64s"
+              delay="-19s"
+              reverse
+            />
+          </div>
+
+          {/* Edge fades. Painted, not masked: a mask-image on the track did not
+              survive the CSS pipeline, so the cards were sliced flat at the
+              viewport edge. Tied to `surface` (#faf9f6), the band behind them. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
+          />
+        </motion.div>
+      </section>
+
+      {/* ---------- Closing CTA — ramps cream into white ---------- */}
+      {/* Starts on `surface`, the exact cream the reward band above ends on, so
+          the seam between the two sections is invisible; it reaches white by
+          mid-section. Replaces the flat `bg-white`, which read as one more
+          horizontal stripe in a page that already has too many. */}
+      <section className="relative bg-gradient-to-b from-surface via-white to-white px-6 sm:px-8 lg:px-12 py-28 sm:py-36 lg:py-44">
         <motion.div
           variants={stagger}
           initial="hidden"
