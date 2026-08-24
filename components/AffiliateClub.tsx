@@ -308,6 +308,104 @@ export default function AffiliateClub() {
         </div>
       </section>
 
+      
+      {/* ---------- The reward — gift-card marquee, same cream band as
+           "How It Works" below so the two read as one section ---------- */}
+      <section
+        id="rewards"
+        className="relative overflow-hidden bg-surface pt-16 pb-12 sm:pt-24 sm:pb-16"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: EASE }}
+          className="relative mx-auto mb-9 max-w-3xl px-6 text-center sm:px-8"
+        >
+          <span className="font-headline text-xs font-black tracking-[0.2em] text-on-primary-fixed-variant">
+            THE REWARD
+          </span>
+          <h2 className="mt-3 font-headline text-3xl font-extrabold tracking-tight text-on-secondary-fixed sm:text-4xl xl:text-5xl">
+            $500. Your Card. Your Call.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-on-secondary-fixed/75 sm:text-lg">
+            Amazon. Target. Starbucks. Airbnb. Or a Visa reward card you can
+            spend anywhere, because nobody tells you how to enjoy your own
+            money. Make one introduction that turns into funding, then pick
+            whichever card you want.
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <span className="text-sm text-on-secondary-fixed/60">
+              Rewards powered by
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_10px_24px_-16px_rgba(32,37,54,0.6)] ring-1 ring-on-secondary-fixed/10">
+              {GIFTRONAUT_LOGO ? (
+                <Image
+                  src={GIFTRONAUT_LOGO}
+                  alt="Giftronaut"
+                  width={3132}
+                  height={332}
+                  /* `unoptimized` on purpose. The wordmark is dark glyphs on
+                     transparency, and next/image's JPEG fallback (served to any
+                     client that does not advertise webp/avif) flattens that alpha
+                     to BLACK -- a black slab on the white badge. The source is a
+                     13KB webp, smaller than the optimizer's own output, so there
+                     is nothing to gain by routing it through /_next/image. */
+                  unoptimized
+                  className="h-5 w-auto"
+                />
+              ) : (
+                <>
+                  <Rocket className="h-5 w-5 text-on-primary-fixed-variant" />
+                  <span className="font-headline text-base font-extrabold tracking-tight text-on-secondary-fixed">
+                    Giftronaut
+                  </span>
+                </>
+              )}
+            </span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="relative"
+          role="region"
+          aria-label="Gift cards you can choose from"
+        >
+          {/* Stage: a soft light shelf under the rows so the cards read as one
+              carousel band instead of two loose strips floating on the cream. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-1/2 h-[118%] -translate-y-1/2 bg-[radial-gradient(60%_100%_at_50%_50%,rgba(255,255,255,0.9),rgba(255,255,255,0)_72%)]"
+          />
+          <div className="relative flex flex-col py-2">
+            <GiftCardMarquee row={GIFT_CARD_ROWS[0]} duration="52s" />
+            <GiftCardMarquee
+              row={GIFT_CARD_ROWS[1]}
+              duration="64s"
+              delay="-19s"
+              reverse
+            />
+          </div>
+
+          {/* Edge fades. Painted, not masked: a mask-image on the track did not
+              survive the CSS pipeline, so the cards were sliced flat at the
+              viewport edge. Tied to `surface` (#faf9f6), the band behind them. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
+          />
+        </motion.div>
+      </section>
+
       {/* ---------- How it works — light band, emerald cards ---------- */}
       <section className="relative overflow-hidden bg-surface px-6 sm:px-8 lg:px-12 py-16 sm:py-24">
         <div
@@ -495,102 +593,6 @@ export default function AffiliateClub() {
       </section>
 
 
-      {/* ---------- The reward — gift-card marquee, same cream band as
-           "How It Works" below so the two read as one section ---------- */}
-      <section
-        id="rewards"
-        className="relative overflow-hidden bg-surface pt-16 pb-12 sm:pt-24 sm:pb-16"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="relative mx-auto mb-9 max-w-3xl px-6 text-center sm:px-8"
-        >
-          <span className="font-headline text-xs font-black tracking-[0.2em] text-on-primary-fixed-variant">
-            THE REWARD
-          </span>
-          <h2 className="mt-3 font-headline text-3xl font-extrabold tracking-tight text-on-secondary-fixed sm:text-4xl xl:text-5xl">
-            $500. Your Card. Your Call.
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-on-secondary-fixed/75 sm:text-lg">
-            Amazon. Target. Starbucks. Airbnb. Or a Visa reward card you can
-            spend anywhere, because nobody tells you how to enjoy your own
-            money. Make one introduction that turns into funding, then pick
-            whichever card you want.
-          </p>
-
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            <span className="text-sm text-on-secondary-fixed/60">
-              Rewards powered by
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-[0_10px_24px_-16px_rgba(32,37,54,0.6)] ring-1 ring-on-secondary-fixed/10">
-              {GIFTRONAUT_LOGO ? (
-                <Image
-                  src={GIFTRONAUT_LOGO}
-                  alt="Giftronaut"
-                  width={3132}
-                  height={332}
-                  /* `unoptimized` on purpose. The wordmark is dark glyphs on
-                     transparency, and next/image's JPEG fallback (served to any
-                     client that does not advertise webp/avif) flattens that alpha
-                     to BLACK -- a black slab on the white badge. The source is a
-                     13KB webp, smaller than the optimizer's own output, so there
-                     is nothing to gain by routing it through /_next/image. */
-                  unoptimized
-                  className="h-5 w-auto"
-                />
-              ) : (
-                <>
-                  <Rocket className="h-5 w-5 text-on-primary-fixed-variant" />
-                  <span className="font-headline text-base font-extrabold tracking-tight text-on-secondary-fixed">
-                    Giftronaut
-                  </span>
-                </>
-              )}
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          className="relative"
-          role="region"
-          aria-label="Gift cards you can choose from"
-        >
-          {/* Stage: a soft light shelf under the rows so the cards read as one
-              carousel band instead of two loose strips floating on the cream. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-1/2 h-[118%] -translate-y-1/2 bg-[radial-gradient(60%_100%_at_50%_50%,rgba(255,255,255,0.9),rgba(255,255,255,0)_72%)]"
-          />
-          <div className="relative flex flex-col py-2">
-            <GiftCardMarquee row={GIFT_CARD_ROWS[0]} duration="52s" />
-            <GiftCardMarquee
-              row={GIFT_CARD_ROWS[1]}
-              duration="64s"
-              delay="-19s"
-              reverse
-            />
-          </div>
-
-          {/* Edge fades. Painted, not masked: a mask-image on the track did not
-              survive the CSS pipeline, so the cards were sliced flat at the
-              viewport edge. Tied to `surface` (#faf9f6), the band behind them. */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-surface via-surface/85 to-transparent sm:w-28 lg:w-40"
-          />
-        </motion.div>
-      </section>
 
       {/* ---------- Closing CTA — ramps cream into white ---------- */}
       {/* Starts on `surface`, the exact cream the reward band above ends on, so
