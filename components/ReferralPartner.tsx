@@ -83,11 +83,26 @@ export default function ReferralPartner() {
           }}
         />
 
+        {/* Logo-only header. No nav on referral pages on purpose — the whole
+            job of this page is the form, so we don't hand visitors an exit. */}
+        <header className="relative max-w-6xl mx-auto flex items-center justify-center sm:justify-start py-2 sm:py-3">
+          <Image
+            src="/cb%20logo%20white.svg"
+            alt="Credit Banc — Credit & capital to grow"
+            width={400}
+            height={100}
+            priority
+            unoptimized
+            className="h-10 sm:h-12"
+            style={{ width: 'auto' }}
+          />
+        </header>
+
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="visible"
-          className="relative max-w-6xl mx-auto pt-8 sm:pt-12 grid lg:grid-cols-[minmax(0,420px)_1fr] gap-6 lg:gap-14 items-center"
+          className="relative max-w-6xl mx-auto pt-6 sm:pt-10 grid lg:grid-cols-[minmax(0,420px)_1fr] gap-6 lg:gap-14 items-center"
         >
           {/* Image — left */}
           <motion.div
@@ -120,8 +135,15 @@ export default function ReferralPartner() {
               variants={fadeUp}
               className="mx-auto lg:mx-0 mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/80"
             >
-              Someone you trust knows Credit Banc and thought we were worth the
-              introduction. (Honestly, we&rsquo;re flattered.)
+              {/* Renders the partner's name when ?referral_partner= is present,
+                  and falls back to "Someone you trust" when it isn't. Its own
+                  Suspense boundary so useSearchParams() doesn't push the rest of
+                  the hero copy behind a loading state. */}
+              <Suspense fallback={<>Someone you trust</>}>
+                <ReferrerName />
+              </Suspense>{' '}
+              knows Credit Banc and thought we were worth the introduction.
+              (Honestly, we&rsquo;re flattered.)
             </motion.p>
             <motion.p
               variants={fadeUp}
@@ -291,6 +313,37 @@ export default function ReferralPartner() {
       />
     </div>
   );
+}
+
+// The referring partner's name, pulled from the same ?referral_partner= slug the
+// GHL form uses for attribution (e.g. ?referral_partner=ali_ghamlouch renders
+// "Ali Ghamlouch"). The param is visitor-controlled, so anything that doesn't
+// look like a real name falls back to the generic line rather than printing
+// junk into the hero.
+const NAME_PATTERN = /^[a-z][a-z .'&-]*$/i;
+const MAX_NAME_LENGTH = 40;
+
+function formatPartnerName(raw: string): string | null {
+  const spaced = raw.replace(/[_+]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!spaced || spaced.length > MAX_NAME_LENGTH) return null;
+  if (!NAME_PATTERN.test(spaced)) return null;
+
+  // Title-case the slug, but leave words the partner already capitalized alone
+  // so "McDonald" and "LLC" survive intact.
+  return spaced
+    .split(' ')
+    .map((word) =>
+      /[A-Z]/.test(word) ? word : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(' ');
+}
+
+function ReferrerName() {
+  const params = useSearchParams();
+  const name = formatPartnerName(params.get('referral_partner') ?? '');
+
+  if (!name) return <>Someone you trust</>;
+  return <span className="font-semibold text-white">{name}</span>;
 }
 
 // Isolated so its useSearchParams() only pushes the form (not the whole page)

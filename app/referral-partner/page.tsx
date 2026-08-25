@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
 import ReferralPartner from '@/components/ReferralPartner';
 
@@ -24,7 +23,6 @@ export const metadata: Metadata = {
 export default function ReferralPartnerPage() {
   return (
     <>
-      <Navbar />
       <main className="bg-surface">
         <Suspense fallback={<ReferralFallback />}>
           <ReferralPartner />
