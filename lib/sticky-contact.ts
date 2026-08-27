@@ -72,10 +72,18 @@ function parsePayload(raw: string): StickyContact | null {
 }
 
 /**
- * Listen for the GHL form iframe's contact broadcast and stash it.
- * Returns a cleanup function for the caller's effect.
+ * Subscribe to the GHL form iframe's contact broadcast, which it sends to the
+ * parent page the moment someone submits. Returns a cleanup function for the
+ * caller's effect.
+ *
+ * This is the one place the origin check and payload parsing live — anything
+ * that wants to react to a submit should come through here rather than adding
+ * its own `message` listener. An unchecked listener would let any embed on the
+ * page forge a contact.
  */
-export function captureStickyContact(): () => void {
+export function onStickyContact(
+  callback: (contact: StickyContact) => void
+): () => void {
   if (typeof window === 'undefined') return () => {};
 
   const onMessage = (event: MessageEvent) => {
@@ -85,17 +93,26 @@ export function captureStickyContact(): () => void {
     if (typeof data[2] !== 'string') return;
 
     const contact = parsePayload(data[2]);
-    if (!contact) return;
+    if (contact) callback(contact);
+  };
+
+  window.addEventListener('message', onMessage);
+  return () => window.removeEventListener('message', onMessage);
+}
+
+/**
+ * Listen for the GHL form iframe's contact broadcast and stash it.
+ * Returns a cleanup function for the caller's effect.
+ */
+export function captureStickyContact(): () => void {
+  return onStickyContact((contact) => {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(contact));
     } catch {
       // sessionStorage unavailable (strict privacy modes) — the calendar just
       // falls back to whatever the redirect URL carries.
     }
-  };
-
-  window.addEventListener('message', onMessage);
-  return () => window.removeEventListener('message', onMessage);
+  });
 }
 
 export function readStickyContact(): StickyContact {
