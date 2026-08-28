@@ -6,7 +6,7 @@
 //
 // TESTING MODEL — three independent axes, each its own URL param:
 //
-//   ?v=a|b|c|d|e   the cell: headline, subheadline, and its video
+//   ?v=a|b         the cell: headline, subheadline, and its video
 //   ?vid=1|2       override the variant's video (for isolating that axis)
 //   ?cta=1|2|3     the button label
 //
@@ -18,7 +18,7 @@
 // video on its own. When you want that attribution, pin the video with ?vid=
 // and vary only ?v=. The CTA label stays a separate axis for the same reason.
 
-export type VariantKey = 'a' | 'b' | 'c' | 'd' | 'e';
+export type VariantKey = 'a' | 'b';
 export type VideoKey = '1' | '2';
 export type CtaKey = '1' | '2' | '3';
 
@@ -26,7 +26,6 @@ export interface FunnelVariant {
   key: VariantKey;
   /** Internal name — this is the value that lands in GHL as `page_variant`. */
   name: string;
-  eyebrow: string;
   /** Headline splits so the closing phrase can carry the mint marker sweep. */
   headline: string;
   headlineAccent: string;
@@ -39,7 +38,6 @@ export const FUNNEL_VARIANTS: Record<VariantKey, FunnelVariant> = {
   a: {
     key: 'a',
     name: 'control-still-making',
-    eyebrow: 'For owners with an active merchant cash advance',
     headline: 'Still making daily or weekly',
     headlineAccent: 'MCA payments?',
     subheadline:
@@ -49,41 +47,10 @@ export const FUNNEL_VARIANTS: Record<VariantKey, FunnelVariant> = {
   b: {
     key: 'b',
     name: 'getting-old-yet',
-    eyebrow: 'For owners with an active merchant cash advance',
     headline: 'Daily or weekly payments',
     headlineAccent: 'getting old yet?',
     subheadline:
       'See if you may qualify to replace high-frequency MCA payments with a more manageable structure.',
-    video: '2',
-  },
-  c: {
-    key: 'c',
-    name: 'one-monthly-payment',
-    eyebrow: 'For owners with an active merchant cash advance',
-    headline: 'What if those daily payments became',
-    headlineAccent: 'one monthly payment?',
-    subheadline:
-      'See what options may be available to restructure existing MCA debt and give your business more breathing room.',
-    video: '1',
-  },
-  d: {
-    key: 'd',
-    name: 'before-another-mca',
-    eyebrow: 'Watch this before you sign anything',
-    headline: 'Before you take another MCA,',
-    headlineAccent: 'watch this.',
-    subheadline:
-      'If you already have daily or weekly payments, there may be a better way to handle what you have before adding more.',
-    video: '1',
-  },
-  e: {
-    key: 'e',
-    name: 'capital-not-another-daily',
-    eyebrow: 'For owners who need capital and already carry an advance',
-    headline: 'Need capital, but',
-    headlineAccent: 'not another daily payment?',
-    subheadline:
-      'Before adding another MCA, see what other financing options may make sense for your business.',
     video: '2',
   },
 };
@@ -103,15 +70,16 @@ export const DEFAULT_CTA: CtaKey = '1';
 // ---------------------------------------------------------------------------
 // Video
 // ---------------------------------------------------------------------------
-// The two cuts are DIFFERENT SHAPES, so each carries its own orientation and
-// the hero lays itself out around whichever one the variant ships:
+// Each cut carries its own orientation and the hero lays itself out around
+// whichever one the variant ships:
 //
-//   '1' is a 9:16 vertical Short  → portrait frame beside the copy on desktop
-//   '2' is a 16:9 horizontal cut  → full-width frame under the copy
+//   'horizontal' → 16:9 frame, full width under the copy
+//   'vertical'   → 9:16 portrait frame beside the copy on desktop
 //
-// This matters beyond taste. Video 2's thumbnail is a designed 16:9 composition
-// whose text runs edge to edge; cropping it into a portrait frame would cut off
-// both ends of the headline and throw away the hook.
+// Both cuts are currently 9:16 Shorts, so both cells render portrait. Keep the
+// field rather than hardcoding it: a 16:9 thumbnail is a designed composition
+// whose text runs edge to edge, and cropping one into a portrait frame would
+// cut off both ends of the headline and throw away the hook.
 //
 // Unlisted YouTube works fine here. "Unlisted" only means YouTube won't
 // surface the video in search or on the channel page — anyone with the ID can
@@ -120,7 +88,9 @@ export const DEFAULT_CTA: CtaKey = '1';
 // youtube.com/shorts link.
 //
 // `duration` is the chip printed on the poster frame, so it is a promise to
-// the viewer — leave it undefined rather than guess, and the chip is omitted.
+// the viewer. Both cells intentionally ship without one: on cold SMS traffic a
+// stated runtime is a reason to not press play. Leave it undefined and the chip
+// is omitted. If you ever set it, set the real number, never a guess.
 export const FUNNEL_VIDEOS: Record<
   VideoKey,
   {
@@ -132,18 +102,16 @@ export const FUNNEL_VIDEOS: Record<
   }
 > = {
   '1': {
+    youtubeId: 'gXpnjW-AHcs',
+    name: 'short-debt-cycle',
+    title: "Why you're stuck in a debt cycle",
+    orientation: 'vertical',
+  },
+  '2': {
     youtubeId: '9ra1ywW-QfE',
     name: 'short-before-another-mca',
     title: 'Before you take another MCA, watch this!',
     orientation: 'vertical',
-    duration: '60 sec',
-  },
-  // TODO — confirm the runtime and set `duration`, or leave it off.
-  '2': {
-    youtubeId: 'z_oLi7h7bQo',
-    name: 'stop-stacking-debt',
-    title: 'Before You Take Another MCA… Watch This',
-    orientation: 'horizontal',
   },
 };
 
@@ -192,12 +160,12 @@ function first(raw: string | string[] | undefined): string {
   return (Array.isArray(raw) ? raw[0] : raw)?.trim().toLowerCase() ?? '';
 }
 
-// Accepts a|b|c|d|e and 1|2|3|4|5, so links can read either way.
+// Accepts a|b and 1|2, so links can read either way.
 export function resolveVariant(
   raw: string | string[] | undefined
 ): FunnelVariant {
   const value = first(raw);
-  const byIndex = ['a', 'b', 'c', 'd', 'e'][Number(value) - 1];
+  const byIndex = ['a', 'b'][Number(value) - 1];
   const key = (value in FUNNEL_VARIANTS ? value : byIndex) as VariantKey;
   return FUNNEL_VARIANTS[key] ?? FUNNEL_VARIANTS[DEFAULT_VARIANT];
 }

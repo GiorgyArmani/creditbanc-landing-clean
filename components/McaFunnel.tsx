@@ -67,7 +67,7 @@ const STEPS = [
   {
     icon: CalendarDays,
     title: 'Answer a few questions',
-    body: 'Revenue, time in business, and what you are paying now. About 60 seconds.',
+    body: 'Revenue, time in business, and what you are paying now. Nothing you need to dig for.',
   },
   {
     icon: Phone,
@@ -96,7 +96,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'How fast does this move?',
-    a: 'The form takes about a minute and an advisor typically reaches out the same business day. Timelines after that depend on the program and the documentation involved.',
+    a: 'The form is short and an advisor typically reaches out the same business day. Timelines after that depend on the program and the documentation involved.',
   },
   {
     q: 'What does it cost to find out?',
@@ -184,22 +184,13 @@ export default function McaFunnel({
                   : ''
               }
             >
-              <motion.p
-                variants={fadeUp}
-                className={`inline-flex items-center gap-2 rounded-full border border-outline-variant/50 bg-surface-container-lowest px-4 py-1.5 font-label text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant ${
-                  isPortrait ? '' : 'mx-auto'
-                }`}
-              >
-                <span
-                  aria-hidden
-                  className="h-1.5 w-1.5 rounded-full bg-primary"
-                />
-                {variant.eyebrow}
-              </motion.p>
-
+              {/* Headline leads the page. leading-[1.12] rather than a
+                  tighter figure because the accent's marker bar is a full
+                  line-box tall: under 1.0 the bar collides with the
+                  descenders on the line above it. */}
               <motion.h1
                 variants={fadeUp}
-                className="mt-6 font-headline text-[2.5rem] font-extrabold leading-[0.98] tracking-tighter text-on-secondary-fixed sm:text-5xl xl:text-6xl"
+                className="font-headline text-[2.5rem] font-extrabold leading-[1.12] tracking-tighter text-on-secondary-fixed sm:text-5xl xl:text-6xl"
               >
                 {variant.headline}{' '}
                 {/* Marker sweep. `isolation: isolate` gives the bar its own
@@ -309,7 +300,7 @@ export default function McaFunnel({
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Check className="h-4 w-4 text-primary" aria-hidden />
-                  Takes about a minute
+                  No obligation
                 </span>
               </motion.p>
             </div>
@@ -452,7 +443,7 @@ export default function McaFunnel({
               variants={fadeUp}
               className="font-headline text-3xl font-extrabold tracking-tighter text-white sm:text-5xl"
             >
-              Find out in about a minute.
+              Find out where you stand.
             </motion.h2>
             <motion.p
               variants={fadeUp}
@@ -738,8 +729,8 @@ function PaymentRhythm({ ctaLabel }: { ctaLabel: string }) {
         >
           Same obligation, different schedule. Whether that restructure is
           available to you depends on your revenue, your time in business, and
-          what you&rsquo;re already carrying. That&rsquo;s a 60-second question,
-          not a 60-minute one.
+          what you&rsquo;re already carrying. Finding out costs you a few
+          questions. Not finding out costs you every week you wait.
         </motion.p>
 
         <motion.div variants={fadeUp} className="mt-8">

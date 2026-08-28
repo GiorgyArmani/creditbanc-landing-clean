@@ -501,7 +501,7 @@ export default function ThanksForApplying() {
                 ))}
               </div>
               <h3 className="font-headline text-2xl font-extrabold text-on-surface mb-5">
-                In about 60 seconds, you&rsquo;ll:
+                Before you talk to anyone, you&rsquo;ll:
               </h3>
               <motion.ul
                 className="space-y-3 mb-8"
