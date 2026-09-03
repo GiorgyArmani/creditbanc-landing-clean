@@ -175,6 +175,17 @@ export const TEAM_MEMBERS: TeamMember[] = [
     email: 'will@shieldadvisorsllc.com',
     ghlUserId: 'BEjlNTQcnaawcHrRRsPi',
   },
+  {
+    name: 'Paul',
+    role: 'Business Advisor',
+    photo: '/cbteam/Paul.png',
+    slug: 'paul-katsaros',
+    calendarId: 'cXtCALT3YfZGxGmfHux3',
+    fullName: 'Paul Katsaros',
+    phone: '+1 (516) 588-1882',
+    email: 'paul@creditbanc.io',
+    ghlUserId: 'vZc8STCnLDISYl2W5jap',
+  },
   
   {
     name: 'Gisselle',
