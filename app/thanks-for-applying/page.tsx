@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import Footer from '@/components/sections/Footer';
 import ThanksForApplying from '@/components/ThanksForApplying';
 import { FloatingSupport } from '@/components/floating-support';
+import OpenAIConversion from '@/components/OpenAIConversion';
 
 export const metadata: Metadata = {
   title: 'You’re Just Early — Credit Banc',
@@ -21,6 +22,15 @@ export const dynamic = 'force-dynamic';
 export default function ThanksForApplyingPage() {
   return (
     <>
+      {/* Applicants below our funding minimums land here. Deliberately a
+          custom event rather than `lead_created`: these are real submissions
+          worth seeing in reporting, but training the optimizer toward them
+          would buy us more of the leads we just turned away. */}
+      <OpenAIConversion
+        event="custom"
+        customEventName="lead_below_minimums"
+        onceKey="lead-below-minimums"
+      />
       <main className="bg-surface">
         {/* Reads the disqualification reason off the GHL redirect's params. */}
         <Suspense fallback={<div className="min-h-[60vh]" />}>

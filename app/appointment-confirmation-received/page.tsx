@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Footer from '@/components/sections/Footer';
 import AppointmentConfirmation from '@/components/AppointmentConfirmation';
 import { FloatingSupport } from '@/components/floating-support';
+import OpenAIConversion from '@/components/OpenAIConversion';
 
 // End of the apply-now funnel. The GHL booking calendar redirects here after a
 // slot is confirmed, so the path must match the calendar's "thank you page"
@@ -60,6 +61,9 @@ export default async function AppointmentConfirmationReceivedPage({
 
   return (
     <>
+      {/* A booked call, which is the event actually worth optimizing toward
+          once there is enough volume behind it. */}
+      <OpenAIConversion event="appointment_scheduled" onceKey="appointment" />
       <main className="bg-surface">
         <AppointmentConfirmation
           greetingName={greetingName}

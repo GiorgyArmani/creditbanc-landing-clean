@@ -3,6 +3,8 @@ import Script from 'next/script';
 import { Manrope, Inter } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
+import OpenAIPixel from '@/components/OpenAIPixel';
+import OpenAIPageView from '@/components/OpenAIPageView';
 import { ROUTES, SITE, SOCIAL } from '@/lib/site';
 
 const manrope = Manrope({
@@ -227,9 +229,12 @@ export default function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_LD) }}
         />
+        {/* ChatGPT Ads measurement. Renders nothing until the pixel ID is set. */}
+        <OpenAIPixel />
       </head>
       <body>
         <Providers>{children}</Providers>
+        <OpenAIPageView />
       </body>
     </html>
   );

@@ -4,6 +4,8 @@ import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
 import BookWithCreditBanc from '@/components/BookWithCreditBanc';
 import { FloatingSupport } from '@/components/floating-support';
+import OpenAIConversion from '@/components/OpenAIConversion';
+import { LEAD_EVENT_AT } from '@/lib/openai-pixel';
 
 export const metadata: Metadata = {
   title: 'Book Your Call — Credit Banc',
@@ -17,6 +19,13 @@ export const metadata: Metadata = {
 export default function BookWithCreditBancPage() {
   return (
     <>
+      {/* GHL only redirects here once an application clears our funding
+          minimums, so reaching this page is the qualified-lead conversion.
+          Switched off when the install is configured to count at submit time
+          instead (lib/openai-pixel.ts). */}
+      {LEAD_EVENT_AT === 'booking' && (
+        <OpenAIConversion event="lead_created" onceKey="lead" />
+      )}
       <Navbar />
       <main className="bg-surface">
         <Suspense fallback={<BookFallback />}>

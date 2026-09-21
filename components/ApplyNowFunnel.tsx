@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import { readAttribution } from '@/lib/attribution';
-import { captureStickyContact } from '@/lib/sticky-contact';
+import { captureStickyContact, onStickyContact } from '@/lib/sticky-contact';
+import { handleLeadSubmitted } from '@/lib/openai-pixel';
 
 const FORM_ID = 'n4aCgud8X9ItLI36ZRch';
 const FORM_BASE = `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`;
@@ -68,6 +69,17 @@ export default function ApplyNowFunnel() {
   // calendar can prefill from it (lib/sticky-contact.ts). Attached on mount,
   // well before anyone finishes the form.
   useEffect(() => captureStickyContact(), []);
+  // Same broadcast, second listener: hand the submitted contact to the OpenAI
+  // pixel as hashed identifiers so the conversion on the next page can be
+  // matched to a person, and fire the lead conversion here if the install is
+  // configured to count at submit time (lib/openai-pixel.ts).
+  useEffect(
+    () =>
+      onStickyContact((contact) => {
+        void handleLeadSubmitted(contact);
+      }),
+    []
+  );
   const firstName = params.get('firstName') || '';
   const lastName = params.get('lastName') || '';
   const email = params.get('email') || '';
