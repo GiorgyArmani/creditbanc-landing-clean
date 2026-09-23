@@ -10,6 +10,8 @@ interface CashFlowGapLeadPayload {
   email?: string;
   phone?: string;
   businessName?: string;
+  /** Which calculator page sent the lead. Whitelisted below. */
+  source?: string;
   // Optional calculator context — included in the contact note so the
   // advisor can see what the user was looking at when they handed off.
   gap?: string | number;
@@ -29,8 +31,21 @@ function digitsOnly(s: string) {
   return s.replace(/\D+/g, '');
 }
 
+// The ad-review build at /cash-flow-snapshot tags its leads separately so the
+// campaign's contacts can be told apart in GHL. Anything else is the site page.
+const SOURCES = ['cash-flow-gap', 'cash-flow-snapshot'] as const;
+type LeadSource = (typeof SOURCES)[number];
+
+function leadSource(raw: unknown): LeadSource {
+  return SOURCES.includes(raw as LeadSource)
+    ? (raw as LeadSource)
+    : 'cash-flow-gap';
+}
+
 function buildNote(p: CashFlowGapLeadPayload): string {
-  const lines: string[] = ['Cash Flow Gap calculator — lead capture.'];
+  const lines: string[] = [
+    `Cash Flow Gap calculator (${leadSource(p.source)}) — lead capture.`,
+  ];
   if (p.businessName) lines.push(`Business: ${p.businessName}`);
 
   const calc: string[] = [];
@@ -108,7 +123,7 @@ export async function POST(req: Request) {
       email,
       phone: `+${phone.length === 10 ? '1' + phone : phone}`,
       companyName: businessName || undefined,
-      source: 'cash-flow-gap',
+      source: leadSource(payload.source),
     });
     console.log(
       `[cash-flow-gap-lead] GHL upsert OK · contactId=${contactId} · email=${email}`

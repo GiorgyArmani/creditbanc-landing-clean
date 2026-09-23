@@ -18,6 +18,8 @@ import {
   Quote,
 } from "lucide-react";
 import { SITE } from "@/lib/site";
+import { fireConversion, handleLeadSubmitted } from "@/lib/openai-pixel";
+import InlineBooking from "@/components/InlineBooking";
 
 // ---------- Types ----------
 
@@ -187,6 +189,79 @@ function calculate(inputs: CalculatorInputs): CalculatorResults {
     debtPressure,
     timingPressure,
   };
+}
+
+// ---------- Variants ----------
+//
+// "standard" is the site page at /cash-flow-gap: financing-forward copy and an
+// /apply-now handoff. "tool" is the ad-review build at /cash-flow-snapshot:
+// same math, educational framing, no application pathway, and the only next
+// step is an optional call booked inline on the page.
+
+export type CalculatorVariant = "standard" | "tool";
+
+const COPY = {
+  standard: {
+    eyebrow: "Credit Banc · Free Planning Tool",
+    headlineTail: "Then Fund It Right.",
+    urgencyLabel: "How soon do you need the cash?",
+    pressureLabel: "Existing lender / payment pressure",
+    lockedStats: ["Funding target", "Readiness score", "Risk read", "Recommendation"],
+    gapLabel: "Suggested funding target",
+    scoreLabel: "Funding readiness score",
+    scoreNote:
+      "A planning score, not an approval. Use it to decide whether the conversation is “if” or “how.”",
+    riskSuffix: "risk",
+    teaserBody:
+      "In three steps, we’ll show whether your cash flow needs capital, patience, or a stern talking-to.",
+    timingHint: "How soon the gap could turn into an “oh sh*t” moment",
+    gateEyebrow: "One quick step",
+    gateTitle: "Where should we send your results?",
+    gateBody:
+      "Drop your info so we can save your snapshot and keep the conversation going if you want a real advisor to weigh in.",
+    gateButton: "See My Results",
+    advisorNote:
+      "This calculator is a starting point, not a magic eight ball. If your results aren’t what you expected, don’t panic. Set up a call, and we’ll help you sort through what the numbers mean, what options may fit, and what should probably stay unsigned.",
+  },
+  tool: {
+    eyebrow: "Free Cash Flow Planning Tool",
+    headlineTail: "Then Plan Around It.",
+    urgencyLabel: "When could the gap hit?",
+    pressureLabel: "Existing debt payment pressure",
+    lockedStats: ["Cash needed", "Health score", "Risk read", "What it means"],
+    gapLabel: "Gap plus a 10% buffer",
+    scoreLabel: "Cash flow health score",
+    scoreNote:
+      "An educational estimate based only on the numbers you entered. Not a credit decision or an offer of anything.",
+    riskSuffix: "cash flow risk",
+    teaserBody:
+      "In three steps, we’ll show whether your cash flow needs a new plan, a little patience, or a stern talking-to.",
+    timingHint: "How soon the gap could turn into an “uh-oh” moment",
+    gateEyebrow: "Your snapshot is ready",
+    gateTitle: "Where should we send your cash flow snapshot?",
+    gateBody:
+      "We’ll show your results here and email you a copy, so you have your numbers handy when you plan the next few months.",
+    gateButton: "Email My Cash Flow Snapshot",
+    advisorNote:
+      "This calculator is a starting point, not a magic eight ball. If your results aren’t what you expected, don’t panic. Most gaps come down to timing: when cash lands versus when bills are due. If you want a second set of eyes on your numbers, we’re happy to talk them through.",
+  },
+} as const;
+
+type VariantCopy = (typeof COPY)[CalculatorVariant];
+
+// The standard `meaning` strings name financing products. The tool build keeps
+// the same thresholds but talks about the levers an owner actually controls.
+function toolMeaning(results: CalculatorResults, inputs: CalculatorInputs) {
+  const { gap, gapPct, surplus } = results;
+  if (gap > 0 && gapPct < 15)
+    return "A little tight, not a five-alarm fire. Small timing tweaks (collecting a few invoices sooner, shifting a non-urgent expense) may close most of this on their own.";
+  if (gap > 0 && gapPct < 40)
+    return "This deserves a closer look. Map out exactly when cash comes in versus when each bill is due, and figure out which costs can move before the gap arrives.";
+  if (gap > 0)
+    return "This is not the time to wing it. A gap this size is worth planning for now: review collections, spending, and payment timing before it starts making decisions for you.";
+  if (surplus > 0 && inputs.cashOnHand >= inputs.cushion)
+    return "Look at you, financially hydrated. Your cash covers what’s coming. Keep an eye on slow-paying customers and anything that could shrink the cushion faster than expected.";
+  return "Nothing is on fire. Lovely. There’s no obvious short-term gap right now, but keep an eye on timing, bills, and receivables as the next few months play out.";
 }
 
 const fmtUSD = (n: number) =>
@@ -375,7 +450,13 @@ const STEPS: Array<{
   },
 ];
 
-export default function CashFlowGapCalculator() {
+export default function CashFlowGapCalculator({
+  variant = "standard",
+}: {
+  variant?: CalculatorVariant;
+} = {}) {
+  const isTool = variant === "tool";
+  const copy = COPY[variant];
   const [inputs, setInputs] = useState<CalculatorInputs>(defaultInputs);
   const resultsRef = useRef<HTMLDivElement>(null);
   const formCardRef = useRef<HTMLDivElement>(null);
@@ -429,7 +510,10 @@ export default function CashFlowGapCalculator() {
     }
   };
 
-  const results = useMemo(() => calculate(inputs), [inputs]);
+  const results = useMemo(() => {
+    const r = calculate(inputs);
+    return isTool ? { ...r, meaning: toolMeaning(r, inputs) } : r;
+  }, [inputs, isTool]);
 
   const goToBooking = () => {
     if (typeof window === "undefined") return;
@@ -504,6 +588,7 @@ export default function CashFlowGapCalculator() {
           email: lead.email,
           phone: lead.phone,
           businessName: inputs.businessName || undefined,
+          source: isTool ? "cash-flow-snapshot" : "cash-flow-gap",
           gap: results.gap,
           surplus: results.surplus,
           target: results.fundingTarget,
@@ -526,9 +611,25 @@ export default function CashFlowGapCalculator() {
         w.dataLayer = w.dataLayer || [];
         w.dataLayer.push({
           event: "lead_submit",
-          source: "cashflow_gap_results_gate",
+          source: isTool
+            ? "cashflow_snapshot_results_gate"
+            : "cashflow_gap_results_gate",
           ...lead,
         });
+      }
+      // The tool build has no /apply-now hop, so the snapshot request is the
+      // lead: stash the hashed contact and count it here.
+      // Fire-and-forget: measurement must never hold up or break the reveal.
+      if (isTool) {
+        const [firstName, ...rest] = lead.firstName.trim().split(/\s+/);
+        void handleLeadSubmitted({
+          firstName,
+          lastName: rest.join(" ") || undefined,
+          email: lead.email,
+          phone: lead.phone,
+        })
+          .then(() => fireConversion("lead_created", { onceKey: "lead" }))
+          .catch(() => {});
       }
       setShowLeadGate(false);
       doReveal();
@@ -653,7 +754,7 @@ export default function CashFlowGapCalculator() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="font-label text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4"
           >
-            Credit Banc · Free Planning Tool
+            {copy.eyebrow}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 28 }}
@@ -693,7 +794,7 @@ export default function CashFlowGapCalculator() {
             >
               Gap.
             </motion.span>{" "}
-            Then Fund It Right.
+            {copy.headlineTail}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 24 }}
@@ -884,7 +985,7 @@ export default function CashFlowGapCalculator() {
 
                       <label className="block">
                         <span className="font-label text-[13px] font-semibold tracking-tight text-on-secondary-fixed">
-                          How soon do you need the cash?
+                          {copy.urgencyLabel}
                         </span>
                         <select
                           value={inputs.urgency}
@@ -902,7 +1003,7 @@ export default function CashFlowGapCalculator() {
 
                       <label className="block">
                         <span className="font-label text-[13px] font-semibold tracking-tight text-on-secondary-fixed">
-                          Existing lender / payment pressure
+                          {copy.pressureLabel}
                         </span>
                         <select
                           value={inputs.pressure}
@@ -983,6 +1084,9 @@ export default function CashFlowGapCalculator() {
               step2HasData={step2HasData}
               step3HasData={step3HasData}
               canReveal={maxStepReached >= 3}
+              lockedStats={copy.lockedStats}
+              teaserBody={copy.teaserBody}
+              timingHint={copy.timingHint}
             />
           </div>
         )}
@@ -1006,6 +1110,9 @@ export default function CashFlowGapCalculator() {
               })}
               onEdit={editNumbers}
               onReset={reset}
+              copy={copy}
+              isTool={isTool}
+              lead={lead}
             />
           </div>
         )}
@@ -1042,11 +1149,7 @@ export default function CashFlowGapCalculator() {
                   A note from your advisor
                 </figcaption>
                 <p className="font-headline text-lg md:text-xl italic leading-relaxed text-on-surface-variant">
-                  This calculator is a starting point, not a magic eight ball.
-                  If your results aren&rsquo;t what you expected, don&rsquo;t
-                  panic. Set up a call, and we&rsquo;ll help you sort through
-                  what the numbers mean, what options may fit, and what should
-                  probably stay unsigned.
+                  {copy.advisorNote}
                 </p>
                 <div className="mt-5 flex items-center gap-2.5 text-sm">
                   <span aria-hidden className="h-px w-6 bg-outline-variant" />
@@ -1060,7 +1163,12 @@ export default function CashFlowGapCalculator() {
         </div>
       </div>
 
-      {/* ---------- Skip ahead lead capture (moved out of hero) ---------- */}
+      {/* ---------- How it works (tool build only) ---------- */}
+      {isTool && <HowItWorks />}
+
+      {/* ---------- Skip ahead lead capture (moved out of hero) ----------
+          Standard build only: it hands off to /apply-now. */}
+      {!isTool && (
       <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 py-16 sm:py-20 md:py-24">
         <motion.div
           aria-hidden
@@ -1178,6 +1286,7 @@ export default function CashFlowGapCalculator() {
           </div>
         </motion.div>
       </section>
+      )}
 
       {/* ---------- Lead-gate modal (shown when user requests results) ---------- */}
       <AnimatePresence>
@@ -1228,17 +1337,16 @@ export default function CashFlowGapCalculator() {
 
               <div className="relative">
                 <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
-                  One quick step
+                  {copy.gateEyebrow}
                 </p>
                 <h3
                   id="lead-gate-title"
                   className="font-headline text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight leading-tight"
                 >
-                  Where should we send your results?
+                  {copy.gateTitle}
                 </h3>
                 <p className="text-white/65 text-sm leading-relaxed mb-6">
-                  Drop your info so we can save your snapshot and keep the
-                  conversation going if you want a real advisor to weigh in.
+                  {copy.gateBody}
                 </p>
 
                 <form onSubmit={handleLeadGateSubmit} className="space-y-3">
@@ -1291,7 +1399,7 @@ export default function CashFlowGapCalculator() {
                       <>Saving…</>
                     ) : (
                       <>
-                        See My Results
+                        {copy.gateButton}
                         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                       </>
                     )}
@@ -1330,6 +1438,9 @@ function TeaserPanel({
   step2HasData,
   step3HasData,
   canReveal,
+  lockedStats,
+  teaserBody,
+  timingHint,
 }: {
   step: StepNum;
   totalCashIn: number;
@@ -1338,6 +1449,9 @@ function TeaserPanel({
   step2HasData: boolean;
   step3HasData: boolean;
   canReveal: boolean;
+  lockedStats: readonly string[];
+  teaserBody: string;
+  timingHint: string;
 }) {
   const stepRows: Array<{
     num: StepNum;
@@ -1363,7 +1477,7 @@ function TeaserPanel({
     {
       num: 3,
       label: "Timing",
-      hint: "How soon the gap could turn into an “oh sh*t” moment",
+      hint: timingHint,
       done: step3HasData,
     },
   ];
@@ -1388,8 +1502,7 @@ function TeaserPanel({
             Do you have a cash flow gap? Let&rsquo;s find out.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-white/70">
-            In three steps, we&rsquo;ll show whether your cash flow needs
-            capital, patience, or a stern talking-to.
+            {teaserBody}
           </p>
         </div>
       </div>
@@ -1450,10 +1563,9 @@ function TeaserPanel({
             Locked until you finish
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <LockedStat label="Funding target" />
-            <LockedStat label="Readiness score" />
-            <LockedStat label="Risk read" />
-            <LockedStat label="Recommendation" />
+            {lockedStats.map((label) => (
+              <LockedStat key={label} label={label} />
+            ))}
           </div>
 
           {/* Status row — informational, not the action. The actual reveal
@@ -1504,6 +1616,9 @@ function RevealedResults({
   applyUrl,
   onEdit,
   onReset,
+  copy,
+  isTool,
+  lead,
 }: {
   results: CalculatorResults;
   inputs: CalculatorInputs;
@@ -1511,7 +1626,11 @@ function RevealedResults({
   applyUrl: string;
   onEdit: () => void;
   onReset: () => void;
+  copy: VariantCopy;
+  isTool: boolean;
+  lead: { firstName: string; email: string; phone: string };
 }) {
+  const [showBooking, setShowBooking] = useState(false);
   const color = riskColors[results.risk];
   const [counted, setCounted] = useState(0);
   const [score, setScore] = useState(0);
@@ -1543,7 +1662,7 @@ function RevealedResults({
 
   const headlineLabel =
     results.gap > 0
-      ? "Suggested funding target"
+      ? copy.gapLabel
       : results.surplus > 0
       ? "Estimated surplus"
       : "Estimated position";
@@ -1628,10 +1747,11 @@ function RevealedResults({
               className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide ring-1 ${color.bg} ${color.text} ${color.ring}`}
             >
               <Gauge className="h-3.5 w-3.5" />
-              {results.risk} risk
+              {results.risk} {copy.riskSuffix}
             </span>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/8 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-white ring-1 ring-white/15">
-              Readiness <span className="tabular-nums">{score}</span> / 100
+              {isTool ? "Health score" : "Readiness"}{" "}
+              <span className="tabular-nums">{score}</span> / 100
             </span>
           </motion.div>
         </div>
@@ -1694,7 +1814,7 @@ function RevealedResults({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 font-label text-[11px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
             <Gauge className="h-3.5 w-3.5" />
-            Funding readiness score
+            {copy.scoreLabel}
           </div>
           <span className="text-sm text-on-surface-variant tabular-nums">
             {score} / 100
@@ -1717,8 +1837,7 @@ function RevealedResults({
           />
         </div>
         <p className="mt-3 text-[12px] leading-snug text-on-surface-variant">
-          A planning score, not an approval. Use it to decide whether the
-          conversation is &ldquo;if&rdquo; or &ldquo;how.&rdquo;
+          {copy.scoreNote}
         </p>
       </motion.div>
 
@@ -1733,6 +1852,52 @@ function RevealedResults({
           aria-hidden
           className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/25 blur-3xl"
         />
+        {isTool ? (
+          <>
+            <div className="relative grid gap-6 sm:grid-cols-[1fr_auto] items-center">
+              <div>
+                <div className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
+                  Optional next step
+                </div>
+                <h3 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-on-secondary-fixed leading-tight mb-2">
+                  Want a second set of eyes on these numbers?
+                </h3>
+                <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed max-w-xl">
+                  Grab 15 minutes with a Credit Banc advisor to walk through
+                  what&rsquo;s driving your gap and which levers (timing,
+                  collections, costs) move it most. Your snapshot is already
+                  in your inbox, so this part is entirely up to you.
+                </p>
+              </div>
+              <motion.button
+                type="button"
+                onClick={() => setShowBooking((v) => !v)}
+                aria-expanded={showBooking}
+                className="group inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-on-secondary-fixed px-7 py-4 text-base font-extrabold shadow-[0_22px_40px_-12px_rgba(85,207,158,0.55)] whitespace-nowrap"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 360, damping: 22 }}
+              >
+                Talk Through My Results
+                <ArrowRight
+                  className={`h-5 w-5 transition ${
+                    showBooking ? "rotate-90" : "group-hover:translate-x-0.5"
+                  }`}
+                />
+              </motion.button>
+            </div>
+            <div className="relative mt-5 flex items-center gap-2 text-[11px] text-on-surface-variant">
+              <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+              Free · No obligation · Your snapshot stays yours
+            </div>
+            {showBooking && (
+              <div className="relative mt-6">
+                <InlineBooking contact={lead} />
+              </div>
+            )}
+          </>
+        ) : (
+        <>
         <div className="relative grid gap-6 sm:grid-cols-[1fr_auto] items-center">
           <div>
             <div className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-2">
@@ -1764,6 +1929,8 @@ function RevealedResults({
           <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
           No obligation · Your summary travels with you
         </div>
+        </>
+        )}
       </motion.div>
 
       {/* Secondary actions */}
@@ -1786,6 +1953,71 @@ function RevealedResults({
         </button>
       </div>
     </motion.div>
+  );
+}
+
+// ---------- How it works (tool build) ----------
+
+const HOW_IT_WORKS = [
+  {
+    icon: DollarSign,
+    title: "Cash in",
+    body: "Cash on hand plus what you realistically expect to collect over the next 90 days. Hopeful invoices don’t count.",
+  },
+  {
+    icon: TrendingDown,
+    title: "Cash out",
+    body: "Everything due in that same window, plus the cushion you never want to dip below. Payroll doesn’t wait for receivables.",
+  },
+  {
+    icon: Clock,
+    title: "Timing",
+    body: "Slow collections and existing payment obligations can squeeze a profitable business. The health score weighs both.",
+  },
+];
+
+function HowItWorks() {
+  return (
+    <section className="border-t border-outline-variant/30 bg-surface px-6 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto">
+        <p className="font-label text-[11px] font-bold uppercase tracking-[0.22em] text-primary mb-3">
+          How the math works
+        </p>
+        <h2 className="font-headline text-3xl md:text-4xl font-extrabold tracking-tight text-on-secondary-fixed leading-tight max-w-2xl">
+          A cash flow gap is a timing problem, not a profit problem.
+        </h2>
+        <p className="mt-4 max-w-2xl text-base text-on-surface-variant leading-relaxed">
+          Plenty of healthy businesses run short because money goes out
+          before it comes in. The calculator compares the two over the next
+          90 days so you can see the squeeze before you feel it.
+        </p>
+
+        <div className="mt-10 grid gap-4 md:grid-cols-3">
+          {HOW_IT_WORKS.map(({ icon: Icon, title, body }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-6"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-container/40 text-on-primary-container">
+                <Icon className="h-5 w-5" />
+              </span>
+              <h3 className="mt-4 font-headline text-lg font-extrabold text-on-secondary-fixed">
+                {title}
+              </h3>
+              <p className="mt-2 text-sm text-on-surface-variant leading-relaxed">
+                {body}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 text-[12px] leading-relaxed text-on-surface-variant/80 max-w-3xl">
+          Results are educational estimates based only on the figures you
+          enter. They are not financial, tax, or legal advice, and they are
+          not a credit decision or an offer of financing.
+        </p>
+      </div>
+    </section>
   );
 }
 

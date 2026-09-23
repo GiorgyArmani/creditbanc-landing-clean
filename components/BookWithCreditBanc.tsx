@@ -12,8 +12,8 @@ import { readStickyContact, type StickyContact } from '@/lib/sticky-contact';
 // exactly as GHL generated it so its resize script (form_embed.js) keeps
 // matching this calendar.
 const BOOKING_ID = '89A9rcz6364CmH0L4kty';
-const BOOKING_BASE = `https://api.leadconnectorhq.com/widget/booking/${BOOKING_ID}`;
-const IFRAME_ID = 'k89CF4AvNra7oJmpI2vl_1780932488552';
+export const BOOKING_BASE = `https://api.leadconnectorhq.com/widget/booking/${BOOKING_ID}`;
+export const IFRAME_ID = 'k89CF4AvNra7oJmpI2vl_1780932488552';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
