@@ -189,6 +189,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     name: 'Abhi',
     role: 'Business Advisor',
+    photo: '/cbteam/Abhi.png',
     slug: 'abhi-shah',
     calendarId: 'hrPDbqKjyBIy7k11NkHU',
     fullName: 'Abhi Shah',
