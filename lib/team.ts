@@ -171,9 +171,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     slug: 'will-hyder',
     calendarId: 'e6sndsbJfGjHw0OcewrF',
     fullName: 'Will Hyder',
-    phone: '+1 (818) 305-4870',
+    phone: '+1 (727) 418-5110',
     email: 'will@shieldadvisorsllc.com',
-    ghlUserId: 'BEjlNTQcnaawcHrRRsPi',
+    ghlUserId: 'eGifigzJzzzvWPj7QQix',
   },
   {
     name: 'Paul',
@@ -184,9 +184,19 @@ export const TEAM_MEMBERS: TeamMember[] = [
     fullName: 'Paul Katsaros',
     phone: '+1 (516) 588-1882',
     email: 'paul@creditbanc.io',
-    ghlUserId: 'vZc8STCnLDISYl2W5jap',
+    ghlUserId: '2FX0LFXV9irTS05C3F7x',
   },
-  
+  {
+    name: 'Abhi',
+    role: 'Business Advisor',
+    slug: 'abhi-shah',
+    calendarId: 'hrPDbqKjyBIy7k11NkHU',
+    fullName: 'Abhi Shah',
+    phone: '+1 (863) 414-7810',
+    email: 'abhi@creditbanc.io',
+    ghlUserId: 'eOA9pUlGhQNKNy6ZzC9v',
+  },
+
   {
     name: 'Gisselle',
     role: 'Underwriting Specialist',
