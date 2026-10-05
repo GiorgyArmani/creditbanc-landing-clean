@@ -3,15 +3,9 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { Check, ArrowRight } from 'lucide-react';
-
-// GHL / LeadConnector opt-in form for the free Business Credit Builder 101
-// course. Same embed pattern as the referral-partner page: the iframe reads
-// incoming URL params (utm/campaign) so GHL can attribute the lead.
-const FORM_ID = 'AT5ZqbMvaRSJDU0yHWsb';
-const FORM_IFRAME_ID = `inline-${FORM_ID}`;
+import CourseOptInForm from '@/components/CourseOptInForm';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -283,7 +277,7 @@ export default function BusinessCreditBuilder() {
                     </div>
                   }
                 >
-                  <OptInForm />
+                  <CourseOptInForm />
                 </Suspense>
               </div>
             </div>
@@ -458,46 +452,5 @@ export default function BusinessCreditBuilder() {
         strategy="afterInteractive"
       />
     </div>
-  );
-}
-
-// Isolated so its useSearchParams() only pushes the form (not the whole page)
-// behind a Suspense boundary at build time. Forwards every incoming URL param
-// to the GHL form so campaign/attribution fields reach LeadConnector.
-function OptInForm() {
-  const params = useSearchParams();
-
-  const formSrc = (() => {
-    const url = new URL(
-      `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`
-    );
-    params.forEach((value, key) => {
-      if (value) url.searchParams.set(key, value);
-    });
-    return url.toString();
-  })();
-
-  return (
-    <iframe
-      key={formSrc}
-      src={formSrc}
-      id={FORM_IFRAME_ID}
-      title="Business Credit Builder 101 Opt-In Form"
-      data-layout="{'id':'INLINE'}"
-      data-form-id={FORM_ID}
-      data-form-name="Credit Builder Course - NEW FORM"
-      data-height="555"
-      data-layout-iframe-id={FORM_IFRAME_ID}
-      data-trigger-type="alwaysShow"
-      data-activation-type="alwaysActivated"
-      data-deactivation-type="neverDeactivate"
-      scrolling="no"
-      style={{
-        width: '100%',
-        minHeight: '555px',
-        border: 'none',
-        overflow: 'hidden',
-      }}
-    />
   );
 }
