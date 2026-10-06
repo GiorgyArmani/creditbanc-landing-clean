@@ -107,14 +107,14 @@ export default function BusinessCredit101Page() {
                 <div className="mt-4 overflow-hidden rounded-2xl bg-surface-container-lowest">
                   <Suspense
                     fallback={
-                      <div className="w-full min-h-[555px] flex items-center justify-center">
+                      <div className="w-full min-h-[665px] flex items-center justify-center">
                         <span className="text-on-surface-variant text-sm">
                           Loading your form…
                         </span>
                       </div>
                     }
                   >
-                    <CourseOptInForm />
+                    <CourseOptInForm form="optIn" />
                   </Suspense>
                 </div>
               </div>
