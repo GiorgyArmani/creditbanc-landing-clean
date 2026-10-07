@@ -5,6 +5,10 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { ArrowRight } from 'lucide-react';
 import CourseOptInForm from '@/components/CourseOptInForm';
+import {
+  COURSE_FORMS,
+  CourseFormLoading,
+} from '@/components/CourseFormLoading';
 import CourseStepper from '@/components/CourseStepper';
 import { ROUTES, SITE } from '@/lib/site';
 
@@ -107,11 +111,7 @@ export default function BusinessCredit101Page() {
                 <div className="mt-4 overflow-hidden rounded-2xl bg-surface-container-lowest">
                   <Suspense
                     fallback={
-                      <div className="w-full min-h-[665px] flex items-center justify-center">
-                        <span className="text-on-surface-variant text-sm">
-                          Loading your form…
-                        </span>
-                      </div>
+                      <CourseFormLoading height={COURSE_FORMS.optIn.height} />
                     }
                   >
                     <CourseOptInForm form="optIn" />
