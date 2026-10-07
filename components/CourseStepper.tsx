@@ -119,10 +119,7 @@ export default function CourseStepper() {
               animate={on ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: reduce ? 0 : 0.6, delay, ease: EASE }}
             >
-              <p className="font-label text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
-                Step {String(i + 1).padStart(2, '0')}
-              </p>
-              <p className="mt-1.5 font-headline text-lg font-bold leading-snug text-white">
+              <p className="font-headline text-lg font-bold leading-snug text-white">
                 {text}
               </p>
             </motion.div>

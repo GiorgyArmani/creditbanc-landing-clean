@@ -159,7 +159,7 @@ export default function BusinessCredit101Page() {
               Know what&rsquo;s on your profile before someone else checks it.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-on-surface-variant">
-              Four short parts, zero jargon, and it costs exactly nothing.
+              Four short parts. Straightforward answers. Costs exactly nothing.
             </p>
             <a
               href="#get-started"
@@ -187,9 +187,6 @@ export default function BusinessCredit101Page() {
               </Link>
               <a href={`mailto:${SITE.email}`} className="hover:text-white">
                 {SITE.email}
-              </a>
-              <a href={SITE.phoneTel} className="hover:text-white">
-                {SITE.phone}
               </a>
             </div>
           </div>
