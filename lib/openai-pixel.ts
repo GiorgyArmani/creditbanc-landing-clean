@@ -47,7 +47,8 @@ export const PIXEL_DEBUG =
 export type PixelEvent =
   | 'page_viewed'
   | 'lead_created'
-  | 'appointment_scheduled';
+  | 'appointment_scheduled'
+  | 'registration_completed';
 
 /** SHA-256 identifiers for conversion matching. Raw values never leave here. */
 export interface PixelUser {
@@ -94,6 +95,7 @@ const DATA_TYPE: Record<PixelEvent | 'custom', string> = {
   page_viewed: 'contents',
   lead_created: 'customer_action',
   appointment_scheduled: 'customer_action',
+  registration_completed: 'customer_action',
   custom: 'custom',
 };
 
@@ -231,7 +233,26 @@ export async function fireConversion(
  */
 export async function handleLeadSubmitted(contact: StickyContact) {
   if (!PIXEL_ID) return;
+  await stashMatch(contact);
+  if (LEAD_EVENT_AT === 'submit') {
+    await fireConversion('lead_created', { onceKey: 'lead' });
+  }
+}
 
+/**
+ * Called when the course opt-in form (CourseOptInForm) broadcasts a successful
+ * submit. GHL only sends that broadcast once the form has actually saved the
+ * contact, so a half-filled or failed form never counts as a signup.
+ */
+export async function handleCourseRegistered(contact: StickyContact) {
+  if (!PIXEL_ID) return;
+  await stashMatch(contact);
+  await fireConversion('registration_completed', { onceKey: 'course-signup' });
+}
+
+// Hash the submitted contact and keep it for the conversion that follows,
+// whether it fires on this page or on the one the GHL redirect lands on.
+async function stashMatch(contact: StickyContact) {
   let user: PixelUser = {};
   try {
     user = await hashContact(contact);
@@ -247,10 +268,6 @@ export async function handleLeadSubmitted(contact: StickyContact) {
       JSON.stringify({ user, eventIdSeed: seed } satisfies StoredMatch)
     );
   } catch {
-    // No storage: the conversion on the next page fires unmatched.
-  }
-
-  if (LEAD_EVENT_AT === 'submit') {
-    await fireConversion('lead_created', { onceKey: 'lead' });
+    // No storage: the conversion fires unmatched.
   }
 }

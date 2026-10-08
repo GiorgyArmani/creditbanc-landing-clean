@@ -1,10 +1,13 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import {
   COURSE_FORMS,
   CourseFormLoading,
 } from '@/components/CourseFormLoading';
+import { handleCourseRegistered } from '@/lib/openai-pixel';
+import { onStickyContact } from '@/lib/sticky-contact';
 
 // GHL / LeadConnector opt-in form for the free Business Credit Builder 101
 // course, shared by /business-credit-builder and /business-credit-101. Each
@@ -25,6 +28,17 @@ export default function CourseOptInForm({
     height: FORM_HEIGHT,
   } = COURSE_FORMS[form];
   const FORM_IFRAME_ID = `inline-${FORM_ID}`;
+
+  // The GHL iframe broadcasts the contact to this page only after a successful
+  // submit, so that is the moment the OpenAI pixel counts a course signup
+  // (registration_completed). Attached on mount, well before anyone submits.
+  useEffect(
+    () =>
+      onStickyContact((contact) => {
+        void handleCourseRegistered(contact);
+      }),
+    []
+  );
 
   const formSrc = (() => {
     const url = new URL(
