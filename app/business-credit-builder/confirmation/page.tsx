@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Check, Mail, Search, ArrowRight, Rocket } from 'lucide-react';
 import Footer from '@/components/sections/Footer';
+import OpenAIPendingRegistration from '@/components/OpenAIPendingRegistration';
 
 export const metadata: Metadata = {
   title: 'You’re In! — Business Credit Builder 101 | Credit Banc',
@@ -29,6 +30,10 @@ const STEPS = [
 export default function BusinessCreditBuilderConfirmationPage() {
   return (
     <>
+      {/* Course signup conversion handed off by the opt-in form page, which
+          GHL can redirect away from before it sends. Fires only with a
+          handoff, so direct visits and refreshes never count. */}
+      <OpenAIPendingRegistration />
       <main className="bg-surface">
         {/* Navy header band with logo + green success badge */}
         <section className="relative overflow-hidden bg-on-secondary-fixed px-6 sm:px-8 pt-8 sm:pt-10 pb-24 sm:pb-32">

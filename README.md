@@ -89,6 +89,8 @@ either in Vercel requires a redeploy, not just a restart.
 | `/book-with-creditbanc` | `lead_created` | Qualified application. GHL only redirects here when the applicant clears our funding minimums. |
 | `/thanks-for-applying` | custom `lead_below_minimums` | A real submission, but deliberately not `lead_created` — optimizing toward it would buy more of the leads we just turned away. |
 | `/appointment-confirmation-received` | `appointment_scheduled` | A booked call. The event worth optimizing toward once volume supports it. |
+| `/business-credit-101`, `/business-credit-builder` | `registration_completed` | Course signup, fired the instant GHL reports a successful submit. |
+| `/business-credit-builder/confirmation` | `registration_completed` (handoff) | Same signup, same `event_id`, sent only when the form page handed it off. Direct visits and refreshes send nothing. |
 
 ### The event shape gotcha
 
@@ -103,6 +105,7 @@ uniform:
 | `page_viewed` | `contents` |
 | `lead_created` | `customer_action` |
 | `appointment_scheduled` | `customer_action` |
+| `registration_completed` | `customer_action` |
 | `custom` | `custom` (plus `custom_event_name` in the options argument) |
 
 Each shape also has a closed field list, and an undocumented field fails the
@@ -131,8 +134,28 @@ with an origin check (`lib/sticky-contact.ts`). `lib/openai-pixel.ts` hashes
 that contact (SHA-256, in the browser — raw values are never sent) and stashes
 it so the conversion on the redirect destination is matched to a person.
 
+Hashing is synchronous (`lib/sha256.ts`) and follows OpenAI's published
+normalization for each field (email trimmed and lowercased; phone digits only
+with country code; names lowercased with whitespace and ASCII punctuation
+removed). City, region and postal code go along unhashed when a form collects
+them, as the docs allow.
+
 Attribution needs no plumbing: every hop is creditbanc.io, so the pixel's own
-first-party `__oppref` cookie carries the ad click across the funnel.
+first-party `__oppref` cookie (scoped to `creditbanc.io`, so it covers `www`)
+carries the ad click across the funnel. GHL also appends the iframe's query
+string, `oppref` and UTMs included, to its redirect URL.
+
+### The course form redirect race
+
+The course opt-in form redirects the whole page to
+`/business-credit-builder/confirmation` right after it broadcasts the submit.
+When that redirect starts in the same instant, the page is already unloading
+by the time our listener runs, and an event queued there never leaves the
+browser (reproduced in a test harness). So the form page also writes a
+10-minute `cb_oai_reg` cookie holding the event ID and the hashed identifiers,
+and the confirmation page sends the signup from it once and deletes it. Both
+sides use the same `event_id`, OpenAI's documented dedup key, so a signup
+counts once even when both copies arrive.
 
 ### Not yet done
 

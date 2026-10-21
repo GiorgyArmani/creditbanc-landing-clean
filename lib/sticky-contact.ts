@@ -29,6 +29,10 @@ export interface StickyContact {
   lastName?: string;
   email?: string;
   phone?: string;
+  /** Only present when the form collects an address. */
+  city?: string;
+  state?: string;
+  postalCode?: string;
 }
 
 function str(value: unknown): string {
@@ -64,6 +68,9 @@ function parsePayload(raw: string): StickyContact | null {
       str(data.last_name) || (firstSpace === -1 ? '' : full.slice(firstSpace + 1)),
     email: str(data.email) || str(data.email_lower_case),
     phone: str(data.phone),
+    city: str(data.city),
+    state: str(data.state),
+    postalCode: str(data.postal_code) || str(data.postalCode),
   };
 
   // A payload with no usable contact fields is worse than none — it would

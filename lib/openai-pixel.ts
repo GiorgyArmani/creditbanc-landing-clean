@@ -4,16 +4,21 @@
 // ID the base snippet never renders, `window.oaiq` never exists, and every
 // function here no-ops. Nothing reaches OpenAI until that variable lands.
 //
-// The journey this measures:
+// The journeys this measures:
 //   ad click → any page of ours (the pixel stores the click's `oppref` in its
-//   own first-party `__oppref` cookie, 30 days) → /apply-now, where the GHL
-//   Master Form runs in an iframe → GHL redirects to one of our own pages →
-//   the conversion fires there. Every hop is creditbanc.io, so the cookie
-//   carries attribution across the whole funnel on its own — we never have to
-//   thread `oppref` through the form.
+//   own first-party `__oppref` cookie, 30 days, scoped to creditbanc.io so it
+//   covers www too) → a GHL form in an iframe → GHL redirects the page to one
+//   of our own pages. Every hop is creditbanc.io, so the cookie carries
+//   attribution across the whole funnel on its own. GHL also appends the
+//   iframe's query string (UTMs, oppref) to its redirect URL.
+//
+//   /apply-now           → lead conversion on the redirect destination
+//   /business-credit-101 → registration_completed the moment GHL reports the
+//                          submit, before its redirect to the confirmation page
 //
 // Docs: https://developers.openai.com/ads/measurement-pixel
 
+import { sha256Hex } from './sha256';
 import type { StickyContact } from './sticky-contact';
 
 /** Empty unless the pixel ID is configured, which is what keeps this dark. */
@@ -50,12 +55,19 @@ export type PixelEvent =
   | 'appointment_scheduled'
   | 'registration_completed';
 
-/** SHA-256 identifiers for conversion matching. Raw values never leave here. */
+/**
+ * Matching identifiers, in the field names and formats the pixel documents.
+ * The *_sha256 fields are hashed here in the browser; raw email, phone and
+ * names never leave this file. Location fields go as-is, as the docs allow.
+ */
 export interface PixelUser {
   email_sha256?: string;
   phone_number_sha256?: string;
   first_name_sha256?: string;
   last_name_sha256?: string;
+  city?: string;
+  region?: string;
+  postal_code?: string;
 }
 
 // The contact captured at form submit, carried to whichever page the GHL
@@ -70,6 +82,12 @@ interface StoredMatch {
   /** Shared with the Conversions API later so the two sides dedupe. */
   eventIdSeed: string;
 }
+
+// Stand-ins for sessionStorage when it is unavailable (some privacy modes and
+// in-app browsers). They only last for the current page, which is enough for
+// conversions that fire at submit time.
+const firedInMemory = new Set<string>();
+let memoryMatch: StoredMatch | null = null;
 
 type Oaiq = (...args: unknown[]) => void;
 
@@ -107,49 +125,63 @@ const DATA_TYPE: Record<PixelEvent | 'custom', string> = {
 //   custom           → type, plan_id, amount, currency, contents
 // Event options are limited to event_id, eventId, custom_event_name, opt_out.
 
-async function sha256Hex(value: string): Promise<string> {
-  const bytes = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest('SHA-256', bytes);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-}
+// Normalization follows OpenAI's published rule for each field. A value
+// normalized differently here than on OpenAI's side hashes to something that
+// never matches, so these must track the docs exactly.
 
-// OpenAI does not publish normalization rules, so we use the convention every
-// other ad platform expects: trimmed and lowercased email, digits-only phone
-// carrying its country code. Our applicants are US businesses, so a bare
-// 10-digit number gets a leading 1.
+/** Trim and lowercase. */
 function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
+/**
+ * Digits only, country code kept, no leading `+` or zeros, 8–15 digits. GHL
+ * often stores US numbers as a bare 10 digits, so those get the US code.
+ */
 function normalizePhone(value: string) {
-  const digits = value.replace(/\D+/g, '');
-  return digits.length === 10 ? `1${digits}` : digits;
+  let digits = value.replace(/\D+/g, '').replace(/^0+/, '');
+  if (digits.length === 10) digits = `1${digits}`;
+  return digits.length >= 8 && digits.length <= 15 ? digits : '';
 }
 
-async function hashContact(contact: StickyContact): Promise<PixelUser> {
+/** Lowercase, whitespace and ASCII punctuation removed, accents kept. */
+function normalizeName(value: string) {
+  return value.toLowerCase().replace(/[\s!-/:-@[-`{-~]+/g, '');
+}
+
+function upTo(value: string | undefined, max: number) {
+  const v = (value || '').trim();
+  return v.length <= max ? v : '';
+}
+
+function hashContact(contact: StickyContact): PixelUser {
   const user: PixelUser = {};
   const email = normalizeEmail(contact.email || '');
   const phone = normalizePhone(contact.phone || '');
-  const first = (contact.firstName || '').trim().toLowerCase();
-  const last = (contact.lastName || '').trim().toLowerCase();
+  const first = normalizeName(contact.firstName || '');
+  const last = normalizeName(contact.lastName || '');
 
-  if (email) user.email_sha256 = await sha256Hex(email);
-  if (phone) user.phone_number_sha256 = await sha256Hex(phone);
-  if (first) user.first_name_sha256 = await sha256Hex(first);
-  if (last) user.last_name_sha256 = await sha256Hex(last);
+  if (email) user.email_sha256 = sha256Hex(email);
+  if (phone) user.phone_number_sha256 = sha256Hex(phone);
+  if (first) user.first_name_sha256 = sha256Hex(first);
+  if (last) user.last_name_sha256 = sha256Hex(last);
+
+  const city = upTo(contact.city, 128);
+  const region = upTo(contact.state, 128);
+  const postal = upTo(contact.postalCode, 32);
+  if (city) user.city = city;
+  if (region) user.region = region;
+  if (postal && /^[A-Za-z0-9 -]+$/.test(postal)) user.postal_code = postal;
   return user;
 }
 
 function readMatch(): StoredMatch | null {
   try {
     const raw = sessionStorage.getItem(MATCH_KEY);
-    return raw ? (JSON.parse(raw) as StoredMatch) : null;
+    return raw ? (JSON.parse(raw) as StoredMatch) : memoryMatch;
   } catch {
-    // sessionStorage unavailable (strict privacy modes). The conversion still
-    // fires, just without the hashed identifiers.
-    return null;
+    // sessionStorage unavailable. Use whatever this page captured itself.
+    return memoryMatch;
   }
 }
 
@@ -167,16 +199,24 @@ function randomSeed() {
   return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
 }
 
-function alreadyFired(key: string): boolean {
+/**
+ * True when this conversion already fired in this tab; otherwise marks it.
+ *
+ * Without storage, page-load conversions are skipped, because counting every
+ * refresh is worse than missing one. Submit-triggered conversions pass
+ * `memoryFallback`: they only run on a real GHL success message, so skipping
+ * them would silently drop every lead from a browser that blocks storage.
+ */
+function alreadyFired(key: string, memoryFallback: boolean): boolean {
+  if (firedInMemory.has(key)) return true;
   try {
     if (sessionStorage.getItem(FIRED_PREFIX + key)) return true;
     sessionStorage.setItem(FIRED_PREFIX + key, '1');
-    return false;
   } catch {
-    // Without storage we cannot guard, and an over-count is worse than a
-    // missed refresh, so treat an unreadable marker as "already fired".
-    return true;
+    if (!memoryFallback) return true;
   }
+  firedInMemory.add(key);
+  return false;
 }
 
 /** `page_viewed` for the current route. Safe to call on every navigation. */
@@ -190,18 +230,27 @@ export function firePageView() {
  *
  * `onceKey` is what the repeat guard keys on — pass the same key anywhere the
  * same real-world conversion could fire from.
+ *
+ * Runs synchronously (the Promise return type is kept for existing callers).
+ * Once it returns, the event sits in the SDK's queue, and the SDK sends it
+ * with keepalive/sendBeacon even if the page navigates away right after.
  */
 export async function fireConversion(
   event: PixelEvent | 'custom',
-  options: { customEventName?: string; onceKey: string }
+  options: {
+    customEventName?: string;
+    onceKey: string;
+    /** Only for conversions triggered by a real submit. See alreadyFired. */
+    memoryFallback?: boolean;
+  }
 ) {
   const oaiq = queue();
   if (!oaiq) return;
-  if (alreadyFired(options.onceKey)) return;
+  if (alreadyFired(options.onceKey, options.memoryFallback === true)) return;
 
   const match = readMatch();
   // Re-init with the hashed contact before measuring. Calling init again with
-  // fuller user data is the documented way to supply it after the fact.
+  // the full user object is the documented way to supply it after the fact.
   if (match?.user && Object.keys(match.user).length > 0) {
     oaiq('init', { pixelId: PIXEL_ID, user: match.user });
   }
@@ -233,41 +282,155 @@ export async function fireConversion(
  */
 export async function handleLeadSubmitted(contact: StickyContact) {
   if (!PIXEL_ID) return;
-  await stashMatch(contact);
+  stashMatch(contact);
   if (LEAD_EVENT_AT === 'submit') {
-    await fireConversion('lead_created', { onceKey: 'lead' });
+    await fireConversion('lead_created', {
+      onceKey: 'lead',
+      memoryFallback: true,
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Course signup handoff
+//
+// The course opt-in form redirects the whole page to
+// /business-credit-builder/confirmation right after GHL broadcasts the
+// submit. Tested in a browser: when that redirect starts in the same instant
+// as the broadcast, the page is already unloading by the time our listener
+// runs, the SDK's last flush has already happened, and an event queued here is
+// lost. GHL only awaits its own tracking call before redirecting, so in
+// production the gap can be close to zero.
+//
+// So the submit hands the conversion to the confirmation page as well, in a
+// short-lived first-party cookie. A cookie rather than sessionStorage because
+// ads land on creditbanc.io while GHL redirects to www.creditbanc.io, and
+// storage does not cross origins. It holds the event ID and the already-hashed
+// identifiers only, never raw contact data, and is deleted as soon as it is
+// read. Both pages send the same event_id, which is OpenAI's documented
+// deduplication key, so a signup counts once even when both get through.
+
+const HANDOFF_COOKIE = 'cb_oai_reg';
+const HANDOFF_MAX_AGE_S = 600;
+
+interface Handoff {
+  seed: string;
+  user: Pick<
+    PixelUser,
+    | 'email_sha256'
+    | 'phone_number_sha256'
+    | 'first_name_sha256'
+    | 'last_name_sha256'
+  >;
+}
+
+function cookieAttributes() {
+  const host = window.location.hostname;
+  const domain =
+    host === 'creditbanc.io' || host.endsWith('.creditbanc.io')
+      ? '; Domain=creditbanc.io'
+      : '';
+  const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+  return `; Path=/; SameSite=Lax${domain}${secure}`;
+}
+
+function writeHandoff(match: StoredMatch) {
+  const { email_sha256, phone_number_sha256, first_name_sha256, last_name_sha256 } =
+    match.user;
+  const handoff: Handoff = {
+    seed: match.eventIdSeed,
+    user: { email_sha256, phone_number_sha256, first_name_sha256, last_name_sha256 },
+  };
+  try {
+    document.cookie = `${HANDOFF_COOKIE}=${encodeURIComponent(
+      JSON.stringify(handoff)
+    )}; Max-Age=${HANDOFF_MAX_AGE_S}${cookieAttributes()}`;
+  } catch {
+    // Cookies blocked: the in-page conversion is the only attempt.
+  }
+}
+
+function takeHandoff(): Handoff | null {
+  try {
+    const entry = document.cookie
+      .split('; ')
+      .find((c) => c.startsWith(`${HANDOFF_COOKIE}=`));
+    if (!entry) return null;
+    // Delete first, so a refresh or a second mount can never re-send it.
+    document.cookie = `${HANDOFF_COOKIE}=; Max-Age=0${cookieAttributes()}`;
+    const parsed = JSON.parse(
+      decodeURIComponent(entry.slice(HANDOFF_COOKIE.length + 1))
+    ) as Handoff;
+    return typeof parsed?.seed === 'string' && parsed.seed ? parsed : null;
+  } catch {
+    return null;
   }
 }
 
 /**
  * Called when the course opt-in form (CourseOptInForm) broadcasts a successful
- * submit. GHL only sends that broadcast once the form has actually saved the
- * contact, so a half-filled or failed form never counts as a signup.
+ * submit. GHL only sends that broadcast once it has saved the contact, so a
+ * half-filled, invalid or failed form never counts as a signup.
+ *
+ * Synchronous on purpose: hash, hand off, queue, all in the same tick the
+ * broadcast arrives, which gives the in-page event its best chance against
+ * GHL's redirect. The handoff covers the cases where it still loses.
  */
 export async function handleCourseRegistered(contact: StickyContact) {
   if (!PIXEL_ID) return;
-  await stashMatch(contact);
-  await fireConversion('registration_completed', { onceKey: 'course-signup' });
+  const match = stashMatch(contact);
+  writeHandoff(match);
+  await fireConversion('registration_completed', {
+    onceKey: 'course-signup',
+    memoryFallback: true,
+  });
+}
+
+/**
+ * Mounted on /business-credit-builder/confirmation. Sends the course signup
+ * handed off by the form page, if there is one. A direct visit, a refresh or
+ * a shared link has no handoff cookie, so nothing fires.
+ */
+export function firePendingRegistration() {
+  const oaiq = queue();
+  if (!oaiq) return;
+  const handoff = takeHandoff();
+  if (!handoff) return;
+
+  const user = Object.fromEntries(
+    Object.entries(handoff.user).filter(
+      ([, v]) => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v)
+    )
+  );
+  if (Object.keys(user).length > 0) {
+    oaiq('init', { pixelId: PIXEL_ID, user });
+  }
+  oaiq(
+    'measure',
+    'registration_completed',
+    { type: DATA_TYPE.registration_completed },
+    { event_id: eventId('registration_completed', handoff.seed) }
+  );
 }
 
 // Hash the submitted contact and keep it for the conversion that follows,
 // whether it fires on this page or on the one the GHL redirect lands on.
-async function stashMatch(contact: StickyContact) {
+function stashMatch(contact: StickyContact): StoredMatch {
   let user: PixelUser = {};
   try {
-    user = await hashContact(contact);
+    user = hashContact(contact);
   } catch {
-    // crypto.subtle needs a secure context. Unhashed data must never be sent,
-    // so on failure the conversion simply goes out unmatched.
+    // Unhashed data must never be sent, so on failure the conversion simply
+    // goes out unmatched.
   }
 
   const seed = user.email_sha256 ? user.email_sha256.slice(0, 32) : randomSeed();
+  const match: StoredMatch = { user, eventIdSeed: seed };
+  memoryMatch = match;
   try {
-    sessionStorage.setItem(
-      MATCH_KEY,
-      JSON.stringify({ user, eventIdSeed: seed } satisfies StoredMatch)
-    );
+    sessionStorage.setItem(MATCH_KEY, JSON.stringify(match));
   } catch {
-    // No storage: the conversion fires unmatched.
+    // No storage: the in-memory copy still covers this page's conversion.
   }
+  return match;
 }
