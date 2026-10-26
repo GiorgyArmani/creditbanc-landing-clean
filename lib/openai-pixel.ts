@@ -455,3 +455,27 @@ export function readPixelAttribution(): Record<string, string> {
   }
   return out;
 }
+
+/**
+ * readPixelAttribution, but gives the pixel a moment to create `__obref`
+ * first. On a first visit (every ad click) the SDK loads async and writes the
+ * cookie shortly after our page mounts, so an immediate read misses it.
+ * Resolves as soon as `__obref` exists, or after `maxWaitMs` with whatever is
+ * there. Without the pixel it resolves immediately.
+ */
+export function waitForPixelAttribution(
+  maxWaitMs = 1500
+): Promise<Record<string, string>> {
+  return new Promise((resolve) => {
+    const first = readPixelAttribution();
+    if (!PIXEL_ID || first.obref) return resolve(first);
+    const started = Date.now();
+    const timer = setInterval(() => {
+      const now = readPixelAttribution();
+      if (now.obref || Date.now() - started >= maxWaitMs) {
+        clearInterval(timer);
+        resolve(now);
+      }
+    }, 100);
+  });
+}

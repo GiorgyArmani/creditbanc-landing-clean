@@ -8,7 +8,7 @@ import {
 } from '@/components/CourseFormLoading';
 import {
   handleCourseRegistered,
-  readPixelAttribution,
+  waitForPixelAttribution,
 } from '@/lib/openai-pixel';
 import { onStickyContact } from '@/lib/sticky-contact';
 
@@ -49,8 +49,16 @@ export default function CourseOptInForm({
   const [pixelRefs, setPixelRefs] = useState<Record<string, string> | null>(
     null
   );
+  // Waits up to 1.5s for the pixel to create its browser ID on a first visit;
+  // the loader is already showing and GHL's own embed takes longer than that.
   useEffect(() => {
-    setPixelRefs(readPixelAttribution());
+    let active = true;
+    void waitForPixelAttribution().then((refs) => {
+      if (active) setPixelRefs(refs);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const formSrc = (() => {
