@@ -18,6 +18,13 @@
 //
 // Docs: https://developers.openai.com/ads/measurement-pixel
 
+import {
+  eventId,
+  matchSeed,
+  normalizeEmail,
+  normalizeName,
+  normalizePhone,
+} from './openai-match';
 import { sha256Hex } from './sha256';
 import type { StickyContact } from './sticky-contact';
 
@@ -79,7 +86,7 @@ const FIRED_PREFIX = 'cb-oai-fired:';
 
 interface StoredMatch {
   user: PixelUser;
-  /** Shared with the Conversions API later so the two sides dedupe. */
+  /** Shared with the Conversions API so the two sides dedupe. */
   eventIdSeed: string;
 }
 
@@ -125,29 +132,8 @@ const DATA_TYPE: Record<PixelEvent | 'custom', string> = {
 //   custom           → type, plan_id, amount, currency, contents
 // Event options are limited to event_id, eventId, custom_event_name, opt_out.
 
-// Normalization follows OpenAI's published rule for each field. A value
-// normalized differently here than on OpenAI's side hashes to something that
-// never matches, so these must track the docs exactly.
-
-/** Trim and lowercase. */
-function normalizeEmail(value: string) {
-  return value.trim().toLowerCase();
-}
-
-/**
- * Digits only, country code kept, no leading `+` or zeros, 8–15 digits. GHL
- * often stores US numbers as a bare 10 digits, so those get the US code.
- */
-function normalizePhone(value: string) {
-  let digits = value.replace(/\D+/g, '').replace(/^0+/, '');
-  if (digits.length === 10) digits = `1${digits}`;
-  return digits.length >= 8 && digits.length <= 15 ? digits : '';
-}
-
-/** Lowercase, whitespace and ASCII punctuation removed, accents kept. */
-function normalizeName(value: string) {
-  return value.toLowerCase().replace(/[\s!-/:-@[-`{-~]+/g, '');
-}
+// Normalization rules live in lib/openai-match.ts, shared with the server
+// side so both hash the same way.
 
 function upTo(value: string | undefined, max: number) {
   const v = (value || '').trim();
@@ -186,15 +172,11 @@ function readMatch(): StoredMatch | null {
 }
 
 // Deduplication only works if the browser and the server arrive at the same
-// event ID independently. Seeding it from the email hash does that: a GHL
-// webhook hashing the same contact email server-side computes the same ID,
-// with no shared state between them. Without an email there is nothing stable
-// to derive from, so we fall back to a random seed — fine today, since the
-// Conversions API half is not live yet.
-function eventId(event: string, seed: string) {
-  return `${event}:${seed}`;
-}
-
+// event ID independently. Seeding it from the email hash (or the phone hash
+// when there is no email) does that: the GHL webhook behind
+// app/api/openai/registration hashes the same contact and computes the same
+// ID, with no shared state between them. With neither there is nothing stable
+// to derive from, so we fall back to a random seed.
 function randomSeed() {
   return crypto.randomUUID().replace(/-/g, '').slice(0, 32);
 }
@@ -424,7 +406,11 @@ function stashMatch(contact: StickyContact): StoredMatch {
     // goes out unmatched.
   }
 
-  const seed = user.email_sha256 ? user.email_sha256.slice(0, 32) : randomSeed();
+  const seed =
+    matchSeed({
+      emailSha256: user.email_sha256,
+      phoneSha256: user.phone_number_sha256,
+    }) || randomSeed();
   const match: StoredMatch = { user, eventIdSeed: seed };
   memoryMatch = match;
   try {
@@ -433,4 +419,39 @@ function stashMatch(contact: StickyContact): StoredMatch {
     // No storage: the in-memory copy still covers this page's conversion.
   }
   return match;
+}
+
+// ---------------------------------------------------------------------------
+// Attribution for the server side
+//
+// The Conversions API does not capture attribution itself. The pixel keeps it
+// in two first-party cookies: `__oppref` (the ad click, 30 days) and `__obref`
+// (a random browser reference, 365 days). The course form gets both as query
+// params, its hidden fields save them on the GHL contact, and the GHL webhook
+// hands them back to app/api/openai/registration unchanged.
+
+const ATTRIBUTION_COOKIES = { oppref: '__oppref', obref: '__obref' } as const;
+
+/**
+ * The pixel's attribution cookies, as `{ oppref, obref }` query params. Empty
+ * when the pixel is off, consent was declined (the pixel deletes both), or
+ * this browser never came from an ad.
+ */
+export function readPixelAttribution(): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!PIXEL_ID || typeof document === 'undefined') return out;
+  try {
+    const cookies = document.cookie.split('; ');
+    for (const [param, name] of Object.entries(ATTRIBUTION_COOKIES)) {
+      const entry = cookies.find((c) => c.startsWith(`${name}=`));
+      if (!entry) continue;
+      const value = decodeURIComponent(entry.slice(name.length + 1)).trim();
+      // Opaque IDs, passed through unmodified. The length cap only stops a
+      // corrupted cookie from bloating the iframe URL.
+      if (value && value.length <= 512) out[param] = value;
+    }
+  } catch {
+    // Cookies unreadable: the conversion still goes out, just unattributed.
+  }
+  return out;
 }

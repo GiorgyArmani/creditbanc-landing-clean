@@ -1,12 +1,15 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   COURSE_FORMS,
   CourseFormLoading,
 } from '@/components/CourseFormLoading';
-import { handleCourseRegistered } from '@/lib/openai-pixel';
+import {
+  handleCourseRegistered,
+  readPixelAttribution,
+} from '@/lib/openai-pixel';
 import { onStickyContact } from '@/lib/sticky-contact';
 
 // GHL / LeadConnector opt-in form for the free Business Credit Builder 101
@@ -40,15 +43,34 @@ export default function CourseOptInForm({
     []
   );
 
+  // The OpenAI pixel's attribution cookies, read after mount because cookies
+  // don't exist on the server. Null until then, and the iframe waits for it:
+  // changing its src afterwards would load the GHL form twice.
+  const [pixelRefs, setPixelRefs] = useState<Record<string, string> | null>(
+    null
+  );
+  useEffect(() => {
+    setPixelRefs(readPixelAttribution());
+  }, []);
+
   const formSrc = (() => {
     const url = new URL(
       `https://api.leadconnectorhq.com/widget/form/${FORM_ID}`
     );
+    // Cookies first, so an `oppref` on the landing URL (a fresher click than
+    // the cookie, if the pixel hasn't stored it yet) still wins below.
+    Object.entries(pixelRefs || {}).forEach(([key, value]) => {
+      url.searchParams.set(key, value);
+    });
     params.forEach((value, key) => {
       if (value) url.searchParams.set(key, value);
     });
     return url.toString();
   })();
+
+  if (!pixelRefs) {
+    return <CourseFormLoading height={FORM_HEIGHT} />;
+  }
 
   // form_embed.js pulls the iframe out of flow (position:absolute,
   // left:-9999px) while it re-loads the form, then reveals it ~3s later. The

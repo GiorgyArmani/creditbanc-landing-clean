@@ -157,8 +157,50 @@ and the confirmation page sends the signup from it once and deletes it. Both
 sides use the same `event_id`, OpenAI's documented dedup key, so a signup
 counts once even when both copies arrive.
 
-### Not yet done
+### Server-side Conversions API (course signups)
 
-Server-side Conversions API. Event IDs are already seeded from the contact's
-email hash, so a GHL webhook hashing the same email arrives at the same ID and
-the two sides deduplicate without sharing state.
+`registration_completed` is also sent from the server, triggered by GHL once
+it has saved the contact, so signups the browser misses (ad blockers, the
+form's instant redirect, closed tabs) still count. Endpoint:
+`POST /api/openai/registration` (`app/api/openai/registration/route.ts`).
+
+**Deduplication.** Both sides build the event ID as
+`registration_completed:<first 32 hex of sha256(normalized email)>` (phone hash
+when there is no email), from the shared `lib/openai-match.ts`. OpenAI keeps
+the first copy with that ID and drops the other.
+
+**Attribution.** The course form passes the pixel's `__oppref` (ad click) and
+`__obref` (browser) cookies to the GHL iframe as `oppref` / `obref` query
+params. Hidden fields on the GHL form save them on the contact, and the
+webhook hands them back. As a fallback, `oppref` is also read from the page
+URL GHL records in its attribution data. Only origin + path of that URL is
+sent, because GHL URLs often carry the contact's email.
+
+**Identifiers.** Email, phone, first/last name and the GHL contact ID are
+normalized per OpenAI's rules and SHA-256 hashed before sending. City, state,
+postal code and country go raw, as the API requires. Raw values are never
+logged.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `OPEN_AI_ADS_API_KEY` | unset | Conversions API key from Ads Manager. Server-only. |
+| `OPENAI_CAPI_WEBHOOK_SECRET` | unset (endpoint refuses) | Shared secret GHL sends in the `x-webhook-secret` header. |
+| `OPENAI_CAPI_MODE` | `validate` | `validate`: OpenAI checks each event but records nothing. `live`: events count. `off`: nothing sent. Only the exact value `live` goes live. |
+
+#### GHL setup (one time)
+
+1. On each course form (`Credit Builder Course - NEW FORM`,
+   `Business Credit Builder Course Opt-in`) add two **hidden fields** mapped to
+   new contact custom fields named `oppref` and `obref`, each filled from the
+   URL query parameter of the same name.
+2. Create a workflow. Trigger: **Form Submitted**, filtered to those two
+   forms. Action: **Custom Webhook**, `POST`
+   `https://www.creditbanc.io/api/openai/registration`, header
+   `x-webhook-secret: <OPENAI_CAPI_WEBHOOK_SECRET>`, JSON body with the
+   contact's `email`, `phone`, `first_name`, `last_name`, `city`, `state`,
+   `postal_code`, `country`, `contact_id`, `oppref`, `obref`. (A `?key=`
+   query param also works, but puts the secret in request logs.)
+3. Check the workflow's execution history. Each run shows our response with
+   `mode`, `eventId` and OpenAI's answer (`accepted_events: 1`).
+
+Going live is only `OPENAI_CAPI_MODE=live` in Vercel plus a redeploy.
