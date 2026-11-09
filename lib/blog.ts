@@ -110,6 +110,54 @@ function cleanContent(html: string): string {
   });
 }
 
+// GHL "Custom HTML/CSS/JavaScript" blocks arrive as a placeholder div whose
+// real code sits HTML-escaped in a data-content attribute. cleanContent()
+// would drop that attribute and leave only the placeholder label, so we pull
+// each embed out first and keep its authored markup + <style> (scripts are
+// still stripped; they wouldn't run via dangerouslySetInnerHTML anyway).
+const CODE_EMBED_RE =
+  /<div\b[^>]*\bdata-code-embed-container\b[^>]*>[\s\S]*?<\/div>\s*<\/div>/g;
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&amp;/g, "&"); // last, so "&amp;lt;" stays "&lt;"
+}
+
+function cleanEmbed(html: string): string {
+  return sanitizeHtml(html, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      "style", "img", "div", "span", "figure", "figcaption", "aside",
+      "article", "section", "header", "footer",
+    ]),
+    allowedAttributes: {
+      "*": ["id", "class", "style", "role", "aria-*", "title"],
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "width", "height", "loading"],
+    },
+    allowVulnerableTags: true, // needed to keep <style>
+    allowedSchemes: ["http", "https", "mailto", "tel"],
+  });
+}
+
+function renderContent(html: string): string {
+  const parts: string[] = [];
+  let last = 0;
+  for (const m of html.matchAll(CODE_EMBED_RE)) {
+    parts.push(cleanContent(html.slice(last, m.index)));
+    const code = /\bdata-content="([^"]*)"/.exec(m[0])?.[1] ?? "";
+    parts.push(cleanEmbed(decodeEntities(code)));
+    last = m.index! + m[0].length;
+  }
+  parts.push(cleanContent(html.slice(last)));
+  return parts.join("");
+}
+
 // Fetch the RSS feed, retrying transient failures (429 rate-limits and 5xx)
 // with exponential backoff. During `next build`, many blog pages prerender in
 // parallel and GHL rate-limits the burst with a 429 — without this retry a
@@ -150,7 +198,7 @@ export async function getPosts(): Promise<BlogPost[]> {
       slug: slugFromLink(link),
       link,
       excerpt: text(item.description).trim(),
-      content: rawContent.length > 0 ? cleanContent(rawContent) : null,
+      content: rawContent.length > 0 ? renderContent(rawContent) : null,
       image: imageFrom(item),
       categories: toArray(item.category).map(text).filter(Boolean),
       pubDate: pub,
